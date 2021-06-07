@@ -1,6 +1,6 @@
-# vors_project
+# VORS
 
-vors
+Virtual Ordering for Rapid Service
 
 ## Getting Started
 
