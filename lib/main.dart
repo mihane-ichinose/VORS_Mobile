@@ -126,7 +126,7 @@ class _MyHomePageState extends State<MyHomePage> {
       decoration: InputDecoration(
         filled: true,
         fillColor: Color(0xFF43F2EB),
-        contentPadding: EdgeInsets.all(20.0),
+        contentPadding: EdgeInsets.all(15.0),
         hintText: "Username",
         hintStyle: TextStyle(
             fontFamily: 'Futura',
@@ -146,7 +146,7 @@ class _MyHomePageState extends State<MyHomePage> {
       decoration: InputDecoration(
           filled: true,
           fillColor: Color(0xFF43F2EB),
-          contentPadding: EdgeInsets.all(20.0),
+          contentPadding: EdgeInsets.all(15.0),
           hintText: "Password",
           hintStyle: TextStyle(
             fontFamily: 'Futura',
@@ -164,7 +164,7 @@ class _MyHomePageState extends State<MyHomePage> {
       color: Colors.white,
       child: MaterialButton(
         minWidth: MediaQuery.of(context).size.width,
-        padding: EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
+        padding: EdgeInsets.all(15.0),
         onPressed: () {},
         child: Text("Log in",
             textAlign: TextAlign.center,
@@ -180,12 +180,12 @@ class _MyHomePageState extends State<MyHomePage> {
       color: Colors.transparent,
       child: MaterialButton(
         minWidth: MediaQuery.of(context).size.width,
-        padding: EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
+        padding: EdgeInsets.fromLTRB(15.0, 0, 15.0, 0),
         onPressed: () {},
         child: Text("Sign up.",
             textAlign: TextAlign.center,
             style: style.copyWith(
-                color: Color(0xFF43F2EB), fontWeight: FontWeight.bold, fontSize: 30)),
+                color: Color(0xFF43F2EB), fontWeight: FontWeight.bold, fontSize: 20)),
       ),
     );
 
@@ -194,12 +194,12 @@ class _MyHomePageState extends State<MyHomePage> {
       color: Colors.transparent,
       child: MaterialButton(
         minWidth: MediaQuery.of(context).size.width,
-        padding: EdgeInsets.fromLTRB(0, 15.0, 20.0, 15.0),
+        padding: EdgeInsets.fromLTRB(15.0, 0, 15.0, 0),
         onPressed: () {},
         child: Text("here.",
             textAlign: TextAlign.center,
             style: style.copyWith(
-                color: Color(0xFF43F2EB), fontWeight: FontWeight.bold, fontSize: 20)),
+                color: Color(0xFF43F2EB), fontWeight: FontWeight.bold, fontSize: 15)),
       ),
     );
 
@@ -215,21 +215,21 @@ class _MyHomePageState extends State<MyHomePage> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
                   SizedBox(
-                    height: 70.0,
+                    height: 40.0,
                   ),
-                  Text("VORS", style: TextStyle(fontFamily: "Futura", fontWeight: FontWeight.bold, fontSize: 100, color: Colors.white)),
+                  Text("VORS", style: TextStyle(fontFamily: "Futura", fontWeight: FontWeight.bold, fontSize: 90, color: Colors.white)),
                   SizedBox(
-                    height: 15.0,
+                    height: 10.0,
                   ),
-                  Text("Virtual ordering", style: TextStyle(fontFamily: "Futura", fontWeight: FontWeight.bold, fontSize: 30, color: Colors.white)),
+                  Text("Virtual ordering", style: TextStyle(fontFamily: "Futura", fontWeight: FontWeight.bold, fontSize: 25, color: Colors.white)),
                   SizedBox(
-                    height: 15.0,
+                    height: 10.0,
                   ),
-                  Text("for", style: TextStyle(fontFamily: "Futura", fontWeight: FontWeight.bold, fontSize: 30, color: Colors.white)),
+                  Text("for", style: TextStyle(fontFamily: "Futura", fontWeight: FontWeight.bold, fontSize: 25, color: Colors.white)),
                   SizedBox(
-                    height: 15.0,
+                    height: 10.0,
                   ),
-                  Text("Rapid service", style: TextStyle(fontFamily: "Futura", fontWeight: FontWeight.bold, fontSize: 30, color: Colors.white)),
+                  Text("Rapid service", style: TextStyle(fontFamily: "Futura", fontWeight: FontWeight.bold, fontSize: 25, color: Colors.white)),
                   SizedBox(height: 45.0, width: 20),
                   Container(
                     width: 300,
@@ -244,32 +244,32 @@ class _MyHomePageState extends State<MyHomePage> {
                     height: 35.0,
                   ),
                   Container(
-                    width: 100,
+                    width: 150,
                     child: loginButton,
                   ),
                   SizedBox(
                     height: 20.0,
                   ),
-                  Text("Don't have an account?", style: TextStyle(fontFamily: "Futura", fontSize: 30, color: Colors.white)),
+                  Text("Don't have an account?", style: TextStyle(fontFamily: "Futura", fontSize: 20, color: Colors.white)),
                   Container(
                     width: 150,
                     child: signUpButton,
                   ),
                   SizedBox(
-                    height: 20.0,
+                    height: 10.0,
                   ),
-                  Text("Forgot your password?", style: TextStyle(fontFamily: "Futura", fontSize: 20, color: Colors.white)),
+                  Text("Forgot your password?", style: TextStyle(fontFamily: "Futura", fontSize: 15, color: Colors.white)),
                   Container(
                     child: Center(
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: <Widget>[
                           Center(
-                            child: Text("Click ", style: TextStyle(fontFamily: "Futura", fontSize: 20, color: Colors.white)),
+                            child: Text("Click ", style: TextStyle(fontFamily: "Futura", fontSize: 15, color: Colors.white)),
                           ),
                           Center(
                             child: Container(
-                              width: 60,
+                              width: 70,
                               child: forgotButton,
                             ),
                           ),
