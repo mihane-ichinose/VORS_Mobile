@@ -34,6 +34,11 @@ class _UserPageState extends State<UserPage> {
     );
   }
 
+  Widget _buildHeader() {
+    // TODO: Need the user profile here.
+    return Container();
+  }
+
   @override
   Widget build(BuildContext context) {
 
@@ -66,6 +71,7 @@ class _UserPageState extends State<UserPage> {
                 SizedBox(
                   height: 40.0,
                 ),
+                _buildHeader(),
                 Container(
                   width: 150,
                   child: logoutButton,

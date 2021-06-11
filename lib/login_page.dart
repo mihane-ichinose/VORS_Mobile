@@ -79,13 +79,11 @@
 //     );
 //   }
 // }
-
+// TODO: Need login credential validation.
 import 'package:flutter/material.dart';
 
 class LoginPage extends StatefulWidget {
   //LoginPage({Key? key, Title? title}) : super(key: key);
-
-  //final String title = "VORS Login";
 
   @override
   _LoginPageState createState() => _LoginPageState();
