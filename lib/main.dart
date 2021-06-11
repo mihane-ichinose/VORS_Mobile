@@ -1,7 +1,7 @@
 // import 'package:flutter/services.dart';
 // import 'package:flutter/material.dart';
-// import 'dashboard_screen.dart';
-// import 'login_screen.dart';
+// import 'restaurant_page.dart';
+// import 'login_page.dart';
 // import 'transition_route_observer.dart';
 //
 // void main() {
@@ -82,6 +82,9 @@
 //   }
 // }
 import 'package:flutter/material.dart';
+import 'package:vors_project/login_page.dart';
+import 'package:vors_project/restaurant_page.dart';
+import 'package:vors_project/user_page.dart';
 
 void main() => runApp(MyApp());
 
@@ -93,196 +96,15 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       title: 'VORS',
       theme: ThemeData(
-        scaffoldBackgroundColor: Color(0xFF17B2E0),
         fontFamily: "Futura.bold",
       ),
-      home: MyHomePage(title: 'VORS Login'),
+      home: LoginPage(),
+      routes: {
+        "/logout": (_) => new LoginPage(),
+        "/login": (_) => new RestaurantPage(),
+        "/user": (_) => new UserPage(),
+      },
     );
   }
 }
 
-class MyHomePage extends StatefulWidget {
-  MyHomePage({Key? key, required this.title}) : super(key: key);
-
-  final String title;
-
-  @override
-  _MyHomePageState createState() => _MyHomePageState();
-}
-
-class _MyHomePageState extends State<MyHomePage> {
-  TextStyle style = TextStyle(
-    fontFamily: 'Futura',
-    color: Colors.white,
-    fontSize: 26,
-  );
-
-  @override
-  Widget build(BuildContext context) {
-
-    final userNameField = TextField(
-      obscureText: false,
-      style: style,
-      decoration: InputDecoration(
-        filled: true,
-        fillColor: Color(0xFF43F2EB),
-        contentPadding: EdgeInsets.all(15.0),
-        hintText: "Username",
-        hintStyle: TextStyle(
-            fontFamily: 'Futura',
-            color: Colors.white,
-        ),
-        border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(32.0),
-            borderSide: BorderSide.none,
-        ),
-      ),
-    );
-
-    final passwordField = TextField(
-      obscureText: true,
-      // The obscured word seems not supportable by font Futura.
-      style: TextStyle(color: Colors.white, fontSize: 26),
-      decoration: InputDecoration(
-          filled: true,
-          fillColor: Color(0xFF43F2EB),
-          contentPadding: EdgeInsets.all(15.0),
-          hintText: "Password",
-          hintStyle: TextStyle(
-            fontFamily: 'Futura',
-            color: Colors.white,
-          ),
-          border: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(32.0),
-              borderSide: BorderSide.none,
-          ),
-        ),
-    );
-
-    final loginButton = Material(
-      borderRadius: BorderRadius.circular(30.0),
-      color: Colors.white,
-      child: MaterialButton(
-        minWidth: MediaQuery.of(context).size.width,
-        padding: EdgeInsets.all(15.0),
-        onPressed: () {},
-        child: Text("Log in",
-            textAlign: TextAlign.center,
-            style: style.copyWith(
-                color: Color(0xFF17B2E0),
-                fontWeight: FontWeight.bold)
-        ),
-      ),
-    );
-
-    final signUpButton = Material(
-      borderRadius: BorderRadius.circular(30.0),
-      color: Colors.transparent,
-      child: MaterialButton(
-        minWidth: MediaQuery.of(context).size.width,
-        padding: EdgeInsets.fromLTRB(15.0, 0, 15.0, 0),
-        onPressed: () {},
-        child: Text("Sign up.",
-            textAlign: TextAlign.center,
-            style: style.copyWith(
-                color: Color(0xFF43F2EB), fontWeight: FontWeight.bold, fontSize: 20)),
-      ),
-    );
-
-    final forgotButton = Material(
-      borderRadius: BorderRadius.circular(30.0),
-      color: Colors.transparent,
-      child: MaterialButton(
-        minWidth: MediaQuery.of(context).size.width,
-        padding: EdgeInsets.fromLTRB(15.0, 0, 15.0, 0),
-        onPressed: () {},
-        child: Text("here.",
-            textAlign: TextAlign.center,
-            style: style.copyWith(
-                color: Color(0xFF43F2EB), fontWeight: FontWeight.bold, fontSize: 15)),
-      ),
-    );
-
-    return Scaffold(
-      body: SingleChildScrollView(
-        child: Center(
-          child: Container(
-           // color: Colors.transparent,
-            child: Padding(
-              padding: const EdgeInsets.all(36.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: <Widget>[
-                  SizedBox(
-                    height: 40.0,
-                  ),
-                  Text("VORS", style: TextStyle(fontFamily: "Futura", fontWeight: FontWeight.bold, fontSize: 90, color: Colors.white)),
-                  SizedBox(
-                    height: 10.0,
-                  ),
-                  Text("Virtual ordering", style: TextStyle(fontFamily: "Futura", fontWeight: FontWeight.bold, fontSize: 25, color: Colors.white)),
-                  SizedBox(
-                    height: 10.0,
-                  ),
-                  Text("for", style: TextStyle(fontFamily: "Futura", fontWeight: FontWeight.bold, fontSize: 25, color: Colors.white)),
-                  SizedBox(
-                    height: 10.0,
-                  ),
-                  Text("Rapid service", style: TextStyle(fontFamily: "Futura", fontWeight: FontWeight.bold, fontSize: 25, color: Colors.white)),
-                  SizedBox(height: 45.0, width: 20),
-                  Container(
-                    width: 300,
-                    child: userNameField,
-                  ),
-                  SizedBox(height: 25.0),
-                  Container(
-                    width: 300,
-                    child: passwordField,
-                  ),
-                  SizedBox(
-                    height: 35.0,
-                  ),
-                  Container(
-                    width: 150,
-                    child: loginButton,
-                  ),
-                  SizedBox(
-                    height: 20.0,
-                  ),
-                  Text("Don't have an account?", style: TextStyle(fontFamily: "Futura", fontSize: 20, color: Colors.white)),
-                  Container(
-                    width: 150,
-                    child: signUpButton,
-                  ),
-                  SizedBox(
-                    height: 10.0,
-                  ),
-                  Text("Forgot your password?", style: TextStyle(fontFamily: "Futura", fontSize: 15, color: Colors.white)),
-                  Container(
-                    child: Center(
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: <Widget>[
-                          Center(
-                            child: Text("Click ", style: TextStyle(fontFamily: "Futura", fontSize: 15, color: Colors.white)),
-                          ),
-                          Center(
-                            child: Container(
-                              width: 70,
-                              child: forgotButton,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-}
