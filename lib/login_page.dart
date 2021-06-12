@@ -1,86 +1,5 @@
-// import 'package:flutter/scheduler.dart' show timeDilation;
-// import 'package:flutter/material.dart';
-// import 'package:flutter_login/flutter_login.dart';
-// import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-// import 'constants.dart';
-// import 'custom_route.dart';
-// import 'restaurant_page.dart';
-// import 'users.dart';
-//
-// class LoginScreen extends StatelessWidget {
-//   static const routeName = '/auth';
-//
-//   Duration get loginTime => Duration(milliseconds: timeDilation.ceil() * 2250);
-//
-//   Future<String?> _loginUser(LoginData data) {
-//     return Future.delayed(loginTime).then((_) {
-//       if (!mockUsers.containsKey(data.name)) {
-//         return 'User not exists';
-//       }
-//       if (mockUsers[data.name] != data.password) {
-//         return 'Password does not match';
-//       }
-//       return null;
-//     });
-//   }
-//
-//   Future<String?> _recoverPassword(String name) {
-//     return Future.delayed(loginTime).then((_) {
-//       if (!mockUsers.containsKey(name)) {
-//         return 'User not exists';
-//       }
-//       return null;
-//     });
-//   }
-//
-//   @override
-//   Widget build(BuildContext context) {
-//     return FlutterLogin(
-//       title: Constants.appName,
-//       //logo: '',
-//       logoTag: Constants.logoTag,
-//       titleTag: Constants.titleTag,
-//       userValidator: (value) {
-//         if (!value!.contains('@')) {
-//           return "Email must contain '@'.";
-//         }
-//         return null;
-//       },
-//       passwordValidator: (value) {
-//         if (value!.isEmpty) {
-//           return 'Password is empty';
-//         }
-//         return null;
-//       },
-//       onLogin: (loginData) {
-//         print('Login info');
-//         print('Name: ${loginData.name}');
-//         print('Password: ${loginData.password}');
-//         return _loginUser(loginData);
-//       },
-//       onSignup: (loginData) {
-//         print('Signup info');
-//         print('Name: ${loginData.name}');
-//         print('Password: ${loginData.password}');
-//         return _loginUser(loginData);
-//       },
-//       onSubmitAnimationCompleted: () {
-//         Navigator.of(context).pushReplacement(FadePageRoute(
-//           builder: (context) => DashboardScreen(),
-//         ));
-//       },
-//       onRecoverPassword: (name) {
-//         print('Recover password info');
-//         print('Name: $name');
-//         return _recoverPassword(name);
-//         // Show new password dialog
-//       },
-//       showDebugButtons: false,
-//     );
-//   }
-// }
-// TODO: Need login credential validation.
 import 'package:flutter/material.dart';
+import 'package:vors_project/users.dart';
 
 class LoginPage extends StatefulWidget {
   //LoginPage({Key? key, Title? title}) : super(key: key);
@@ -91,10 +10,22 @@ class LoginPage extends StatefulWidget {
 
 class _LoginPageState extends State<LoginPage> {
 
+  final _loginKey = GlobalKey<FormState>();
+
+  final usernameController = TextEditingController();
+  final passwordController = TextEditingController();
+
   Future<bool> _gotoRestaurant(BuildContext context) {
     return Navigator.of(context)
         .pushNamedAndRemoveUntil('/login', (Route<dynamic> route) => false)
     // We will clean all existing routes when login.
+        .then((_) => false);
+  }
+
+  Future<bool> _signup(BuildContext context) {
+    return Navigator.of(context)
+        .pushReplacementNamed('/signup')
+    // We don't want to pop the signup here.
         .then((_) => false);
   }
 
@@ -107,10 +38,43 @@ class _LoginPageState extends State<LoginPage> {
   @override
   Widget build(BuildContext context) {
 
-    final userNameField = TextField(
+    bool userEmpty = false;
+    bool userNotExists = false;
+    bool passwordMismatch = false;
+    bool passwordEmpty = false;
+
+    final userNameField = TextFormField(
+      validator: (value) {
+        if (value == null || value.isEmpty) {
+          userEmpty = true;
+          return ''; // Username empty.
+        } else {
+          userEmpty = false;
+        }
+        if (!mockUsers.containsKey(value)) {
+          userNotExists = true;
+          return ''; // User not exists
+        } else {
+          userNotExists = false;
+        }
+        if (mockUsers[value] != passwordController.text) {
+          passwordMismatch = true;
+          return ''; // Password does not match
+        } else {
+          passwordMismatch = false;
+        }
+        return null;
+      },
+      controller: usernameController,
       obscureText: false,
       style: style,
       decoration: InputDecoration(
+        errorMaxLines: 1,
+        errorText: 'Null',
+        errorStyle: TextStyle(
+          color: Colors.transparent,
+          fontSize: 0,
+        ),
         filled: true,
         fillColor: Color(0xFF43F2EB),
         contentPadding: EdgeInsets.all(15.0),
@@ -126,11 +90,27 @@ class _LoginPageState extends State<LoginPage> {
       ),
     );
 
-    final passwordField = TextField(
+    final passwordField = TextFormField(
+      validator: (value) {
+        if (value == null || value.isEmpty){
+          passwordEmpty = true;
+          return ''; // The password is empty.
+        } else {
+          passwordEmpty = false;
+        }
+        return null;
+      },
+      controller: passwordController,
       obscureText: true,
       // The obscured word seems not supportable by font Futura.
       style: TextStyle(color: Colors.white, fontSize: 26),
       decoration: InputDecoration(
+        errorMaxLines: 1,
+        errorText: 'Null',
+        errorStyle: TextStyle(
+          color: Colors.transparent,
+          fontSize: 0,
+        ),
         filled: true,
         fillColor: Color(0xFF43F2EB),
         contentPadding: EdgeInsets.all(15.0),
@@ -152,7 +132,72 @@ class _LoginPageState extends State<LoginPage> {
       child: MaterialButton(
         minWidth: MediaQuery.of(context).size.width,
         padding: EdgeInsets.all(15.0),
-        onPressed: () => _gotoRestaurant(context),
+        onPressed: () {
+          if (_loginKey.currentState!.validate()) {
+            // If both forms are valid, displays a snackbar.
+
+            userNotExists = passwordMismatch = passwordEmpty = true;
+            _gotoRestaurant(context);
+            } else {
+            if (userEmpty) {
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content: Text('Please enter your username.'),
+                  backgroundColor: Colors.deepOrange,
+                  action: SnackBarAction(
+                    label: "GOT IT",
+                    textColor: Colors.white,
+                    onPressed: () {
+                      ScaffoldMessenger.of(context).hideCurrentSnackBar();
+                    },
+                  ),
+                ),
+              );
+            } else if (userNotExists) {
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content: Text('Username does not exist.'),
+                  backgroundColor: Colors.deepOrange,
+                  action: SnackBarAction(
+                    label: "GOT IT",
+                    textColor: Colors.white,
+                    onPressed: () {
+                      ScaffoldMessenger.of(context).hideCurrentSnackBar();
+                    },
+                  ),
+                ),
+              );
+            } else if (passwordEmpty) {
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content: Text('Password is empty.'),
+                  backgroundColor: Colors.deepOrange,
+                  action: SnackBarAction(
+                    label: "GOT IT",
+                    textColor: Colors.white,
+                    onPressed: () {
+                      ScaffoldMessenger.of(context).hideCurrentSnackBar();
+                    },
+                  ),
+                ),
+              );
+            } else {
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content: Text('Please check your password.'),
+                  backgroundColor: Colors.deepOrange,
+                  action: SnackBarAction(
+                    label: "GOT IT",
+                    textColor: Colors.white,
+                    onPressed: () {
+                      ScaffoldMessenger.of(context).hideCurrentSnackBar();
+                    },
+                  ),
+                ),
+              );
+            }
+          }
+        },
         child: Text("Log in",
           textAlign: TextAlign.center,
           style: style.copyWith(
@@ -169,7 +214,7 @@ class _LoginPageState extends State<LoginPage> {
       child: MaterialButton(
         minWidth: MediaQuery.of(context).size.width,
         padding: EdgeInsets.fromLTRB(15.0, 0, 15.0, 0),
-        onPressed: () {},
+        onPressed: () => _signup(context),
         child: Text("Sign up.",
             textAlign: TextAlign.center,
             style: style.copyWith(
@@ -226,24 +271,31 @@ class _LoginPageState extends State<LoginPage> {
                   ),
                   Text("Rapid service", style: TextStyle(fontFamily: "Futura", fontSize: 25, color: Colors.white)),
                   SizedBox(height: 45.0, width: 20),
-                  Container(
-                    width: 300,
-                    child: userNameField,
-                  ),
-                  SizedBox(height: 25.0),
-                  Container(
-                    width: 300,
-                    child: passwordField,
-                  ),
-                  SizedBox(
-                    height: 35.0,
-                  ),
-                  Container(
-                    width: 150,
-                    child: loginButton,
-                  ),
-                  SizedBox(
-                    height: 20.0,
+                  Form(
+                    key: _loginKey,
+                    child: Column(
+                      children: <Widget> [
+                        Container(
+                          width: 300,
+                          child: userNameField,
+                        ),
+                        SizedBox(height: 25.0),
+                        Container(
+                          width: 300,
+                          child: passwordField,
+                        ),
+                        SizedBox(
+                          height: 35.0,
+                        ),
+                        Container(
+                          width: 150,
+                          child: loginButton,
+                        ),
+                        SizedBox(
+                          height: 20.0,
+                        ),
+                      ],
+                    )
                   ),
                   Text("Don't have an account?", style: TextStyle(fontFamily: "Futura", fontSize: 20, color: Colors.white)),
                   Container(

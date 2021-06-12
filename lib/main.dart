@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:vors_project/login_page.dart';
 import 'package:vors_project/restaurant_page.dart';
+import 'package:vors_project/signup_page.dart';
 import 'package:vors_project/user_page.dart';
 
 void main() => runApp(MyApp());
@@ -20,6 +21,7 @@ class MyApp extends StatelessWidget {
         "/logout": (_) => new LoginPage(),
         "/login": (_) => new RestaurantPage(),
         "/user": (_) => new UserPage(),
+        "/signup": (_) => new SignupPage(),
       },
     );
   }
