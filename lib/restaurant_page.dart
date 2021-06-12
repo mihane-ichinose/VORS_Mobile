@@ -15,7 +15,7 @@ class _RestaurantPageState extends State<RestaurantPage> {
   }
 
   TextStyle style = TextStyle(
-    fontFamily: 'Futura.bold',
+    fontFamily: 'Futura',
     color: Colors.white,
     fontSize: 26,
   );
