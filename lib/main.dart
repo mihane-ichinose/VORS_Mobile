@@ -16,12 +16,12 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         fontFamily: "Futura.bold",
       ),
-      home: LoginPage(),
+      home: LoginPage(0, ""),
       routes: {
-        "/logout": (_) => new LoginPage(),
-        "/login": (_) => new RestaurantPage(),
-        "/user": (_) => new UserPage(),
-        "/signup": (_) => new SignupPage(),
+        "/logout": (context) => new LoginPage(0, ""),
+        "/login": (context) => new RestaurantPage(0, ""),
+        "/user": (context) => new UserPage(),
+        "/signup": (context) => new SignupPage(0, ""),
       },
     );
   }

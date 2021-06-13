@@ -1,15 +1,23 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+// import 'package:vors_project/login_page.dart';
+// Debug only.
+import 'package:vors_project/signup_page.dart';
 
 class RestaurantPage extends StatefulWidget {
+  final int customerId;
+  final String username;
+
+  RestaurantPage(this.customerId, this.username);
+
   @override
   _RestaurantPageState createState() => _RestaurantPageState();
 }
 
 class _RestaurantPageState extends State<RestaurantPage> {
-  Future<bool> _goToUser(BuildContext context) {
+  Future<bool> _goToUser(BuildContext context, RestaurantPage restaurantPage) {
     return Navigator.of(context)
-        .pushNamed('/user')
+        .pushNamed('/user', arguments: restaurantPage)
     // We want to pop the user profile here.
         .then((_) => false);
   }
@@ -20,13 +28,13 @@ class _RestaurantPageState extends State<RestaurantPage> {
     fontSize: 26,
   );
 
-  AppBar _buildAppBar() {
+  AppBar _buildAppBar(args) {
 
     final userBtn = IconButton(
       icon: const Icon(FontAwesomeIcons.user),
       color: Colors.black,
       tooltip: "User Profile",
-      onPressed: () => _goToUser(context),
+      onPressed: () => _goToUser(context, new RestaurantPage(args.customerId, args.username)),
     );
 
     final searchField = TextField(
@@ -58,17 +66,21 @@ class _RestaurantPageState extends State<RestaurantPage> {
     );
   }
 
-  Widget _buildHeader() {
+  Widget _buildHeader(args) {
     // TODO: Need the restaurant list here.
     return Container();
   }
 
   @override
   Widget build(BuildContext context) {
+
+    final args = ModalRoute.of(context)!.settings.arguments as SignupPage;
+    // Debug only, here it should be LoginPage.
+
     return Scaffold(
       backgroundColor: Colors.white,
-      appBar: _buildAppBar(),
-      body: _buildHeader(),
+      appBar: _buildAppBar(args),
+      body: _buildHeader(args),
     );
   }
 }

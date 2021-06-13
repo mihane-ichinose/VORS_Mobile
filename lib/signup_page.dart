@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 
 class SignupPage extends StatefulWidget {
-  //LoginPage({Key? key, Title? title}) : super(key: key);
+  final int customerId;
+  final String username;
+
+  SignupPage(this.customerId, this.username);
 
   @override
   _SignupPageState createState() => _SignupPageState();
@@ -10,10 +13,12 @@ class SignupPage extends StatefulWidget {
 class _SignupPageState extends State<SignupPage> {
 
   Future<bool> _gotoRestaurant(BuildContext context) {
+    SignupPage signupPage = new SignupPage(1, "Shitian Jin"); // Debug only.
     return Navigator.of(context)
-        .pushNamedAndRemoveUntil('/login', (Route<dynamic> route) => false)
+        .pushNamedAndRemoveUntil('/login', (Route<dynamic> route) => false,
+    arguments: signupPage).then((_) => false);
     // We will clean all existing routes when login.
-        .then((_) => false);
+
   }
 
   Future<bool> _gotoLogin(BuildContext context) {

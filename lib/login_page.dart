@@ -2,15 +2,16 @@ import 'package:flutter/material.dart';
 import 'package:vors_project/users.dart';
 
 class LoginPage extends StatefulWidget {
-  LoginPage({Key? key, Title? title}) : super(key: key);
+  final int customerId;
+  final String username;
+
+  LoginPage(this.customerId, this.username);
 
   @override
   _LoginPageState createState() => _LoginPageState();
 }
 
 class _LoginPageState extends State<LoginPage> {
-
-
 
   final _loginKey = GlobalKey<FormState>();
 
@@ -48,11 +49,12 @@ class _LoginPageState extends State<LoginPage> {
     awaitUsers(usernameController.text, passwordController.text);
   }
 
-  Future<bool> _gotoRestaurant(BuildContext context) {
+  Future<Object?> _gotoRestaurant(BuildContext context, LoginPage loginPage) {
     return Navigator.of(context)
-        .pushNamedAndRemoveUntil('/login', (Route<dynamic> route) => false)
-    // We will clean all existing routes when login.
-        .then((_) => false);
+        .pushNamedAndRemoveUntil('/login', (Route<dynamic> route) => false,
+        arguments: loginPage).then((_) => false);
+    // We will clean all existing routes and pass in customerId when login.
+
   }
 
   Future<bool> _signup(BuildContext context) {
@@ -213,7 +215,8 @@ class _LoginPageState extends State<LoginPage> {
               // go to the restaurant page.
               //userNotExists = passwordMismatch =
               userEmpty = passwordEmpty = true;
-              _gotoRestaurant(context);
+              LoginPage loginPage = new LoginPage(user.getCustomerId(), usernameController.text);
+              _gotoRestaurant(context, loginPage);
             } else if (userEmpty) {
               ScaffoldMessenger.of(context).showSnackBar(
                 SnackBar(
