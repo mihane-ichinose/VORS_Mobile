@@ -50,7 +50,7 @@ class _SignupPageState extends State<SignupPage> {
         hintText: "Username",
         hintStyle: TextStyle(
           fontFamily: 'Futura',
-          color: Colors.white,
+          color: Colors.white.withOpacity(0.8),
         ),
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(32.0),
@@ -70,7 +70,7 @@ class _SignupPageState extends State<SignupPage> {
         hintText: "Password",
         hintStyle: TextStyle(
           fontFamily: 'Futura',
-          color: Colors.white,
+          color: Colors.white.withOpacity(0.8),
         ),
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(32.0),
@@ -90,7 +90,7 @@ class _SignupPageState extends State<SignupPage> {
         hintText: "Confirm password",
         hintStyle: TextStyle(
           fontFamily: 'Futura',
-          color: Colors.white,
+          color: Colors.white.withOpacity(0.8),
         ),
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(32.0),
