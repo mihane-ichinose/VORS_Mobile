@@ -12,8 +12,10 @@ class SignupPage extends StatefulWidget {
 
 class _SignupPageState extends State<SignupPage> {
 
+  final usernameController = TextEditingController();
+
   Future<bool> _gotoRestaurant(BuildContext context) {
-    SignupPage signupPage = new SignupPage(1, "Shitian Jin"); // Debug only.
+    SignupPage signupPage = new SignupPage(1, usernameController.text); // Debug only.
     return Navigator.of(context)
         .pushNamedAndRemoveUntil('/login', (Route<dynamic> route) => false,
     arguments: signupPage).then((_) => false);
@@ -38,6 +40,7 @@ class _SignupPageState extends State<SignupPage> {
   Widget build(BuildContext context) {
 
     final userNameField = TextField(
+      controller: usernameController,
       obscureText: false,
       style: style,
       decoration: InputDecoration(
