@@ -313,7 +313,7 @@ class _LoginPageState extends State<LoginPage> {
                   SizedBox(
                     height: 10.0,
                   ),
-                  Text("Virtual ordering", style: TextStyle(fontFamily: "Futura", fontSize: 25, color: Colors.white)),
+                  Text("Virtual Ordering", style: TextStyle(fontFamily: "Futura", fontSize: 25, color: Colors.white)),
                   SizedBox(
                     height: 10.0,
                   ),
@@ -321,7 +321,7 @@ class _LoginPageState extends State<LoginPage> {
                   SizedBox(
                     height: 10.0,
                   ),
-                  Text("Rapid service", style: TextStyle(fontFamily: "Futura", fontSize: 25, color: Colors.white)),
+                  Text("Rapid Service", style: TextStyle(fontFamily: "Futura", fontSize: 25, color: Colors.white)),
                   SizedBox(height: 45.0, width: 20),
                   Form(
                     key: _loginKey,
