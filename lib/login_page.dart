@@ -194,22 +194,10 @@ class _LoginPageState extends State<LoginPage> {
         onPressed: () {
           credential = usernameController.text;
           password = passwordController.text;
-          fetchAuthentication(credential, password);
-          if (connectionFailed) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                content: Text('Error: Connection failed.'),
-                backgroundColor: Colors.deepOrange,
-                action: SnackBarAction(
-                  label: "GOT IT",
-                  textColor: Colors.white,
-                  onPressed: () {
-                    ScaffoldMessenger.of(context).hideCurrentSnackBar();
-                  },
-                ),
-              ),
-            );
-          } else {
+          awaitUsers(credential, password);
+          if (connectionFailed) return;
+          // Connection failed message has the highest priority.
+          else {
             if (_loginKey.currentState!.validate() && user.getAuthentication()) {
               // If both forms are valid and server is authenticated,
               // go to the restaurant page.
