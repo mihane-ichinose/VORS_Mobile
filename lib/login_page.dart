@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:vors_project/users.dart';
 
 class LoginPage extends StatefulWidget {
-  //LoginPage({Key? key, Title? title}) : super(key: key);
+  LoginPage({Key? key, Title? title}) : super(key: key);
 
   @override
   _LoginPageState createState() => _LoginPageState();
@@ -10,10 +10,43 @@ class LoginPage extends StatefulWidget {
 
 class _LoginPageState extends State<LoginPage> {
 
+
+
   final _loginKey = GlobalKey<FormState>();
 
   final usernameController = TextEditingController();
   final passwordController = TextEditingController();
+
+  late User user;
+  late bool connectionFailed = false;
+
+  void awaitUsers(String credential, String password) async {
+    try {
+      user = await fetchAuthentication(credential, password);
+      connectionFailed = false;
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Error: Connection failed.'),
+          backgroundColor: Colors.deepOrange,
+          action: SnackBarAction(
+            label: "GOT IT",
+            textColor: Colors.white,
+            onPressed: () {
+              ScaffoldMessenger.of(context).hideCurrentSnackBar();
+            },
+          ),
+        ),
+      );
+      connectionFailed = true;
+    }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    awaitUsers(usernameController.text, passwordController.text);
+  }
 
   Future<bool> _gotoRestaurant(BuildContext context) {
     return Navigator.of(context)
@@ -38,31 +71,49 @@ class _LoginPageState extends State<LoginPage> {
   @override
   Widget build(BuildContext context) {
 
+    String credential = "";
+    String password = "";
+
     bool userEmpty = false;
-    bool userNotExists = false;
-    bool passwordMismatch = false;
     bool passwordEmpty = false;
 
     final userNameField = TextFormField(
       validator: (value) {
+
+        if (connectionFailed) {
+          return ''; // Connection failed.
+        }
+
         if (value == null || value.isEmpty) {
           userEmpty = true;
           return ''; // Username empty.
         } else {
           userEmpty = false;
         }
-        if (!mockUsers.containsKey(value)) {
-          userNotExists = true;
-          return ''; // User not exists
-        } else {
-          userNotExists = false;
-        }
-        if (mockUsers[value] != passwordController.text) {
-          passwordMismatch = true;
-          return ''; // Password does not match
-        } else {
-          passwordMismatch = false;
-        }
+
+        // if (!mockUsers.containsKey(value)) {
+        //   userNotExists = true;
+        //   return ''; // User not exists
+        // } else {
+        //   userNotExists = false;
+        // }
+
+        // for(User u in _listUsers) {
+        //   if (u.getUsername() == value || u.getEmail() == value) {
+        //     currentUser = u;
+        //     currentUsername = u.getUsername();
+        //     break;
+        //   } else {
+        //     userNotExists = true;
+        //   }
+        // }
+
+        // if (currentUser.getPassword() != passwordController.text) {
+        //   passwordMismatch = true;
+        //   return ''; // Password does not match
+        // } else {
+        //   passwordMismatch = false;
+        // }
         return null;
       },
       controller: usernameController,
@@ -92,6 +143,10 @@ class _LoginPageState extends State<LoginPage> {
 
     final passwordField = TextFormField(
       validator: (value) {
+        if (connectionFailed) {
+          return ''; // Connection failed.
+        }
+
         if (value == null || value.isEmpty){
           passwordEmpty = true;
           return ''; // The password is empty.
@@ -126,6 +181,8 @@ class _LoginPageState extends State<LoginPage> {
       ),
     );
 
+
+
     final loginButton = Material(
       borderRadius: BorderRadius.circular(30.0),
       color: Colors.white,
@@ -133,13 +190,31 @@ class _LoginPageState extends State<LoginPage> {
         minWidth: MediaQuery.of(context).size.width,
         padding: EdgeInsets.all(15.0),
         onPressed: () {
-          if (_loginKey.currentState!.validate()) {
-            // If both forms are valid, displays a snackbar.
-
-            userNotExists = passwordMismatch = passwordEmpty = true;
-            _gotoRestaurant(context);
-            } else {
-            if (userEmpty) {
+          if (connectionFailed) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text('Error: Connection failed.'),
+                backgroundColor: Colors.deepOrange,
+                action: SnackBarAction(
+                  label: "GOT IT",
+                  textColor: Colors.white,
+                  onPressed: () {
+                    ScaffoldMessenger.of(context).hideCurrentSnackBar();
+                  },
+                ),
+              ),
+            );
+          } else {
+            credential = usernameController.text;
+            password = passwordController.text;
+            fetchAuthentication(credential, password);
+            if (_loginKey.currentState!.validate() && user.getAuthentication()) {
+              // If both forms are valid and server is authenticated,
+              // go to the restaurant page.
+              //userNotExists = passwordMismatch =
+              userEmpty = passwordEmpty = true;
+              _gotoRestaurant(context);
+            } else if (userEmpty) {
               ScaffoldMessenger.of(context).showSnackBar(
                 SnackBar(
                   content: Text('Please enter your username.'),
@@ -153,10 +228,10 @@ class _LoginPageState extends State<LoginPage> {
                   ),
                 ),
               );
-            } else if (userNotExists) {
+            } else if (!user.getAuthentication()) {
               ScaffoldMessenger.of(context).showSnackBar(
                 SnackBar(
-                  content: Text('Username does not exist.'),
+                  content: Text('Please check your username and password.'),
                   backgroundColor: Colors.deepOrange,
                   action: SnackBarAction(
                     label: "GOT IT",
@@ -167,24 +242,10 @@ class _LoginPageState extends State<LoginPage> {
                   ),
                 ),
               );
-            } else if (passwordEmpty) {
+            } else if (passwordEmpty) { // else
               ScaffoldMessenger.of(context).showSnackBar(
                 SnackBar(
-                  content: Text('Password is empty.'),
-                  backgroundColor: Colors.deepOrange,
-                  action: SnackBarAction(
-                    label: "GOT IT",
-                    textColor: Colors.white,
-                    onPressed: () {
-                      ScaffoldMessenger.of(context).hideCurrentSnackBar();
-                    },
-                  ),
-                ),
-              );
-            } else {
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(
-                  content: Text('Please check your password.'),
+                  content: Text('Please enter your password.'),
                   backgroundColor: Colors.deepOrange,
                   action: SnackBarAction(
                     label: "GOT IT",
