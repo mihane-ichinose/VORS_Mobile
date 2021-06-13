@@ -192,6 +192,9 @@ class _LoginPageState extends State<LoginPage> {
         minWidth: MediaQuery.of(context).size.width,
         padding: EdgeInsets.all(15.0),
         onPressed: () {
+          credential = usernameController.text;
+          password = passwordController.text;
+          fetchAuthentication(credential, password);
           if (connectionFailed) {
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(
@@ -207,9 +210,6 @@ class _LoginPageState extends State<LoginPage> {
               ),
             );
           } else {
-            credential = usernameController.text;
-            password = passwordController.text;
-            fetchAuthentication(credential, password);
             if (_loginKey.currentState!.validate() && user.getAuthentication()) {
               // If both forms are valid and server is authenticated,
               // go to the restaurant page.
