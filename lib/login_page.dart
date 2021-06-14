@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:vors_project/users.dart';
+import 'package:vors_project/util/users.dart';
 import 'package:vors_project/util/home_page_items.dart';
 
 class LoginPage extends StatefulWidget {
@@ -22,7 +22,7 @@ class _LoginPageState extends State<LoginPage> {
   User user = User(customerId: -1, name: "", email: "");
   bool connectionFailed = false;
 
-  Future<void> awaitUsers(String credential, String password) async {
+  Future<void> authenticateUser(String credential, String password) async {
     try {
 
       user =  await fetchAuthentication(credential, password);
@@ -104,7 +104,7 @@ class _LoginPageState extends State<LoginPage> {
             return;
           }
 
-          awaitUsers(credential, password).then((value) {
+          authenticateUser(credential, password).then((value) {
           if (connectionFailed) return;
           // Connection failed message has the highest priority.
           else {

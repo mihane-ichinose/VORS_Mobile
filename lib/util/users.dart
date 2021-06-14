@@ -3,12 +3,8 @@ import 'dart:convert';
 import 'package:crypto/crypto.dart';
 import 'package:http/http.dart' as http;
 
-const mockUsers = {
-  'sj4918@ic.ac.uk': '12345',
-  '@.com': '.',
-}; // Debug only.
-
 const verifyUrl = 'http://84.238.224.41:5005/customer/verify';
+const registerUrl = 'http://84.238.224.41:5005/customer/register';
 
 Future<User> fetchAuthentication(String credential, String password) async {
 
@@ -16,19 +12,11 @@ Future<User> fetchAuthentication(String credential, String password) async {
 
   String passwordHash = sha256.convert(bytes).toString();
 
-  print(passwordHash);
-
-
-
   final response = await http.get(
     Uri.parse(verifyUrl + "?usernameOrEmail="
               + credential + "&passwordHash=" + passwordHash),
     headers: {},
   );
-
-
-  print(response.body);
-
 
   if (response.statusCode == 200) {
     // If the server did return a 200 OK response,
@@ -41,6 +29,34 @@ Future<User> fetchAuthentication(String credential, String password) async {
     print("Connection failed.");
     throw Exception('Connection failed.');
   }
+}
+
+Future<String> fetchNewCustomer(String username, String email, String password) async {
+
+
+  final response = await http.get(
+    Uri.parse(registerUrl + "?name="
+        + username + "&email=" + email + "&password=" + password),
+    headers: {},
+  );
+
+  print(response.body);
+
+  if (response.statusCode == 200) {
+    // If the server did return a 200 OK response,
+    // then parse the user details
+    print("Connection established.");
+    return response.body;
+  } else {
+    // If the server did not return a 200 OK response,
+    // then throw an exception.
+    print("Connection failed.");
+    throw Exception('Connection failed.');
+  }
+}
+
+bool isEmailValid(String email) {
+  return true;
 }
 
 class User {

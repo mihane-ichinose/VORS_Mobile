@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:vors_project/util/home_page_items.dart';
+import 'package:vors_project/util/users.dart';
 
 class SignupPage extends StatefulWidget {
   final int customerId;
@@ -14,6 +15,28 @@ class SignupPage extends StatefulWidget {
 class _SignupPageState extends State<SignupPage> {
 
   final usernameController = TextEditingController();
+
+  bool connectionFailed = false;
+  bool usernameFree = true;
+  bool emailFree = true;
+
+  Future<void> registerUser(String name, String email, String password) async {
+    try {
+      String result = await fetchNewCustomer(name, email, password);
+      if (result == "1") {
+        usernameFree = false;
+      } else if (result == "2") {
+        emailFree = false;
+      }
+      connectionFailed = false;
+    } catch (e) {
+      print(e.toString());
+      ScaffoldMessenger.of(context).showSnackBar(
+        DefaultSnackBar().withText('Error: Connection failed.', context),
+      );
+      connectionFailed = true;
+    }
+  }
 
   Future<bool> _gotoRestaurant(BuildContext context) {
     SignupPage signupPage = new SignupPage(1, usernameController.text); // Debug only.
@@ -45,6 +68,11 @@ class _SignupPageState extends State<SignupPage> {
         .withText("Username")
         .build();
 
+    final emailField = DefaultSignUpTextField()
+        .withStyle(style)
+        .withText("Email")
+        .build();
+
     final passwordField = DefaultSignUpTextField()
         .withStyle(style)
         .withText("Password")
@@ -62,7 +90,69 @@ class _SignupPageState extends State<SignupPage> {
         minWidth: MediaQuery.of(context).size.width,
         padding: EdgeInsets.all(15.0),
         onPressed: () {
-          _gotoLogin(context);
+          String name = userNameField.controller!.text;
+          String email = emailField.controller!.text;
+          String password = passwordField.controller!.text;
+          String confirmedPassword = confirmPasswordField.controller!.text;
+
+          if (name.isEmpty) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              DefaultSnackBar().withText('Please enter your username.', context),
+            );
+            return;
+          } else if (email.isEmpty) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              DefaultSnackBar().withText(
+                  'Please enter your email.', context),
+            );
+            return;
+          } else if (!isEmailValid(email)) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              DefaultSnackBar().withText(
+                  'Please enter a real email.', context),
+            );
+            return;
+          } else if (password.isEmpty) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              DefaultSnackBar().withText(
+                  'Please enter your password.', context),
+            );
+            return;
+          } else if (confirmedPassword.isEmpty) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              DefaultSnackBar().withText(
+                  'Please confirm your password.', context),
+            );
+            return;
+          } else if (password != confirmedPassword) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              DefaultSnackBar().withText(
+                  'Your confirmed password doesn\'t match.', context),
+            );
+            return;
+          }
+
+          usernameFree = true;
+          emailFree = true;
+          registerUser(name, email, password).then((value) {
+            if (!usernameFree) {
+              ScaffoldMessenger.of(context).showSnackBar(
+                DefaultSnackBar().withText(
+                    'Username is already taken.', context),
+              );
+            } else if (!emailFree) {
+              ScaffoldMessenger.of(context).showSnackBar(
+                DefaultSnackBar().withText(
+                    'Email is already taken.', context),
+              );
+            } else {
+              ScaffoldMessenger.of(context).showSnackBar(
+                DefaultSnackBar().withText(
+                    'User successfully registered.', context),
+              );
+              _gotoLogin(context);
+            }
+          });
         },
         child: Text("Sign up",
           textAlign: TextAlign.center,
@@ -122,6 +212,11 @@ class _SignupPageState extends State<SignupPage> {
                   Container(
                     width: 300,
                     child: userNameField,
+                  ),
+                  SizedBox(height: 25.0),
+                  Container(
+                    width: 300,
+                    child: emailField,
                   ),
                   SizedBox(height: 25.0),
                   Container(

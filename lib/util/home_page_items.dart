@@ -5,10 +5,10 @@ class DefaultSnackBar {
   SnackBar withText(String text, BuildContext context) {
     return SnackBar(
       content: Text(text),
-      backgroundColor: Colors.deepOrange,
+      backgroundColor: Color(0xFF43F2EB),
       action: SnackBarAction(
         label: "GOT IT",
-        textColor: Colors.white,
+        textColor: Color(0xFF17B2E0),
         onPressed: () {
           ScaffoldMessenger.of(context).hideCurrentSnackBar();
         },
@@ -33,6 +33,7 @@ class DefaultSignUpTextField {
 
   TextField build() {
     return TextField(
+      controller: TextEditingController(),
       obscureText: false,
       style: this.style,
       decoration: InputDecoration(
