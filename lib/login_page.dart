@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:vors_project/users.dart';
+import 'package:vors_project/util/home_page_items.dart';
 
 class LoginPage extends StatefulWidget {
   final int customerId;
@@ -27,17 +28,7 @@ class _LoginPageState extends State<LoginPage> {
       connectionFailed = false;
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text('Error: Connection failed.'),
-          backgroundColor: Colors.deepOrange,
-          action: SnackBarAction(
-            label: "GOT IT",
-            textColor: Colors.white,
-            onPressed: () {
-              ScaffoldMessenger.of(context).hideCurrentSnackBar();
-            },
-          ),
-        ),
+        DefaultSnackBar().withText('Error: Connection failed.', context),
       );
       connectionFailed = true;
     }
@@ -79,110 +70,71 @@ class _LoginPageState extends State<LoginPage> {
     bool userEmpty = false;
     bool passwordEmpty = false;
 
-    final userNameField = TextFormField(
-      validator: (value) {
+    final userNameField = DefaultLoginTextFormField()
+        .withText("Username")
+        .withController(usernameController)
+        .withStyle(style)
+        .build();
 
-        if (connectionFailed) {
-          return ''; // Connection failed.
-        }
+      // validator: (value) {
+      //
+      //   if (connectionFailed) {
+      //     return ''; // Connection failed.
+      //   }
+      //
+      //   if (value == null || value.isEmpty) {
+      //     userEmpty = true;
+      //     return ''; // Username empty.
+      //   } else {
+      //     userEmpty = false;
+      //   }
+      //
+      //   // if (!mockUsers.containsKey(value)) {
+      //   //   userNotExists = true;
+      //   //   return ''; // User not exists
+      //   // } else {
+      //   //   userNotExists = false;
+      //   // }
+      //
+      //   // for(User u in _listUsers) {
+      //   //   if (u.getUsername() == value || u.getEmail() == value) {
+      //   //     currentUser = u;
+      //   //     currentUsername = u.getUsername();
+      //   //     break;
+      //   //   } else {
+      //   //     userNotExists = true;
+      //   //   }
+      //   // }
+      //
+      //   // if (currentUser.getPassword() != passwordController.text) {
+      //   //   passwordMismatch = true;
+      //   //   return ''; // Password does not match
+      //   // } else {
+      //   //   passwordMismatch = false;
+      //   // }
+      //   return null;
+      // },
 
-        if (value == null || value.isEmpty) {
-          userEmpty = true;
-          return ''; // Username empty.
-        } else {
-          userEmpty = false;
-        }
 
-        // if (!mockUsers.containsKey(value)) {
-        //   userNotExists = true;
-        //   return ''; // User not exists
-        // } else {
-        //   userNotExists = false;
-        // }
-
-        // for(User u in _listUsers) {
-        //   if (u.getUsername() == value || u.getEmail() == value) {
-        //     currentUser = u;
-        //     currentUsername = u.getUsername();
-        //     break;
-        //   } else {
-        //     userNotExists = true;
-        //   }
-        // }
-
-        // if (currentUser.getPassword() != passwordController.text) {
-        //   passwordMismatch = true;
-        //   return ''; // Password does not match
-        // } else {
-        //   passwordMismatch = false;
-        // }
-        return null;
-      },
-      controller: usernameController,
-      obscureText: false,
-      style: style,
-      decoration: InputDecoration(
-        errorMaxLines: 1,
-        errorText: 'Null',
-        errorStyle: TextStyle(
-          color: Colors.transparent,
-          fontSize: 0,
-        ),
-        filled: true,
-        fillColor: Color(0xFF43F2EB),
-        contentPadding: EdgeInsets.all(15.0),
-        hintText: "Username",
-        hintStyle: TextStyle(
-          fontFamily: 'Futura',
-          color: Colors.white.withOpacity(0.8),
-        ),
-        border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(32.0),
-          borderSide: BorderSide.none,
-        ),
-      ),
-    );
-
-    final passwordField = TextFormField(
-      validator: (value) {
-        if (connectionFailed) {
-          return ''; // Connection failed.
-        }
-
-        if (value == null || value.isEmpty){
-          passwordEmpty = true;
-          return ''; // The password is empty.
-        } else {
-          passwordEmpty = false;
-        }
-        return null;
-      },
-      controller: passwordController,
-      obscureText: true,
-      // The obscured word seems not supportable by font Futura.
-      style: TextStyle(color: Colors.white, fontSize: 26),
-      decoration: InputDecoration(
-        errorMaxLines: 1,
-        errorText: 'Null',
-        errorStyle: TextStyle(
-          color: Colors.transparent,
-          fontSize: 0,
-        ),
-        filled: true,
-        fillColor: Color(0xFF43F2EB),
-        contentPadding: EdgeInsets.all(15.0),
-        hintText: "Password",
-        hintStyle: TextStyle(
-          fontFamily: 'Futura',
-          color: Colors.white.withOpacity(0.8),
-        ),
-        border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(32.0),
-          borderSide: BorderSide.none,
-        ),
-      ),
-    );
-
+    final passwordField = DefaultLoginTextFormField()
+        .withStyle(style)
+        .withController(passwordController)
+        .withText("Password")
+        .build();
+    // TextFormField(
+    //   // validator: (value) {
+    //   //   if (connectionFailed) {
+    //   //     return ''; // Connection failed.
+    //   //   }
+    //   //
+    //   //   if (value == null || value.isEmpty){
+    //   //     passwordEmpty = true;
+    //   //     return ''; // The password is empty.
+    //   //   } else {
+    //   //     passwordEmpty = false;
+    //   //   }
+    //   //   return null;
+    //   // },
 
 
     final loginButton = Material(
@@ -207,45 +159,15 @@ class _LoginPageState extends State<LoginPage> {
               _gotoRestaurant(context, loginPage);
             } else if (userEmpty) {
               ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(
-                  content: Text('Please enter your username.'),
-                  backgroundColor: Colors.deepOrange,
-                  action: SnackBarAction(
-                    label: "GOT IT",
-                    textColor: Colors.white,
-                    onPressed: () {
-                      ScaffoldMessenger.of(context).hideCurrentSnackBar();
-                    },
-                  ),
-                ),
+                DefaultSnackBar().withText('Please enter your username.', context),
               );
             } else if (!user.getAuthentication()) {
               ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(
-                  content: Text('Please check your username and password.'),
-                  backgroundColor: Colors.deepOrange,
-                  action: SnackBarAction(
-                    label: "GOT IT",
-                    textColor: Colors.white,
-                    onPressed: () {
-                      ScaffoldMessenger.of(context).hideCurrentSnackBar();
-                    },
-                  ),
-                ),
+                DefaultSnackBar().withText('Please check your username and password.', context),
               );
             } else if (passwordEmpty) { // else
               ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(
-                  content: Text('Please enter your password.'),
-                  backgroundColor: Colors.deepOrange,
-                  action: SnackBarAction(
-                    label: "GOT IT",
-                    textColor: Colors.white,
-                    onPressed: () {
-                      ScaffoldMessenger.of(context).hideCurrentSnackBar();
-                    },
-                  ),
-                ),
+                DefaultSnackBar().withText('Please enter your password.', context),
               );
             }
           }

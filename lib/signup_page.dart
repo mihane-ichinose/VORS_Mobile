@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:vors_project/util/home_page_items.dart';
 
 class SignupPage extends StatefulWidget {
   final int customerId;
@@ -39,65 +40,20 @@ class _SignupPageState extends State<SignupPage> {
   @override
   Widget build(BuildContext context) {
 
-    final userNameField = TextField(
-      controller: usernameController,
-      obscureText: false,
-      style: style,
-      decoration: InputDecoration(
-        filled: true,
-        fillColor: Color(0xFF43F2EB),
-        contentPadding: EdgeInsets.all(15.0),
-        hintText: "Username",
-        hintStyle: TextStyle(
-          fontFamily: 'Futura',
-          color: Colors.white.withOpacity(0.8),
-        ),
-        border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(32.0),
-          borderSide: BorderSide.none,
-        ),
-      ),
-    );
+    final userNameField = DefaultSignUpTextField()
+        .withStyle(style)
+        .withText("Username")
+        .build();
 
-    final passwordField = TextField(
-      obscureText: true,
-      // The obscured word seems not supportable by font Futura.
-      style: TextStyle(color: Colors.white, fontSize: 26),
-      decoration: InputDecoration(
-        filled: true,
-        fillColor: Color(0xFF43F2EB),
-        contentPadding: EdgeInsets.all(15.0),
-        hintText: "Password",
-        hintStyle: TextStyle(
-          fontFamily: 'Futura',
-          color: Colors.white.withOpacity(0.8),
-        ),
-        border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(32.0),
-          borderSide: BorderSide.none,
-        ),
-      ),
-    );
+    final passwordField = DefaultSignUpTextField()
+        .withStyle(style)
+        .withText("Password")
+        .build();
 
-    final confirmPasswordField = TextField(
-      obscureText: true,
-      // The obscured word seems not supportable by font Futura.
-      style: TextStyle(color: Colors.white, fontSize: 26),
-      decoration: InputDecoration(
-        filled: true,
-        fillColor: Color(0xFF43F2EB),
-        contentPadding: EdgeInsets.all(15.0),
-        hintText: "Confirm password",
-        hintStyle: TextStyle(
-          fontFamily: 'Futura',
-          color: Colors.white.withOpacity(0.8),
-        ),
-        border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(32.0),
-          borderSide: BorderSide.none,
-        ),
-      ),
-    );
+    final confirmPasswordField = DefaultSignUpTextField()
+        .withStyle(style)
+        .withText("Confirm password")
+        .build();
 
     final signupButton = Material(
       borderRadius: BorderRadius.circular(30.0),
