@@ -206,7 +206,7 @@ class _LoginPageState extends State<LoginPage> {
         minWidth: MediaQuery.of(context).size.width,
         padding: EdgeInsets.fromLTRB(15.0, 0, 15.0, 0),
         onPressed: () {},
-        child: Text("here.",
+        child: Text("Click here.",
             textAlign: TextAlign.center,
             style: style.copyWith(
               color: Color(0xFF43F2EB),
@@ -286,11 +286,8 @@ class _LoginPageState extends State<LoginPage> {
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: <Widget>[
                           Center(
-                            child: Text("Click ", style: TextStyle(fontFamily: "Futura", fontSize: 15, color: Colors.white)),
-                          ),
-                          Center(
                             child: Container(
-                              width: 70,
+                              width: 100,
                               child: forgotButton,
                             ),
                           ),
