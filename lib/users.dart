@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
-import 'dart:io';
-
+import 'package:crypto/crypto.dart';
 import 'package:http/http.dart' as http;
 
 const mockUsers = {
@@ -9,22 +8,33 @@ const mockUsers = {
   '@.com': '.',
 }; // Debug only.
 
-const url = 'https://jsonplaceholder.typicode.com/Userss/1';
+const verifyUrl = 'http://84.238.224.41:5005/customer/verify';
 
 Future<User> fetchAuthentication(String credential, String password) async {
+
+  var bytes = utf8.encode(password);
+
+  String passwordHash = sha256.convert(bytes).toString();
+
+  print(passwordHash);
+
+
+
   final response = await http.get(
-    Uri.parse(url),
-    headers: {
-      HttpHeaders.authorizationHeader: 'Basic your_api_token_here',
-    },
+    Uri.parse(verifyUrl + "?usernameOrEmail="
+              + credential + "&passwordHash=" + passwordHash),
+    headers: {},
   );
+
+
+  print(response.body);
+
 
   if (response.statusCode == 200) {
     // If the server did return a 200 OK response,
-    // then parse the JSON.
-    var responseJson = json.decode(response.body);
+    // then parse the user details
     print("Connection established.");
-    return responseJson[''][''][''].map((p) => User.fromJson(p));
+    return User.fromString(response.body);
   } else {
     // If the server did not return a 200 OK response,
     // then throw an exception.
@@ -33,47 +43,35 @@ Future<User> fetchAuthentication(String credential, String password) async {
   }
 }
 
-Future<User> updateUsers(bool isAuthenticated, int customerId) async {
-  final response = await http.put(
-    Uri.parse(url),
-    headers: <String, String>{
-      'Content-Type': 'application/json; charset=UTF-8',
-    },
-    body: jsonEncode(<String, dynamic>{
-      'isAuthenticated': isAuthenticated,
-      'customerId': customerId,
-    }),
-  );
-
-  if (response.statusCode == 200) {
-    // If the server did return a 200 OK response,
-    // then parse the JSON.
-    return User.fromJson(jsonDecode(response.body));
-  } else {
-    // If the server did not return a 200 OK response,
-    // then throw an exception.
-    throw Exception('Failed to update Users.');
-  }
-}
-
 class User {
-  final bool isAuthenticated;
   final int customerId;
+  final String name;
+  final String email;
+
 
   User({
-    required this.isAuthenticated,
     required this.customerId,
+    required this.name,
+    required this.email
   });
 
-  factory User.fromJson(Map<String, dynamic> json) {
-    return User(
-      isAuthenticated: json['isAuthenticated'],
-      customerId: json['customerId'],
-    );
-  }
 
-  bool getAuthentication() {
-    return this.isAuthenticated;
+  // Details are of format "<id>,<name>,<email>" or just "-1"
+  factory User.fromString(String userDetails) {
+    var details = userDetails.split(",");
+    int id = int.parse(details.elementAt(0));
+    String name = "";
+    String email = "";
+
+    if (id != -1) {
+      name = details.elementAt(1);
+      email = details.elementAt(2);
+    }
+    return User(
+      customerId: id,
+      name: name,
+      email: email
+    );
   }
 
   int getCustomerId() {

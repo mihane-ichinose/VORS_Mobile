@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-// import 'package:vors_project/login_page.dart';
-// Debug only.
-import 'package:vors_project/signup_page.dart';
+
 
 class RestaurantPage extends StatefulWidget {
   final int customerId;
@@ -74,8 +72,7 @@ class _RestaurantPageState extends State<RestaurantPage> {
   @override
   Widget build(BuildContext context) {
 
-    final args = ModalRoute.of(context)!.settings.arguments as SignupPage;
-    // Debug only, here it should be LoginPage.
+    final args = ModalRoute.of(context)!.settings.arguments;
 
     return Scaffold(
       backgroundColor: Colors.white,

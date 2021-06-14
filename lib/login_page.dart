@@ -19,14 +19,16 @@ class _LoginPageState extends State<LoginPage> {
   final usernameController = TextEditingController();
   final passwordController = TextEditingController();
 
-  late User user;
-  late bool connectionFailed = false;
+  User user = User(customerId: -1, name: "", email: "");
+  bool connectionFailed = false;
 
-  void awaitUsers(String credential, String password) async {
+  Future<void> awaitUsers(String credential, String password) async {
     try {
-      user = await fetchAuthentication(credential, password);
+
+      user =  await fetchAuthentication(credential, password);
       connectionFailed = false;
     } catch (e) {
+      print(e.toString());
       ScaffoldMessenger.of(context).showSnackBar(
         DefaultSnackBar().withText('Error: Connection failed.', context),
       );
@@ -37,7 +39,6 @@ class _LoginPageState extends State<LoginPage> {
   @override
   void initState() {
     super.initState();
-    awaitUsers(usernameController.text, passwordController.text);
   }
 
   Future<Object?> _gotoRestaurant(BuildContext context, LoginPage loginPage) {
@@ -67,53 +68,11 @@ class _LoginPageState extends State<LoginPage> {
     String credential = "";
     String password = "";
 
-    bool userEmpty = false;
-    bool passwordEmpty = false;
-
     final userNameField = DefaultLoginTextFormField()
         .withText("Username")
         .withController(usernameController)
         .withStyle(style)
         .build();
-
-      // validator: (value) {
-      //
-      //   if (connectionFailed) {
-      //     return ''; // Connection failed.
-      //   }
-      //
-      //   if (value == null || value.isEmpty) {
-      //     userEmpty = true;
-      //     return ''; // Username empty.
-      //   } else {
-      //     userEmpty = false;
-      //   }
-      //
-      //   // if (!mockUsers.containsKey(value)) {
-      //   //   userNotExists = true;
-      //   //   return ''; // User not exists
-      //   // } else {
-      //   //   userNotExists = false;
-      //   // }
-      //
-      //   // for(User u in _listUsers) {
-      //   //   if (u.getUsername() == value || u.getEmail() == value) {
-      //   //     currentUser = u;
-      //   //     currentUsername = u.getUsername();
-      //   //     break;
-      //   //   } else {
-      //   //     userNotExists = true;
-      //   //   }
-      //   // }
-      //
-      //   // if (currentUser.getPassword() != passwordController.text) {
-      //   //   passwordMismatch = true;
-      //   //   return ''; // Password does not match
-      //   // } else {
-      //   //   passwordMismatch = false;
-      //   // }
-      //   return null;
-      // },
 
 
     final passwordField = DefaultLoginTextFormField()
@@ -121,21 +80,6 @@ class _LoginPageState extends State<LoginPage> {
         .withController(passwordController)
         .withText("Password")
         .build();
-    // TextFormField(
-    //   // validator: (value) {
-    //   //   if (connectionFailed) {
-    //   //     return ''; // Connection failed.
-    //   //   }
-    //   //
-    //   //   if (value == null || value.isEmpty){
-    //   //     passwordEmpty = true;
-    //   //     return ''; // The password is empty.
-    //   //   } else {
-    //   //     passwordEmpty = false;
-    //   //   }
-    //   //   return null;
-    //   // },
-
 
     final loginButton = Material(
       borderRadius: BorderRadius.circular(30.0),
@@ -146,31 +90,35 @@ class _LoginPageState extends State<LoginPage> {
         onPressed: () {
           credential = usernameController.text;
           password = passwordController.text;
-          awaitUsers(credential, password);
+
+          if (credential.isEmpty) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              DefaultSnackBar().withText('Please enter your username or email.', context),
+            );
+            return;
+          } else if (password.isEmpty) { // else
+            ScaffoldMessenger.of(context).showSnackBar(
+              DefaultSnackBar().withText(
+                  'Please enter your password.', context),
+            );
+            return;
+          }
+
+          awaitUsers(credential, password).then((value) {
           if (connectionFailed) return;
           // Connection failed message has the highest priority.
           else {
-            if (_loginKey.currentState!.validate() && user.getAuthentication()) {
+            if (user.customerId != -1) {
               // If both forms are valid and server is authenticated,
               // go to the restaurant page.
-              //userNotExists = passwordMismatch =
-              userEmpty = passwordEmpty = true;
               LoginPage loginPage = new LoginPage(user.getCustomerId(), usernameController.text);
               _gotoRestaurant(context, loginPage);
-            } else if (userEmpty) {
-              ScaffoldMessenger.of(context).showSnackBar(
-                DefaultSnackBar().withText('Please enter your username.', context),
-              );
-            } else if (!user.getAuthentication()) {
+            } else if (user.customerId == -1) {
               ScaffoldMessenger.of(context).showSnackBar(
                 DefaultSnackBar().withText('Please check your username and password.', context),
               );
-            } else if (passwordEmpty) { // else
-              ScaffoldMessenger.of(context).showSnackBar(
-                DefaultSnackBar().withText('Please enter your password.', context),
-              );
             }
-          }
+          }});
         },
         child: Text("Log in",
           textAlign: TextAlign.center,

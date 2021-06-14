@@ -61,7 +61,9 @@ class _SignupPageState extends State<SignupPage> {
       child: MaterialButton(
         minWidth: MediaQuery.of(context).size.width,
         padding: EdgeInsets.all(15.0),
-        onPressed: () => _gotoRestaurant(context),
+        onPressed: () {
+          _gotoLogin(context);
+        },
         child: Text("Sign up",
           textAlign: TextAlign.center,
           style: style.copyWith(
