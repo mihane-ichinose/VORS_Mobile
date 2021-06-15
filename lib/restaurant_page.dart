@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:vors_project/util/home_page_items.dart';
+import 'package:vors_project/util/restaurant_page_items.dart';
+import 'package:vors_project/util/restaurant.dart';
 
+final List<Restaurant> restaurants = [];
 
 class RestaurantPage extends StatefulWidget {
   final int customerId;
@@ -35,24 +39,7 @@ class _RestaurantPageState extends State<RestaurantPage> {
       onPressed: () => _goToUser(context, new RestaurantPage(args.customerId, args.username)),
     );
 
-    final searchField = TextField(
-      obscureText: false,
-      style: style,
-      decoration: InputDecoration(
-        filled: true,
-        fillColor: Color(0xFF43F2EB),
-        contentPadding: EdgeInsets.all(15.0),
-        hintText: "Search...",
-        hintStyle: TextStyle(
-          fontFamily: 'Futura',
-          color: Colors.white,
-        ),
-        border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(32.0),
-          borderSide: BorderSide.none,
-        ),
-      ),
-    );
+    final searchField = newSearchField(style);
 
     return AppBar(
       backgroundColor: Color(0xFF17B2E0),
@@ -64,9 +51,22 @@ class _RestaurantPageState extends State<RestaurantPage> {
     );
   }
 
-  Widget _buildHeader(args) {
+  Widget _buildRestaurants(args) {
     // TODO: Need the restaurant list here.
-    return Container();
+    fetchAllRestaurants(restaurants).then((value) {
+      for (Restaurant restaurant in restaurants) {
+        print(restaurant);
+      }
+    });
+    return Scaffold(
+      body: Column(
+        children: restaurants.map((restaurant) => DefaultSignUpTextField()
+        .withText(restaurant.name)
+        .withStyle(style)
+        .build())
+            .toList(),
+      ),
+    );
   }
 
   @override
@@ -77,7 +77,8 @@ class _RestaurantPageState extends State<RestaurantPage> {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: _buildAppBar(args),
-      body: _buildHeader(args),
+      // body: _buildRestaurants(args),
+      body: _buildAppBar(args),
     );
   }
 }
