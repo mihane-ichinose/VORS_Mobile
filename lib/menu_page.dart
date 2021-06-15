@@ -48,7 +48,7 @@ class _MenuPageState extends State<MenuPage> {
         hintText: "Search...",
         hintStyle: TextStyle(
           fontFamily: 'Futura',
-          color: Colors.white,
+          color: Colors.white.withOpacity(0.8),
         ),
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(32.0),
