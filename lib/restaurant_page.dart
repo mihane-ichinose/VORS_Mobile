@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:vors_project/util/home_page_items.dart';
 import 'package:vors_project/util/restaurant_page_items.dart';
 import 'package:vors_project/util/restaurant.dart';
 
-final List<Restaurant> restaurants = [];
+// List<Restaurant> restaurants = [];
 
 class RestaurantPage extends StatefulWidget {
   final int customerId;
   final String username;
+  final List<Restaurant> restaurants = [];
 
   RestaurantPage(this.customerId, this.username);
 
@@ -31,12 +31,13 @@ class _RestaurantPageState extends State<RestaurantPage> {
   );
 
   AppBar _buildAppBar(args) {
-
     final userBtn = IconButton(
       icon: const Icon(FontAwesomeIcons.user),
       color: Colors.black,
       tooltip: "User Profile",
-      onPressed: () => _goToUser(context, new RestaurantPage(args.customerId, args.username)),
+      onPressed: () =>
+          _goToUser(
+              context, new RestaurantPage(args.customerId, args.username)),
     );
 
     final searchField = newSearchField(style);
@@ -51,34 +52,37 @@ class _RestaurantPageState extends State<RestaurantPage> {
     );
   }
 
+
   Widget _buildRestaurants(args) {
-    // TODO: Need the restaurant list here.
-    fetchAllRestaurants(restaurants).then((value) {
-      for (Restaurant restaurant in restaurants) {
-        print(restaurant);
-      }
-    });
-    return Scaffold(
-      body: Column(
-        children: restaurants.map((restaurant) => DefaultSignUpTextField()
-        .withText(restaurant.name)
-        .withStyle(style)
-        .build())
-            .toList(),
-      ),
-    );
+    return restaurantsList(this.widget.restaurants);
   }
 
   @override
   Widget build(BuildContext context) {
+    final args = ModalRoute
+        .of(context)!
+        .settings
+        .arguments;
 
-    final args = ModalRoute.of(context)!.settings.arguments;
 
-    return Scaffold(
-      backgroundColor: Colors.white,
-      appBar: _buildAppBar(args),
-      // body: _buildRestaurants(args),
-      body: _buildAppBar(args),
+    var body = _buildRestaurants(args);
+
+    var result = Scaffold(
+        backgroundColor: Colors.white,
+        appBar: _buildAppBar(args),
+        body: body
     );
+
+    if (widget.restaurants.length == 0) {
+      fetchAllRestaurants(this.widget.restaurants).then((value) =>
+      {
+        setState(() {
+          body = _buildRestaurants(args);
+        })
+      });
+    }
+
+    return result;
+
   }
 }

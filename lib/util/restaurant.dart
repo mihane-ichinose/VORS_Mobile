@@ -53,8 +53,6 @@ Future<void> fetchAllRestaurants(List<Restaurant> restaurants) async {
     headers: {},
   );
 
-  print(response.body);
-
   if (response.statusCode == 200) {
     // If the server did return a 200 OK response,
     // then parse the user details
