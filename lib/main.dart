@@ -16,7 +16,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         fontFamily: "Futura.bold",
       ),
-      home: LoginPage(0, ""),
+      home: RestaurantPage(0, ""),
       routes: {
         "/logout": (context) => new LoginPage(0, ""),
         "/login": (context) => new RestaurantPage(0, ""),
