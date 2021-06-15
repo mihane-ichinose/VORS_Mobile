@@ -2,6 +2,7 @@ import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:vors_project/util/dish.dart';
+import 'package:vors_project/util/home_page_items.dart';
 
 
 class MenuPage extends StatefulWidget {
@@ -15,12 +16,6 @@ class MenuPage extends StatefulWidget {
 }
 
 class _MenuPageState extends State<MenuPage> {
-  // Future<bool> _goToUser(BuildContext context, MenuPage menuPage) {
-  //   return Navigator.of(context)
-  //       .pushNamed('/user', arguments: menuPage)
-  //   // We want to pop the user profile here.
-  //       .then((_) => false);
-  // }
 
   TextStyle style = TextStyle(
     fontFamily: 'Futura',
@@ -29,13 +24,6 @@ class _MenuPageState extends State<MenuPage> {
   );
 
   AppBar _buildAppBar(args) {
-
-    // final userBtn = IconButton(
-    //   icon: const Icon(FontAwesomeIcons.user),
-    //   color: Colors.black,
-    //   tooltip: "User Profile",
-    //   onPressed: () => _goToUser(context, new DishPage(args.customerId, args.username)),
-    // );
 
     final searchField = TextField(
       obscureText: false,
@@ -135,54 +123,59 @@ class _MenuPageState extends State<MenuPage> {
   ];
 
   Widget _buildHeader(args) {
-    // TODO: Need the restaurant list here.
     return ListView.separated(
       padding: const EdgeInsets.all(8),
       itemCount: dishes.length,
       itemBuilder: (BuildContext context, int index) {
-        return Container(
-          height: 100,
-          color: Colors.white,
+        return GestureDetector(
+          onTap: () => ScaffoldMessenger
+              .of(context)
+              .showSnackBar(DefaultSnackBar().withText(
+              'Clicked item number '+index.toString(), context),),
           child: Container(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text((index+1).toString()+'. ${dishes[index].name}\n',
-                      style: style.copyWith(color: Color(0xFF17B2E0)),),
-                    RichText(text: TextSpan(
-                      text: "from ",
-                      style: style.copyWith(color: Color(0xFF17B2E0)),
-                      children: <TextSpan>[
-                        TextSpan(
-                          text: "£",
-                          style: style.copyWith(color: Color(0xFF17B2E0),
-                            fontFamily: "Ariel",
-                            fontWeight: FontWeight.bold,
+            height: 100,
+            color: Colors.white,
+            child: Container(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text((index+1).toString()+'. ${dishes[index].name}\n',
+                        style: style.copyWith(color: Color(0xFF17B2E0)),),
+                      RichText(text: TextSpan(
+                        text: "from ",
+                        style: style.copyWith(color: Color(0xFF17B2E0)),
+                        children: <TextSpan>[
+                          TextSpan(
+                            text: "£",
+                            style: style.copyWith(color: Color(0xFF17B2E0),
+                              fontFamily: "Ariel",
+                              fontWeight: FontWeight.bold,
+                            ),
                           ),
-                        ),
-                        TextSpan(
-                          text: "${prices[index]}",
-                          style: style.copyWith(color: Color(0xFF17B2E0),),
-                        ),
-                      ],
+                          TextSpan(
+                            text: "${prices[index]}",
+                            style: style.copyWith(color: Color(0xFF17B2E0),),
+                          ),
+                        ],
                       ),
-                    ),
-                  ],
-                ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: [
-                    Text('${dishes[index].ingredients}',
-                      style: style.copyWith(color: Colors.black,
-                      fontSize: 18,),
-                    ),
-                  ],
-                ),
-              ],
-            )
+                      ),
+                    ],
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: [
+                      Text('${dishes[index].ingredients}',
+                        style: style.copyWith(color: Colors.black,
+                          fontSize: 18,),
+                      ),
+                    ],
+                  ),
+                ],
+              )
+            ),
           ),
         );
       },
@@ -196,39 +189,37 @@ class _MenuPageState extends State<MenuPage> {
     final args = ModalRoute.of(context)!.settings.arguments;
 
     return Material(
-      child: Column(
-        children: [
-          Stack(
-            alignment: Alignment.topCenter,
-            children: [
-              Image.asset("assets/images/pizzeria_sample.jpg", width: 400,),
-              Container(
-                width: 150,
-                height: 40,
-                decoration: BoxDecoration(
-                  color: Colors.white.withOpacity(0.8),
-                  borderRadius: BorderRadius.all(Radius.circular(10.0))
+      child: Scaffold(
+        body: Column(
+          children: [
+            Stack(
+              alignment: Alignment.topCenter,
+              children: [
+                Image.asset("assets/images/pizzeria_sample.jpg",
+                  width: double.infinity,
                 ),
-                child: Center(
-                  child: Text("Pizzeria",
-                    style: style.copyWith(color: Color(0xFF43F2EB)),
-                    textAlign: TextAlign.center,
+                Container(
+                  width: 150,
+                  height: 40,
+                  decoration: BoxDecoration(
+                      color: Colors.white.withOpacity(0.8),
+                      borderRadius: BorderRadius.all(Radius.circular(10.0))
                   ),
-                )
-              ),
-            ],
-          ),
-          _buildAppBar(args),
-          Expanded(
-            child: _buildHeader(args),
-          ),
-      //   Container(child:
-      //   Scaffold(
-      //   backgroundColor: Colors.white,
-      //   appBar: _buildAppBar(args),
-      //   body: _buildHeader(args),
-      // ),),
-        ],
+                  child: Center(
+                    child: Text("Pizzeria",
+                      style: style.copyWith(color: Color(0xFF43F2EB)),
+                      textAlign: TextAlign.center,
+                    ),
+                  )
+                ),
+              ],
+            ),
+            _buildAppBar(args),
+            Expanded(
+              child: _buildHeader(args),
+            ),
+          ],
+        ),
       ),
     );
   }
