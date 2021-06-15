@@ -209,7 +209,7 @@ class _MenuPageState extends State<MenuPage> {
               alignment: Alignment.topCenter,
               children: [
                 Image.asset("assets/images/pizzeria_sample.jpg",
-                  width: double.infinity,
+                  width: 1000,
                 ),
                 Container(
                   width: 150,
