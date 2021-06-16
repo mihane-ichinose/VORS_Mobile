@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:vors_project/util/restaurant.dart';
 
+import '../main.dart';
+import '../menu_page.dart';
+
 TextField newSearchField(TextStyle style) {
   return TextField(
     obscureText: false,
@@ -56,7 +59,16 @@ Scaffold restaurantBox(Restaurant restaurant) {
   );
 }
 
-Widget restaurantsList(List<Restaurant> restaurants) {
+Future<bool> _goToMenu(BuildContext context, Restaurant restaurant) {
+  return Navigator.of(context)
+      .push(MaterialPageRoute(builder: (context) =>
+      MenuPage(customerId, username,
+          restaurant.id, restaurant.name, restaurant.imageUrl)))
+  // We want to go to menu with reference of restaurantId here.
+      .then((_) => false);
+}
+
+Widget restaurantsList(List<Restaurant> restaurants, BuildContext context) {
   return ListView.builder(
       // Let the ListView know how many items it needs to build.
       itemCount: restaurants.length,
@@ -66,6 +78,7 @@ Widget restaurantsList(List<Restaurant> restaurants) {
         return GestureDetector(
           onTap: () {
             print('Restaurant ' + restaurants[index].id.toString() + ' was clicked.');
+            _goToMenu(context, restaurants[index]);
           },
           child: Container(
             height: 300,

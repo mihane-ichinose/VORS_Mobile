@@ -1,7 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:vors_project/restaurant_page.dart';
 
+import 'main.dart';
+
 class UserPage extends StatefulWidget {
+
+  UserPage();
+
   @override
   _UserPageState createState() => _UserPageState();
 }
@@ -40,13 +45,13 @@ class _UserPageState extends State<UserPage> {
     return Container(
       child: Column(
         children: <Widget>[
-          Text("Customer id: "+args.customerId.toString(),
+          Text("Customer id: "+ customerId.toString(),
             style: style.copyWith(
               fontWeight: FontWeight.bold,
               color: Colors.black,
             ),
           ),
-          Text("Username: "+args.username,
+          Text("Username: "+ username,
             style: style.copyWith(
               fontWeight: FontWeight.bold,
               color: Colors.black,
@@ -61,7 +66,7 @@ class _UserPageState extends State<UserPage> {
   @override
   Widget build(BuildContext context) {
 
-    final args = ModalRoute.of(context)!.settings.arguments as RestaurantPage;
+    final args = ModalRoute.of(context)!.settings.arguments;
 
     final logoutButton = Material(
       borderRadius: BorderRadius.circular(30.0),

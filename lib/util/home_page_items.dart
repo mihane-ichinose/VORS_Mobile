@@ -51,7 +51,30 @@ class DefaultSignUpTextField {
         ),
       ),
     );
+  }
 
+  TextField buildAsPasswordField() {
+    return TextField(
+      controller: TextEditingController(),
+      obscureText: true,
+      enableSuggestions: false,
+      autocorrect: false,
+      style: this.style,
+      decoration: InputDecoration(
+        filled: true,
+        fillColor: Color(0xFF43F2EB),
+        contentPadding: EdgeInsets.all(15.0),
+        hintText: this.text,
+        hintStyle: TextStyle(
+          fontFamily: 'Futura',
+          color: Colors.white.withOpacity(0.8),
+        ),
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(32.0),
+          borderSide: BorderSide.none,
+        ),
+      ),
+    );
   }
 }
 
@@ -80,6 +103,37 @@ class DefaultLoginTextFormField {
       // validator: ,
       controller: this.controller,
       obscureText: false,
+      style: style,
+      decoration: InputDecoration(
+        errorMaxLines: 1,
+        errorText: 'Null',
+        errorStyle: TextStyle(
+          color: Colors.transparent,
+          fontSize: 0,
+        ),
+        filled: true,
+        fillColor: Color(0xFF43F2EB),
+        contentPadding: EdgeInsets.all(15.0),
+        hintText: this.text,
+        hintStyle: TextStyle(
+          fontFamily: 'Futura',
+          color: Colors.white.withOpacity(0.8),
+        ),
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(32.0),
+          borderSide: BorderSide.none,
+        ),
+      ),
+    );
+  }
+
+  TextFormField buildAsPasswordField() {
+    return TextFormField(
+      // validator: ,
+      controller: this.controller,
+      obscureText: true,
+      enableSuggestions: false,
+      autocorrect: false,
       style: style,
       decoration: InputDecoration(
         errorMaxLines: 1,

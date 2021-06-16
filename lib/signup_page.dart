@@ -3,10 +3,6 @@ import 'package:vors_project/util/home_page_items.dart';
 import 'package:vors_project/util/users.dart';
 
 class SignupPage extends StatefulWidget {
-  final int customerId;
-  final String username;
-
-  SignupPage(this.customerId, this.username);
 
   @override
   _SignupPageState createState() => _SignupPageState();
@@ -38,15 +34,6 @@ class _SignupPageState extends State<SignupPage> {
     }
   }
 
-  Future<bool> _gotoRestaurant(BuildContext context) {
-    SignupPage signupPage = new SignupPage(1, usernameController.text); // Debug only.
-    return Navigator.of(context)
-        .pushNamedAndRemoveUntil('/login', (Route<dynamic> route) => false,
-    arguments: signupPage).then((_) => false);
-    // We will clean all existing routes when login.
-
-  }
-
   Future<bool> _gotoLogin(BuildContext context) {
     return Navigator.of(context)
         .pushReplacementNamed('/logout')
@@ -76,12 +63,12 @@ class _SignupPageState extends State<SignupPage> {
     final passwordField = DefaultSignUpTextField()
         .withStyle(style)
         .withText("Password")
-        .build();
+        .buildAsPasswordField();
 
     final confirmPasswordField = DefaultSignUpTextField()
         .withStyle(style)
         .withText("Confirm password")
-        .build();
+        .buildAsPasswordField();
 
     final signupButton = Material(
       borderRadius: BorderRadius.circular(30.0),
@@ -195,7 +182,7 @@ class _SignupPageState extends State<SignupPage> {
                   SizedBox(
                     height: 40.0,
                   ),
-                  Text("Sign Up", style: TextStyle(fontFamily: "Futura", fontSize: 90, color: Colors.white)),
+                  Text("Sign Up", style: TextStyle(fontFamily: "Futura", fontSize: 75, color: Colors.white)),
                   SizedBox(
                     height: 10.0,
                   ),

@@ -23,6 +23,30 @@ class Restaurant {
     return "" + id.toString() + " " + name;
   }
 
+  // Details are of format "<id>,<name>,<description><imgUrl><rating>" or just "-1"
+  factory Restaurant.fromString(String restaurantDetails) {
+    var details = restaurantDetails.split(",");
+    int id = int.parse(details.elementAt(0));
+    String name = "";
+    String description = "";
+    String imageUrl = "";
+    double rating = 0.0;
+
+    if (id != -1) {
+      name = details.elementAt(1);
+      description = details.elementAt(2);
+      imageUrl = details.elementAt(3);
+      rating = double.parse(details.elementAt(4));
+    }
+    return Restaurant(
+      id: id,
+      name: name,
+      description: description,
+      imageUrl: imageUrl,
+      rating: rating,
+    );
+  }
+
 }
 
 Restaurant fromJson(Map<String, dynamic> json) {
@@ -46,12 +70,11 @@ Restaurant fromJson(Map<String, dynamic> json) {
 
 
 Future<void> fetchAllRestaurants(List<Restaurant> restaurants) async {
-
-
   final response = await http.get(
-    Uri.parse(restaurantsUrl),
-    headers: {},
+      Uri.parse(restaurantsUrl),
+      headers: {}
   );
+
 
   if (response.statusCode == 200) {
     // If the server did return a 200 OK response,
@@ -61,10 +84,33 @@ Future<void> fetchAllRestaurants(List<Restaurant> restaurants) async {
     restaurantsJson.forEach((json) {
       restaurants.add(fromJson(json));
     });
+    // then parse the restaurant details
   } else {
-    // If the server did not return a 200 OK response,
-    // then throw an exception.
-    print("Connection failed.");
+  // If the server did not return a 200 OK response,
+  // then throw an exception.
     throw Exception('Connection failed.');
   }
+
 }
+
+// Future<Restaurant> fetchRestaurant(int restaurantId) async {
+//   final response = await http.get(
+//     Uri.parse(url + "?restaurantId=" + restaurantId.toString()),
+//     headers: {},
+//   );
+//
+//   if (response.statusCode == 200) {
+//     // If the server did return a 200 OK response,
+//     // then parse the user details
+//     return Restaurant.fromString(response.body);
+//
+//     // then parse the restaurant details
+//     print("Connection established.");
+//   } else {
+//     // If the server did not return a 200 OK response,
+//     // then throw an exception.
+//     throw Exception('Connection failed.');
+//   }
+//
+//
+// }

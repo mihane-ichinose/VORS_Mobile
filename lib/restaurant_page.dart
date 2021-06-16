@@ -1,7 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:vors_project/main.dart';
+import 'package:vors_project/user_page.dart';
+
 import 'package:vors_project/util/restaurant_page_items.dart';
 import 'package:vors_project/util/restaurant.dart';
+
+
+import 'menu_page.dart';
+
 
 // List<Restaurant> restaurants = [];
 
@@ -10,6 +17,7 @@ class RestaurantPage extends StatefulWidget {
   final String username;
   final List<Restaurant> restaurants = [];
 
+
   RestaurantPage(this.customerId, this.username);
 
   @override
@@ -17,10 +25,29 @@ class RestaurantPage extends StatefulWidget {
 }
 
 class _RestaurantPageState extends State<RestaurantPage> {
-  Future<bool> _goToUser(BuildContext context, RestaurantPage restaurantPage) {
+
+  @override
+  void initState() {
+    super.initState();
+  }
+
+  Future<bool> _goToUser(BuildContext context) {
     return Navigator.of(context)
-        .pushNamed('/user', arguments: restaurantPage)
+        // .pushNamed('/user', arguments: restaurantPage)
     // We want to pop the user profile here.
+        .push(MaterialPageRoute(builder: (context) =>
+        UserPage()
+        ))
+
+        .then((_) => false);
+  }
+
+  Future<bool> _goToMenu(BuildContext context, args, Restaurant restaurant) {
+    return Navigator.of(context)
+        .push(MaterialPageRoute(builder: (context) =>
+        MenuPage(args.customerId, args.username,
+            restaurant.id, restaurant.name, restaurant.imageUrl)))
+    // We want to go to menu with reference of restaurantId here.
         .then((_) => false);
   }
 
@@ -36,11 +63,28 @@ class _RestaurantPageState extends State<RestaurantPage> {
       color: Colors.black,
       tooltip: "User Profile",
       onPressed: () =>
-          _goToUser(
-              context, new RestaurantPage(args.customerId, args.username)),
+          _goToUser(context)
     );
 
-    final searchField = newSearchField(style);
+
+    final searchField = TextField(
+      obscureText: false,
+      style: style,
+      decoration: InputDecoration(
+        filled: true,
+        fillColor: Color(0xFF43F2EB),
+        contentPadding: EdgeInsets.all(15.0),
+        hintText: "Search...",
+        hintStyle: TextStyle(
+          fontFamily: 'Futura',
+          color: Colors.white.withOpacity(0.8),
+        ),
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(32.0),
+          borderSide: BorderSide.none,
+        ),
+      ),
+    );
 
     return AppBar(
       backgroundColor: Color(0xFF17B2E0),
@@ -54,11 +98,14 @@ class _RestaurantPageState extends State<RestaurantPage> {
 
 
   Widget _buildRestaurants(args) {
-    return restaurantsList(this.widget.restaurants);
+    return restaurantsList(this.widget.restaurants, context);
   }
 
   @override
   Widget build(BuildContext context) {
+
+    print(customerId);
+
     final args = ModalRoute
         .of(context)!
         .settings
