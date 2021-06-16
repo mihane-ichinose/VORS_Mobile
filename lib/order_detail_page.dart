@@ -127,13 +127,16 @@ class _OrderDetailPageState extends State<OrderDetailPage> {
         body: Column(
           children: [
             _buildAppBar(),
-            SizedBox(
-              height: 10.0,
+            Expanded(
+              flex: 2,
+              child: _buildOrderList(),
             ),
-            RichText(text: TextSpan(
+            Expanded(
+              flex: 1,
+              child: RichText(text: TextSpan(
               text: "Total: ",
               style: style.copyWith(color: Color(0xFF43F2EB),
-              fontSize: 30,
+                fontSize: 30,
               ),
               children: <TextSpan>[
                 TextSpan(
@@ -146,14 +149,10 @@ class _OrderDetailPageState extends State<OrderDetailPage> {
                 TextSpan(
                   text: totalPrice.toString(),
                   style: style.copyWith(color: Color(0xFF17B2E0),
-                  fontSize: 30,
+                    fontSize: 30,
                   ),
                 ),
-              ],
-            ),
-            ),
-            Expanded(
-              child: _buildOrderList(),
+              ],),),
             ),
           ],
         ),
