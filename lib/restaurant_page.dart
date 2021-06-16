@@ -1,22 +1,41 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:vors_project/util/restaurant.dart';
+
+import 'menu_page.dart';
 
 
 class RestaurantPage extends StatefulWidget {
   final int customerId;
   final String username;
+  final int restaurantId;
+  final String restaurantName;
+  final String imgUrl;
 
-  RestaurantPage(this.customerId, this.username);
+  RestaurantPage(this.customerId, this.username, this.restaurantId, this.restaurantName, this.imgUrl);
 
   @override
   _RestaurantPageState createState() => _RestaurantPageState();
 }
 
 class _RestaurantPageState extends State<RestaurantPage> {
+
+  @override
+  void initState() {
+    super.initState();
+  }
+
   Future<bool> _goToUser(BuildContext context, RestaurantPage restaurantPage) {
     return Navigator.of(context)
         .pushNamed('/user', arguments: restaurantPage)
     // We want to pop the user profile here.
+        .then((_) => false);
+  }
+
+  Future<bool> _goToMenu(BuildContext context, args, Restaurant restaurant) {
+    return Navigator.of(context)
+        .push(MaterialPageRoute(builder: (context) => MenuPage(args.customerId, args.username, restaurant.restaurantId, restaurant.name, restaurant.imgUrl)))
+    // We want to go to menu with reference of restaurantId here.
         .then((_) => false);
   }
 
@@ -32,7 +51,7 @@ class _RestaurantPageState extends State<RestaurantPage> {
       icon: const Icon(FontAwesomeIcons.user),
       color: Colors.black,
       tooltip: "User Profile",
-      onPressed: () => _goToUser(context, new RestaurantPage(args.customerId, args.username)),
+      onPressed: () => _goToMenu(context, args, new Restaurant(restaurantId: 0, name: "", description: "", imgUrl: "", rating: 5.0)),
     );
 
     final searchField = TextField(

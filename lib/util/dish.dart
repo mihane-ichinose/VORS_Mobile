@@ -58,7 +58,7 @@ Future<List<Dish>> fetchAllDishes(int restaurantId) async {
 
   final response = await http.get(
     Uri.parse(dishesUrl + "?restaurantId=" + restaurantId.toString()),
-    headers: {"Access-Control-Allow-Origin": "http://localhost:11817",},
+    headers: {},
   );
 
   print(response.body);
@@ -67,8 +67,8 @@ Future<List<Dish>> fetchAllDishes(int restaurantId) async {
     // If the server did return a 200 OK response,
     // then parse the dishes
     print("Connection established.");
-    Iterable restaurantsJson = json.decode(response.body);
-    restaurantsJson.forEach((json) {
+    Iterable dishesJson = json.decode(response.body);
+    dishesJson.forEach((json) {
       dishes.add(fromJson(json));
     });
     return dishes;

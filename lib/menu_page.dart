@@ -1,7 +1,6 @@
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
-import 'package:vors_project/restaurant_page.dart';
 import 'package:vors_project/util/dish.dart';
 import 'package:vors_project/util/home_page_items.dart';
 
@@ -69,76 +68,10 @@ class _MenuPageState extends State<MenuPage> {
           searchField,
         ],
       )
-      // actions: <Widget>[
-      //   userBtn,
-      //   SizedBox(width: 10),
-      // ],
     );
   }
 
   final List<double> prices = <double>[5.99, 6.99, 6.49, 6.49, 6.49, 6.49, 6.49, 6.49, 6.49, 6.49];
-  // final List<Dish> dishes = <Dish>[
-  //   new Dish(dishId: 1,
-  //       name: "Margherita",
-  //       ingredients: "Pizza dough, tomato sauce, cheese, tomato",
-  //       allergens: "none",
-  //       type: "non-vegeterian",
-  //       rating: 4.8),
-  //   new Dish(dishId: 2,
-  //       name: "Pepperoni",
-  //       ingredients: "Pizza dough, tomato sauce, cheese, pepperoni",
-  //       allergens: "none",
-  //       type: "non-vegeterian",
-  //       rating: 4.9),
-  //   new Dish(dishId: 3,
-  //       name: "Quattro formaggi",
-  //       ingredients: "Pizza dough, tomato sauce, cheese, cheddar, emmental,",
-  //       allergens: "none",
-  //       type: "vegeterian",
-  //       rating: 4.7),
-  //   new Dish(dishId: 3,
-  //       name: "Quattro formaggi",
-  //       ingredients: "Pizza dough, tomato sauce, cheese, cheddar, emmental,",
-  //       allergens: "none",
-  //       type: "vegeterian",
-  //       rating: 4.7),
-  //   new Dish(dishId: 3,
-  //       name: "Quattro formaggi",
-  //       ingredients: "Pizza dough, tomato sauce, cheese, cheddar, emmental,",
-  //       allergens: "none",
-  //       type: "vegeterian",
-  //       rating: 4.7),
-  //   new Dish(dishId: 3,
-  //       name: "Quattro formaggi",
-  //       ingredients: "Pizza dough, tomato sauce, cheese, cheddar, emmental,",
-  //       allergens: "none",
-  //       type: "vegeterian",
-  //       rating: 4.7),
-  //   new Dish(dishId: 3,
-  //       name: "Quattro formaggi",
-  //       ingredients: "Pizza dough, tomato sauce, cheese, cheddar, emmental,",
-  //       allergens: "none",
-  //       type: "vegeterian",
-  //       rating: 4.7),
-  //   new Dish(dishId: 3,
-  //       name: "Quattro formaggi",
-  //       ingredients: "Pizza dough, tomato sauce, cheese, cheddar, emmental,",
-  //       allergens: "none",
-  //       type: "vegeterian",
-  //       rating: 4.7),
-  //   new Dish(dishId: 3,
-  //       name: "Quattro formaggi",
-  //       ingredients: "Pizza dough, tomato sauce, cheese, cheddar, emmental,",
-  //       allergens: "none",
-  //       type: "vegeterian",
-  //       rating: 4.7),
-  //   new Dish(dishId: 3,
-  //       name: "Quattro formaggi",
-  //       ingredients: "Pizza dough, tomato sauce, cheese, cheddar, emmental,",
-  //       allergens: "none",
-  //       type: "vegeterian",
-  //       rating: 4.7),
-  // ];
 
   Widget _buildHeader() {
     return ListView.separated(
@@ -210,8 +143,6 @@ class _MenuPageState extends State<MenuPage> {
 
   @override
   Widget build(BuildContext context) {
-
-    //final args = ModalRoute.of(context)!.settings.arguments as RestaurantPage;
 
     return Material(
       child: Scaffold(
