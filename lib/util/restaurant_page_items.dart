@@ -72,18 +72,63 @@ Widget restaurantsList(List<Restaurant> restaurants) {
             padding: const EdgeInsets.all(8.0),
             margin: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 10.0),
             decoration: BoxDecoration(
-              border: Border.all(color: Color(0xFF17B2E0), width: 3.0),
-              borderRadius: BorderRadius.circular(5.0),
+              border: Border.all(color: Color(0xFF43F2EB), width: 3.0),
+              borderRadius: BorderRadius.circular(10),
               color: Colors.white,
             ),
-            child: Center(
-              child: Image.network(
-                restaurants[index].imageUrl,
-                width: double.infinity,
-              ),
-              // child: Text(restaurants[index].name),
-            ),
+            child: ListView(
+              physics: const NeverScrollableScrollPhysics(),
+              padding: EdgeInsets.all(0),
+              children: <Widget> [
+                Container(
+                  height: 200,
+                  child : new Padding(
+                    padding: EdgeInsets.zero,
+                    child : new Container(
+                      decoration: new BoxDecoration(
+                          borderRadius: BorderRadius.circular(10),
+                          image: new DecorationImage(
+                            fit: BoxFit.fitWidth,
+                            alignment: FractionalOffset.topCenter,
+                            image: new NetworkImage(restaurants[index].imageUrl),
+                          )
+                      ),
+                    ),
+                  ),
+                ),
+                Container(
+                  height: 20,
+                  child: Text(restaurants[index].name),
+                ),
+                Container(
+                  height: 35,
+                  child: Text(restaurants[index].description),
+                ),
+                Container(
+                  height: 20,
+                  child: Text((restaurants[index].rating >= 0.1) ?
+                  restaurants[index].rating.toString() : ""
+                  ),
+                ),
+              ],
+            )
           ),
+          //     new AspectRatio(
+          //     aspectRatio: 9 / 18,
+          //     child: new Container(
+          //       height: 200,
+          //       decoration: new BoxDecoration(
+          //           borderRadius: BorderRadius.circular(10),
+          //           image: new DecorationImage(
+          //             fit: BoxFit.fitWidth,
+          //             alignment: FractionalOffset.topCenter,
+          //             image: new NetworkImage(restaurants[index].imageUrl),
+          //           )
+          //       ),
+          //     // ),
+          //     // child: Text(restaurants[index].name),
+          //   ),
+          // ),
         );
       }
   );
