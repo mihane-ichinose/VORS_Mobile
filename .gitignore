@@ -44,3 +44,9 @@ app.*.map.json
 /android/app/debug
 /android/app/profile
 /android/app/release
+/web/favicon.png
+/web/icons/Icon-192.png
+/web/icons/Icon-512.png
+/web/index.html
+/android/app/src/main/kotlin/com/drp48/vors_mobile/MainActivity.kt
+/web/manifest.json
