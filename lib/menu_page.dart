@@ -1,15 +1,21 @@
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
+import 'package:vors_project/restaurant_page.dart';
 import 'package:vors_project/util/dish.dart';
 import 'package:vors_project/util/home_page_items.dart';
 
 
 class MenuPage extends StatefulWidget {
+
   final int customerId;
   final String username;
+  final int restaurantId;
+  final String restaurantName;
+  final String imgUrl;
 
-  MenuPage(this.customerId, this.username);
+
+  MenuPage(this.customerId, this.username, this.restaurantId, this.restaurantName, this.imgUrl);
 
   @override
   _MenuPageState createState() => _MenuPageState();
@@ -22,7 +28,7 @@ class _MenuPageState extends State<MenuPage> {
   @override
   void initState(){
     super.initState();
-    fetchAllDishes(dishes, 5).then((value) {
+    fetchAllDishes(dishes, widget.restaurantId).then((value) {
       for (Dish dish in dishes) {
         print(dish);
       }
@@ -36,7 +42,7 @@ class _MenuPageState extends State<MenuPage> {
     fontSize: 26,
   );
 
-  AppBar _buildAppBar(args) {
+  AppBar _buildAppBar() {
 
     final searchField = TextField(
       obscureText: false,
@@ -135,7 +141,7 @@ class _MenuPageState extends State<MenuPage> {
   //       rating: 4.7),
   // ];
 
-  Widget _buildHeader(args) {
+  Widget _buildHeader() {
     return ListView.separated(
       padding: const EdgeInsets.all(8),
       itemCount: dishes.length,
@@ -199,7 +205,7 @@ class _MenuPageState extends State<MenuPage> {
   @override
   Widget build(BuildContext context) {
 
-    final args = ModalRoute.of(context)!.settings.arguments;
+    //final args = ModalRoute.of(context)!.settings.arguments as RestaurantPage;
 
     return Material(
       child: Scaffold(
@@ -208,7 +214,7 @@ class _MenuPageState extends State<MenuPage> {
             Stack(
               alignment: Alignment.topCenter,
               children: [
-                Image.asset("assets/images/pizzeria_sample.jpg",
+                Image.asset(widget.imgUrl,
                   width: 1000,
                 ),
                 Container(
@@ -219,7 +225,7 @@ class _MenuPageState extends State<MenuPage> {
                       borderRadius: BorderRadius.all(Radius.circular(10.0))
                   ),
                   child: Center(
-                    child: Text("Pizzeria",
+                    child: Text(widget.restaurantName,
                       style: style.copyWith(color: Color(0xFF43F2EB)),
                       textAlign: TextAlign.center,
                     ),
@@ -227,9 +233,9 @@ class _MenuPageState extends State<MenuPage> {
                 ),
               ],
             ),
-            _buildAppBar(args),
+            _buildAppBar(),
             Expanded(
-              child: _buildHeader(args),
+              child: _buildHeader(),
             ),
           ],
         ),

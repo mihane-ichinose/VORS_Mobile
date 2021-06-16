@@ -17,13 +17,13 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         fontFamily: "Futura.bold",
       ),
-      home: MenuPage(0, ""),
+      home: MenuPage(0, "", 5, "Pizzeria", "assets/images/pizzeria_sample.jpg"),
       routes: {
         "/logout": (context) => new LoginPage(0, ""),
         "/login": (context) => new RestaurantPage(0, ""),
         "/user": (context) => new UserPage(),
         "/signup": (context) => new SignupPage(0, ""),
-        "/menu": (context) => new MenuPage(0, ""),
+        "/menu": (context) => new MenuPage(0, "", 5, "Pizzeria", "null"),
       },
     );
   }
