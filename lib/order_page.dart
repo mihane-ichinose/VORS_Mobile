@@ -1,20 +1,16 @@
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
+import 'package:vors_project/order_detail_page.dart';
 import 'package:vors_project/util/home_page_items.dart';
-import 'package:vors_project/util/order.dart';
+import 'package:vors_project/util/orderList.dart';
 
 
 class OrderPage extends StatefulWidget {
 
   final int customerId;
-  final String username;
-  final int restaurantId;
-  final String restaurantName;
-  final int orderId;
 
-
-  OrderPage(this.customerId, this.username, this.restaurantId, this.restaurantName, this.orderId);
+  const OrderPage(this.customerId);
 
   @override
   _OrderPageState createState() => _OrderPageState();
@@ -22,10 +18,16 @@ class OrderPage extends StatefulWidget {
 
 class _OrderPageState extends State<OrderPage> {
 
-  late List<Order> orders = [];
+  late List<OrderList> orderList = [];
+  late List<OrderList> activeOrderList = [];
+  late List<OrderList> pastOrderList = [];
 
   void awaitDishes() async {
-    orders = await fetchAllOrders(21);
+    orderList = await fetchAllOrderLists(widget.customerId);
+    activeOrderList = orderList.where((i) => i.active).toList();
+    pastOrderList = orderList.where((i) => !i.active).toList();
+    print(activeOrderList.toString());
+    print(pastOrderList.toString());
   }
 
   @override
@@ -34,85 +36,76 @@ class _OrderPageState extends State<OrderPage> {
     awaitDishes();
   }
 
+  Future<bool> _goToOrderDetails(BuildContext context, int index, String restaurantName) {
+    return Navigator.of(context)
+        .push(MaterialPageRoute(builder: (context) => new OrderDetailPage(orderList[index].orderId, orderList[index].active, restaurantName)))
+        .then((_) => false);
+  }
+
   TextStyle style = TextStyle(
-    fontFamily: 'Futura',
     color: Colors.white,
     fontSize: 26,
+    fontFamily: 'Futura',
   );
 
   AppBar _buildAppBar() {
 
     return AppBar(
-      toolbarHeight: 100,
-      backgroundColor: Color(0xFF17B2E0),
-      title: Center(
-        child: Column(
-          children: <Widget>[
-            Text("Active order",
-                style: style.copyWith(color: Colors.white,
-                  fontSize: 32,
-                  fontWeight: FontWeight.bold,)
-            ),
-            SizedBox(
-              height: 10.0,
-            ),
-            Text("at " + widget.restaurantName,
-                style: style.copyWith(color: Colors.white,
-                  fontSize: 26,
-                  fontWeight: FontWeight.bold,)
-            ),
-          ],
-        ),
-      )
+        toolbarHeight: 100,
+        backgroundColor: Color(0xFF17B2E0),
+        title: Center(
+          child: Column(
+            children: <Widget>[
+              Text("My orders",
+                  style: style.copyWith(color: Colors.white,
+                    fontSize: 32,
+                    fontWeight: FontWeight.bold,)
+              ),
+            ],
+          ),
+        )
     );
   }
 
-  final List<double> prices = <double>[5.99, 6.99, 6.49, 6.49, 6.49, 6.49, 6.49, 6.49, 6.49, 6.49];
-  late double totalPrice = 0.00;
-
-  Widget _buildOrderList() {
+  Widget _buildActiveOrderList() {
     return ListView.separated(
       padding: const EdgeInsets.all(8),
-      itemCount: orders.length,
+      itemCount: activeOrderList.length,
       itemBuilder: (BuildContext context, int index) {
-        totalPrice += prices[index];
         return GestureDetector(
-          onTap: () => ScaffoldMessenger
-              .of(context)
-              .showSnackBar(DefaultSnackBar().withText(
-              'Clicked item number '+index.toString(), context),),
+          onTap: () => _goToOrderDetails(context, index, "Pizzeria"),
           child: Container(
             height: 60,
             color: Colors.white,
             child: Container(
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text((index+1).toString()+'. ${orders[index].name}\n',
-                    style: style.copyWith(color: Color(0xFF17B2E0)),),
-                  RichText(text: TextSpan(
-                    text: "${orders[index].orderCount} x ",
-                    style: style.copyWith(color: Color(0xFF17B2E0)),
-                    children: <TextSpan>[
-                      TextSpan(
-                        text: "£",
-                        style: style.copyWith(color: Color(0xFF17B2E0),
-                          fontFamily: "Ariel",
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                      TextSpan(
-                        text: "${prices[index]}",
-                        style: style.copyWith(color: Color(0xFF17B2E0),),
-                      ),
-                    ],
-                  ),
-                  ),
-                ],
-              ),
+              child:
+              Text("at Pizzeria", // TODO: implement restaurant fetch here by restaurantId after branch merged.
+                style: style.copyWith(color: Color(0xFF17B2E0)),),
             ),
+          ),
+        );
+      },
+      separatorBuilder: (BuildContext context, int index) => const Divider(),
+    );
+  }
+
+  Widget _buildPastOrderList() {
+    return ListView.separated(
+      padding: const EdgeInsets.all(8),
+      itemCount: pastOrderList.length,
+      itemBuilder: (BuildContext context, int index) {
+        return GestureDetector(
+          onTap: () => _goToOrderDetails(context, index, "Pizzeria"),
+          child: Container(
+            height: 60,
+            color: Colors.white,
+            child: Container(
+              child:
+              Text("at Pizzeria", // TODO: implement restaurant fetch here by restaurantId after branch merged.
+                style: style.copyWith(color: Color(0xFF17B2E0)),),
             ),
-          );
+          ),
+        );
       },
       separatorBuilder: (BuildContext context, int index) => const Divider(),
     );
@@ -126,36 +119,26 @@ class _OrderPageState extends State<OrderPage> {
 
     return Material(
       child: Scaffold(
+        appBar: _buildAppBar(),
         body: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            _buildAppBar(),
             SizedBox(
               height: 10.0,
             ),
-            RichText(text: TextSpan(
-              text: "Total: ",
-              style: style.copyWith(color: Color(0xFF43F2EB),
-              fontSize: 30,
-              ),
-              children: <TextSpan>[
-                TextSpan(
-                  text: "£",
-                  style: style.copyWith(color: Color(0xFF17B2E0),
-                    fontFamily: "Ariel",
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-                TextSpan(
-                  text: totalPrice.toString(),
-                  style: style.copyWith(color: Color(0xFF17B2E0),
-                  fontSize: 30,
-                  ),
-                ),
-              ],
-            ),
+            Text("Active:",style: style.copyWith(color: Color(0xFF43F2EB),
+              fontSize: 30,),
             ),
             Expanded(
-              child: _buildOrderList(),
+              flex: 1,
+              child: _buildActiveOrderList(),
+            ),
+            Text("Past:",style: style.copyWith(color: Color(0xFF43F2EB),
+              fontSize: 30,),
+            ),
+            Expanded(
+              flex: 2,
+              child: _buildPastOrderList(),
             ),
           ],
         ),

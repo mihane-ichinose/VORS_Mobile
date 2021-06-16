@@ -4,6 +4,7 @@ import 'package:vors_project/restaurant_page.dart';
 import 'package:vors_project/signup_page.dart';
 import 'package:vors_project/user_page.dart';
 
+import 'order_detail_page.dart';
 import 'order_page.dart';
 
 void main() => runApp(MyApp());
@@ -18,7 +19,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         fontFamily: "Futura.bold",
       ),
-      home: OrderPage(0, "", 2, "Pizzeria", 1),
+      home: OrderPage(7),
       routes: {
         "/logout": (context) => new LoginPage(0, ""),
         "/login": (context) => new RestaurantPage(0, "", 2, "Pizzeria", "wr"),

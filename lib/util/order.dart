@@ -18,7 +18,7 @@ class Order {
   });
 
   String toString() {
-    return "" + dishId.toString() + restaurantId.toString() + name + orderCount.toString();
+    return " " + dishId.toString() + " " + restaurantId.toString() + " " + name + " " + orderCount.toString();
   }
 }
 
