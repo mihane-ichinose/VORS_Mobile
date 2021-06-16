@@ -3,10 +3,6 @@ import 'package:vors_project/util/home_page_items.dart';
 import 'package:vors_project/util/users.dart';
 
 class SignupPage extends StatefulWidget {
-  final int customerId;
-  final String username;
-
-  SignupPage(this.customerId, this.username);
 
   @override
   _SignupPageState createState() => _SignupPageState();
@@ -36,15 +32,6 @@ class _SignupPageState extends State<SignupPage> {
       );
       connectionFailed = true;
     }
-  }
-
-  Future<bool> _gotoRestaurant(BuildContext context) {
-    SignupPage signupPage = new SignupPage(1, usernameController.text); // Debug only.
-    return Navigator.of(context)
-        .pushNamedAndRemoveUntil('/login', (Route<dynamic> route) => false,
-    arguments: signupPage).then((_) => false);
-    // We will clean all existing routes when login.
-
   }
 
   Future<bool> _gotoLogin(BuildContext context) {
