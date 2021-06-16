@@ -25,15 +25,14 @@ class _MenuPageState extends State<MenuPage> {
 
   late List<Dish> dishes = [];
 
+  void awaitDishes() async {
+    dishes = await fetchAllDishes(widget.restaurantId);
+  }
+
   @override
   void initState(){
     super.initState();
-    fetchAllDishes(dishes, widget.restaurantId).then((value) {
-      for (Dish dish in dishes) {
-        print(dish);
-      }
-    });
-
+    awaitDishes();
   }
 
   TextStyle style = TextStyle(
@@ -186,9 +185,16 @@ class _MenuPageState extends State<MenuPage> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: [
-                      Text('${dishes[index].ingredients}',
-                        style: style.copyWith(color: Colors.black,
-                          fontSize: 18,),
+                      Flexible(
+                        child: RichText(
+                          maxLines: 2,
+                          overflow: TextOverflow.ellipsis,
+                          text: TextSpan(
+                            text: '${dishes[index].ingredients}',
+                            style: style.copyWith(color: Colors.black,
+                              fontSize: 18,),
+                        ),
+                      ),
                       ),
                     ],
                   ),

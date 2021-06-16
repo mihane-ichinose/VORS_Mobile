@@ -52,12 +52,13 @@ Dish fromJson(Map<String, dynamic> json) {
 }
 
 
-Future<void> fetchAllDishes(List<Dish> dishes, int restaurantId) async {
+Future<List<Dish>> fetchAllDishes(int restaurantId) async {
 
+  List<Dish> dishes = [];
 
   final response = await http.get(
     Uri.parse(dishesUrl + "?restaurantId=" + restaurantId.toString()),
-    headers: {},
+    headers: {"Access-Control-Allow-Origin": "http://localhost:11817",},
   );
 
   print(response.body);
@@ -70,6 +71,7 @@ Future<void> fetchAllDishes(List<Dish> dishes, int restaurantId) async {
     restaurantsJson.forEach((json) {
       dishes.add(fromJson(json));
     });
+    return dishes;
   } else {
     // If the server did not return a 200 OK response,
     // then throw an exception.

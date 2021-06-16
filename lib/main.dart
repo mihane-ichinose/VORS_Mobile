@@ -22,7 +22,7 @@ class MyApp extends StatelessWidget {
         "/logout": (context) => new LoginPage(0, ""),
         "/login": (context) => new RestaurantPage(0, ""),
         "/user": (context) => new UserPage(),
-        "/signup": (context) => new SignupPage(0, ""),
+        "/signup": (context) => new SignupPage(),
         "/menu": (context) => new MenuPage(0, "", 5, "Pizzeria", "null"),
       },
     );
