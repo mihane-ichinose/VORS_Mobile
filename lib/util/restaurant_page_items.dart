@@ -74,11 +74,19 @@ Future<bool> _goToMenu(BuildContext context, Restaurant restaurant) {
       .then((_) => false);
 }
 
-ImageProvider<Object> imageGenerator(Restaurant restaurant) {
+DecorationImage imageGenerator(Restaurant restaurant) {
   if (restaurant.imageUrl == "") {
-    return AssetImage("assets/images/no_image.png");
+    return DecorationImage(
+      fit: BoxFit.contain,
+      alignment: FractionalOffset.topCenter,
+      image: new AssetImage("assets/images/no_image.png"),
+    );
   } else {
-    return NetworkImage(restaurant.imageUrl);
+    return DecorationImage(
+      fit: BoxFit.fitWidth,
+      alignment: FractionalOffset.topCenter,
+      image: new NetworkImage(restaurant.imageUrl),
+    );
   }
 }
 
@@ -113,12 +121,8 @@ Widget restaurantsList(List<Restaurant> restaurants, BuildContext context) {
                     padding: EdgeInsets.zero,
                     child : new Container(
                       decoration: new BoxDecoration(
-                          borderRadius: BorderRadius.circular(10),
-                          image: new DecorationImage(
-                            fit: BoxFit.fitWidth,
-                            alignment: FractionalOffset.topCenter,
-                            image: imageGenerator(restaurants[index]),
-                          )
+                        borderRadius: BorderRadius.circular(10),
+                        image: imageGenerator(restaurants[index]),
                       ),
                     ),
                   ),
