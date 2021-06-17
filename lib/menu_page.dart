@@ -183,18 +183,23 @@ class _MenuPageState extends State<MenuPage> {
                 Image(image: imageGenerator(widget.imgUrl),
                 ),
                 Container(
-                  width: 150,
+
                   height: 40,
                   decoration: BoxDecoration(
                       color: Colors.white.withOpacity(0.8),
                       borderRadius: BorderRadius.all(Radius.circular(10.0))
                   ),
-                  child: Center(
-                    child: Text(widget.restaurantName,
-                      style: style.copyWith(color: Color(0xFF43F2EB)),
-                      textAlign: TextAlign.center,
-                    ),
-                  )
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: <Widget>[
+                      Center(
+                        child: Text(" "+widget.restaurantName+" ",
+                          style: style.copyWith(color: Color(0xFF43F2EB)),
+                          textAlign: TextAlign.center,
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
               ],
             ),
