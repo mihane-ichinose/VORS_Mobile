@@ -28,16 +28,15 @@ OrderedDish fromJson(Map<String, dynamic> json) {
 }
 
 
-Future<List<OrderedDish>> fetchOrderContent(int orderId) async {
+Future<void> fetchOrderContent(int orderId, List<OrderedDish> dishes) async {
 
-  List<OrderedDish> dishes = [];
 
   final response = await http.get(
     Uri.parse(orderContentUrl + "?orderId=" + orderId.toString()),
     headers: {},
   );
 
-  print(response.body);
+  print(orderId);
 
   if (response.statusCode == 200) {
     // If the server did return a 200 OK response,
@@ -47,7 +46,6 @@ Future<List<OrderedDish>> fetchOrderContent(int orderId) async {
     dishesJson.forEach((dish) {
       dishes.add(fromJson(dish));
     });
-    return dishes;
   } else {
     // If the server did not return a 200 OK response,
     // then throw an exception.
