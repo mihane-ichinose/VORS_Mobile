@@ -1,6 +1,7 @@
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
+import 'package:vors_project/util/dish.dart';
 import 'package:vors_project/util/home_page_items.dart';
 import 'package:vors_project/util/order_content.dart';
 
@@ -22,19 +23,20 @@ class _OrderDetailPageState extends State<OrderDetailPage> {
   late List<OrderedDish> dishes = [];
   late String title = "";
   double totalPrice = 0;
+  bool dishesFetched = false;
 
 
-  void awaitDishes() async {
-    dishes = await fetchOrderContent(widget.orderId);
-    print(dishes.toString());
-  }
+  // void awaitDishes() async {
+  //   dishes = await fetchOrderContent(widget.orderId);
+  //   print(dishes.toString());
+  // }
 
   @override
   void initState(){
     super.initState();
     if (widget.active) title = "Active";
     else title = "Past";
-    awaitDishes();
+    // awaitDishes();
   }
 
   TextStyle style = TextStyle(
@@ -71,7 +73,7 @@ class _OrderDetailPageState extends State<OrderDetailPage> {
   }
 
 
-  Widget _buildOrderList() {
+  Widget _buildDishList() {
     for (OrderedDish dish in dishes) {
       totalPrice += dish.price;
     }
@@ -124,6 +126,15 @@ class _OrderDetailPageState extends State<OrderDetailPage> {
   @override
   Widget build(BuildContext context) {
 
+    if (!dishesFetched) {
+      fetchOrderContent(widget.orderId, dishes).then((value) => {
+        setState(() {
+          dishesFetched = true;
+          build(context);
+        })
+      });
+    }
+
     return Material(
       child: Scaffold(
         body: Column(
@@ -131,7 +142,7 @@ class _OrderDetailPageState extends State<OrderDetailPage> {
             _buildAppBar(),
             Expanded(
               flex: 2,
-              child: _buildOrderList(),
+              child: _buildDishList(),
             ),
             Expanded(
               flex: 1,
