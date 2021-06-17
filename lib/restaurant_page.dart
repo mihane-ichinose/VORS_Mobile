@@ -42,15 +42,6 @@ class _RestaurantPageState extends State<RestaurantPage> {
         .then((_) => false);
   }
 
-  Future<bool> _goToMenu(BuildContext context, args, Restaurant restaurant) {
-    return Navigator.of(context)
-        .push(MaterialPageRoute(builder: (context) =>
-        MenuPage(args.customerId, args.username,
-            restaurant.id, restaurant.name, restaurant.imageUrl)))
-    // We want to go to menu with reference of restaurantId here.
-        .then((_) => false);
-  }
-
   TextStyle style = TextStyle(
     fontFamily: 'Futura',
     color: Colors.white,

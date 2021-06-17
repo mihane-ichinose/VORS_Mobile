@@ -74,6 +74,14 @@ Future<bool> _goToMenu(BuildContext context, Restaurant restaurant) {
       .then((_) => false);
 }
 
+ImageProvider<Object> imageGenerator(Restaurant restaurant) {
+  if (restaurant.imageUrl == "") {
+    return AssetImage("assets/images/no_image.png");
+  } else {
+    return NetworkImage(restaurant.imageUrl);
+  }
+}
+
 Widget restaurantsList(List<Restaurant> restaurants, BuildContext context) {
   return ListView.builder(
       // Let the ListView know how many items it needs to build.
@@ -109,7 +117,7 @@ Widget restaurantsList(List<Restaurant> restaurants, BuildContext context) {
                           image: new DecorationImage(
                             fit: BoxFit.fitWidth,
                             alignment: FractionalOffset.topCenter,
-                            image: new NetworkImage(restaurants[index].imageUrl),
+                            image: imageGenerator(restaurants[index]),
                           )
                       ),
                     ),
@@ -157,7 +165,8 @@ Widget restaurantsList(List<Restaurant> restaurants, BuildContext context) {
                       children: <Widget>[
                         Container(
                           height: 35,
-                          child: Text(restaurants[index].description,
+                          child: Text((restaurants[index].description != "") ?
+                          restaurants[index].description : "No description.",
                           style: style.copyWith(color: Colors.black,
                           fontSize: 20,),),
                         ),

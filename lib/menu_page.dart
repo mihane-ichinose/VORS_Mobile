@@ -76,6 +76,14 @@ class _MenuPageState extends State<MenuPage> {
     );
   }
 
+  ImageProvider<Object> imageGenerator(String imgUrl) {
+    if (imgUrl == "") {
+      return AssetImage("assets/images/no_image.png");
+    } else {
+      return NetworkImage(imgUrl);
+    }
+  }
+
   String formulateDishName(int index, String name) {
     String newName = name;
     if (name.length > MAX_NAME_LENGTH) {
@@ -172,7 +180,7 @@ class _MenuPageState extends State<MenuPage> {
             Stack(
               alignment: Alignment.topCenter,
               children: [
-                Image(image: new NetworkImage(widget.imgUrl),
+                Image(image: imageGenerator(widget.imgUrl),
                 ),
                 Container(
                   width: 150,
