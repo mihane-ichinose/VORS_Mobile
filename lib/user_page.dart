@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:vors_project/order_page.dart';
-import 'package:vors_project/restaurant_page.dart';
 
 import 'main.dart';
 
@@ -114,6 +113,9 @@ class _UserPageState extends State<UserPage> {
                   height: 40.0,
                 ),
                 _buildHeader(args),
+                SizedBox(
+                  height: 10.0,
+                ),
                 Container(
                   width: 150,
                   child: logoutButton,

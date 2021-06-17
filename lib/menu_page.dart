@@ -121,7 +121,7 @@ class _MenuPageState extends State<MenuPage> {
                           TextSpan(
                             text: "£",
                             style: style.copyWith(color: Color(0xFF17B2E0),
-                              fontFamily: "Ariel",
+                              fontFamily: "Arial",
                               fontWeight: FontWeight.bold,
                             ),
                           ),

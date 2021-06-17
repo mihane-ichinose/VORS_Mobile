@@ -1,7 +1,6 @@
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
-import 'package:vors_project/util/dish.dart';
 import 'package:vors_project/util/home_page_items.dart';
 import 'package:vors_project/util/order_content.dart';
 
@@ -60,7 +59,7 @@ class _OrderDetailPageState extends State<OrderDetailPage> {
             SizedBox(
               height: 10.0,
             ),
-            Text(widget.restaurantName,
+            Text("at "+widget.restaurantName,
                 style: style.copyWith(color: Colors.white,
                   fontSize: 26,
                   fontWeight: FontWeight.bold,)
@@ -101,7 +100,7 @@ class _OrderDetailPageState extends State<OrderDetailPage> {
                       TextSpan(
                         text: "£",
                         style: style.copyWith(color: Color(0xFF17B2E0),
-                          fontFamily: "Ariel",
+                          fontFamily: "Arial",
                           fontWeight: FontWeight.bold,
                         ),
                       ),
@@ -145,7 +144,7 @@ class _OrderDetailPageState extends State<OrderDetailPage> {
                 TextSpan(
                   text: "£",
                   style: style.copyWith(color: Color(0xFF17B2E0),
-                    fontFamily: "Ariel",
+                    fontFamily: "Arial",
                     fontWeight: FontWeight.bold,
                   ),
                 ),

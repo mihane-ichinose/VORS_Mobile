@@ -2,13 +2,11 @@ import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:vors_project/order_detail_page.dart';
-import 'package:vors_project/util/home_page_items.dart';
 import 'package:vors_project/util/order.dart';
 import 'package:vors_project/util/restaurant.dart';
 
 
 class OrderPage extends StatefulWidget {
-
 
   final int customerId;
 
@@ -25,10 +23,12 @@ class _OrderPageState extends State<OrderPage> {
   late List<Order> pastOrderList = [];
   bool areOrdersFetched = false;
 
+  late List<Restaurant> restaurants = [];
 
   @override
   void initState(){
     super.initState();
+    fetchAllRestaurants(restaurants);
   }
 
   Future<bool> _goToOrderDetails(BuildContext context, int index, String restaurantName) {
@@ -53,9 +53,10 @@ class _OrderPageState extends State<OrderPage> {
           child: Column(
             children: <Widget>[
               Text("My orders",
-                  style: style.copyWith(color: Colors.white,
-                    fontSize: 32,
-                    fontWeight: FontWeight.bold,)
+                style: style.copyWith(color: Colors.white,
+                  fontSize: 32,
+                  fontWeight: FontWeight.bold,
+                ),
               ),
             ],
           ),
@@ -70,16 +71,22 @@ class _OrderPageState extends State<OrderPage> {
       itemBuilder: (BuildContext context, int index) {
         return GestureDetector(
           onTap: () => _goToOrderDetails(context, index,
-              activeOrderList[index].restaurantId.toString()),
+              restaurants.where((i) => i.id == activeOrderList[index].restaurantId).toList()[0].name.toString()),
           // onTap: () => print(activeOrderList[index].id),
           child: Container(
             height: 60,
             color: Colors.white,
             child: Container(
-              child:
-              Text(activeOrderList[index].restaurantId.toString(),
-                // TODO: implement restaurant fetch here by restaurantId after branch merged.
-                style: style.copyWith(color: Color(0xFF17B2E0)),),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: <Widget>[
+                  Text("at "+restaurants.where((i) => i.id == activeOrderList[index].restaurantId).toList()[0].name.toString(),
+                    style: style.copyWith(color: Color(0xFF17B2E0)),),
+                  Text("order ID: "+activeOrderList[index].id.toString(),
+                    style: style.copyWith(color: Color(0xFF17B2E0)),),
+                ],
+              )
+
             ),
           ),
         );
@@ -95,17 +102,20 @@ class _OrderPageState extends State<OrderPage> {
       itemBuilder: (BuildContext context, int index) {
         return GestureDetector(
           onTap: () => _goToOrderDetails(context, index,
-              pastOrderList[index].restaurantId.toString()),
+              restaurants.where((i) => i.id == pastOrderList[index].restaurantId).toList()[0].name.toString()),
           // onTap: () => print(pastOrderList[index].id),
 
           child: Container(
             height: 60,
             color: Colors.white,
-            child: Container(
-              child:
-              Text(pastOrderList[index].restaurantId.toString(),
-                // TODO: implement restaurant fetch here by restaurantId after branch merged.
-                style: style.copyWith(color: Color(0xFF17B2E0)),),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: <Widget>[
+                Text("at "+restaurants.where((i) => i.id == pastOrderList[index].restaurantId).toList()[0].name.toString(),
+                  style: style.copyWith(color: Color(0xFF17B2E0)),),
+                Text("order ID: "+pastOrderList[index].id.toString(),
+                  style: style.copyWith(color: Colors.grey,),),
+              ],
             ),
           ),
         );
@@ -117,7 +127,6 @@ class _OrderPageState extends State<OrderPage> {
   @override
   Widget build(BuildContext context) {
 
-    //final args = ModalRoute.of(context)!.settings.arguments as RestaurantPage;
     if(orderList.length == 0 && !areOrdersFetched) {
       fetchAllOrders(widget.customerId, orderList).then((value) {
         setState(() {
