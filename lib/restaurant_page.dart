@@ -98,8 +98,9 @@ class _RestaurantPageState extends State<RestaurantPage> {
   updateRestaurants(args, String search) {
     print(search);
     if (search == "" || search == null) {
+      this.widget.searched = this.widget.restaurants;
       setState(() {
-        _buildRestaurants(args, this.widget.restaurants);
+        _buildRestaurants(args, this.widget.searched);
       });
       return;
     }
@@ -118,8 +119,6 @@ class _RestaurantPageState extends State<RestaurantPage> {
 
   @override
   Widget build(BuildContext context) {
-
-    print(customerId);
 
     final args = ModalRoute
         .of(context)!

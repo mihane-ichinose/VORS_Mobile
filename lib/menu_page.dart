@@ -26,11 +26,14 @@ class MenuPage extends StatefulWidget {
 class _MenuPageState extends State<MenuPage> {
 
   late List<Dish> dishes = [];
+  late List<Dish> searched = [];
+
   var dishesFetched = false;
 
 
   void awaitDishes() async {
     dishes = await fetchAllDishes(widget.restaurantId);
+    searched = dishes;
   }
 
   @override
@@ -55,6 +58,9 @@ class _MenuPageState extends State<MenuPage> {
   Container _buildSearch() {
 
     final searchField = TextField(
+      onChanged: (text) => {
+        updateDishes(text)
+      },
       obscureText: false,
       style: style.copyWith(fontSize: 20),
       decoration: InputDecoration(
@@ -103,10 +109,10 @@ class _MenuPageState extends State<MenuPage> {
   Widget _buildHeader() {
     return ListView.separated(
       padding: const EdgeInsets.all(8),
-      itemCount: dishes.length,
+      itemCount: searched.length,
       itemBuilder: (BuildContext context, int index) {
         return GestureDetector(
-          onTap: () => _goToDishDetails(context, dishes[index], index+1),
+          onTap: () => _goToDishDetails(context, searched[index], index+1),
           child: Container(
             height: 120,
             color: Colors.white,
@@ -117,7 +123,7 @@ class _MenuPageState extends State<MenuPage> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Text(formulateDishName(index+1, dishes[index].name),
+                      Text(formulateDishName(index+1, searched[index].name),
                         style: style.copyWith(color: Color(0xFF17B2E0)),),
                       RichText(text: TextSpan(
                         text: "",
@@ -131,7 +137,7 @@ class _MenuPageState extends State<MenuPage> {
                             ),
                           ),
                           TextSpan(
-                            text: "${dishes[index].price}",
+                            text: "${searched[index].price}",
                             style: style.copyWith(color: Color(0xFF17B2E0),),
                           ),
                         ],
@@ -147,7 +153,7 @@ class _MenuPageState extends State<MenuPage> {
                           maxLines: 2,
                           overflow: TextOverflow.ellipsis,
                           text: TextSpan(
-                            text: '${dishes[index].ingredients}',
+                            text: '${searched[index].ingredients}',
                             style: style.copyWith(color: Colors.black,
                               fontSize: 18,),
                         ),
@@ -219,5 +225,26 @@ class _MenuPageState extends State<MenuPage> {
         ),
       ),
     );
+  }
+
+  updateDishes(String search) {
+    print(search);
+    if (search == "" || search == null) {
+      searched = dishes;
+      setState(() {
+        _buildHeader();
+      });
+      return;
+    }
+    searched = [];
+    for(Dish dish in dishes) {
+      if (dish.name.toLowerCase().contains(search.toLowerCase())) {
+        searched.add(dish);
+        print(dish.name);
+      }
+    }
+    setState(() {
+      _buildHeader();
+    });
   }
 }
