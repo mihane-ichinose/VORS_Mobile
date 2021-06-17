@@ -1,6 +1,7 @@
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
+import 'package:vors_project/main.dart';
 import 'package:vors_project/util/dish.dart';
 import 'package:vors_project/util/star_rating.dart';
 
@@ -273,7 +274,14 @@ class _DishPageState extends State<DishPage> {
       child: MaterialButton(
         minWidth: MediaQuery.of(context).size.width,
         padding: EdgeInsets.all(15.0),
-        onPressed: () {},
+        onPressed: () {
+          var newComment = commentField.controller!.text;
+          submitComment(customerId, widget.dishId, newComment);
+          comments.add(newComment);
+          setState(() {
+            _buildCommentSection();
+          });
+        },
         child: Text("➜",
           textAlign: TextAlign.center,
           style: style.copyWith(
