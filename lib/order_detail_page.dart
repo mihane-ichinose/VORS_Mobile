@@ -1,8 +1,9 @@
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
+import 'package:vors_project/util/dish.dart';
 import 'package:vors_project/util/home_page_items.dart';
-import 'package:vors_project/util/order.dart';
+import 'package:vors_project/util/order_content.dart';
 
 
 class OrderDetailPage extends StatefulWidget {
@@ -19,12 +20,14 @@ class OrderDetailPage extends StatefulWidget {
 
 class _OrderDetailPageState extends State<OrderDetailPage> {
 
-  late List<Order> orders = [];
+  late List<OrderedDish> dishes = [];
   late String title = "";
+  double totalPrice = 0;
+
 
   void awaitDishes() async {
-    orders = await fetchAllOrders(widget.orderId);
-    print(orders.toString());
+    dishes = await fetchOrderContent(widget.orderId);
+    print(dishes.toString());
   }
 
   @override
@@ -57,7 +60,7 @@ class _OrderDetailPageState extends State<OrderDetailPage> {
             SizedBox(
               height: 10.0,
             ),
-            Text("at Pizzeria", // TODO: implement restaurant fetch here by restaurantId after branch merged.
+            Text(widget.restaurantName,
                 style: style.copyWith(color: Colors.white,
                   fontSize: 26,
                   fontWeight: FontWeight.bold,)
@@ -68,15 +71,15 @@ class _OrderDetailPageState extends State<OrderDetailPage> {
     );
   }
 
-  final List<double> prices = <double>[5.99, 6.99, 6.49, 6.49, 6.49, 6.49, 6.49, 6.49, 6.49, 6.49];
-  late double totalPrice = 0.00;
 
   Widget _buildOrderList() {
+    for (OrderedDish dish in dishes) {
+      totalPrice += dish.price;
+    }
     return ListView.separated(
       padding: const EdgeInsets.all(8),
-      itemCount: orders.length,
+      itemCount: dishes.length,
       itemBuilder: (BuildContext context, int index) {
-        totalPrice += prices[index];
         return GestureDetector(
           onTap: () => ScaffoldMessenger
               .of(context)
@@ -89,10 +92,10 @@ class _OrderDetailPageState extends State<OrderDetailPage> {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Text((index+1).toString()+'. ${orders[index].name}\n',
+                  Text((index+1).toString()+'. ${dishes[index].name}\n',
                     style: style.copyWith(color: Color(0xFF17B2E0)),),
                   RichText(text: TextSpan(
-                    text: "${orders[index].orderCount} x ",
+                    text: "${dishes[index].price} x ",
                     style: style.copyWith(color: Color(0xFF17B2E0)),
                     children: <TextSpan>[
                       TextSpan(
@@ -103,7 +106,7 @@ class _OrderDetailPageState extends State<OrderDetailPage> {
                         ),
                       ),
                       TextSpan(
-                        text: "${prices[index]}",
+                        text: "${dishes[index].price}",
                         style: style.copyWith(color: Color(0xFF17B2E0),),
                       ),
                     ],

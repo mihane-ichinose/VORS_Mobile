@@ -2,45 +2,44 @@ import 'dart:async';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 
-const ordersUrl = 'http://84.238.224.41:5005/customer/order_content';
+const ordersUrl = 'http://84.238.224.41:5005/customer/orders';
 
 class Order {
-  final int dishId;
+  final int id;
+  final int customerId;
   final int restaurantId;
-  final String name;
-  final int orderCount;
+  final int tableNumber;
+  final bool active;
 
   Order({
-    required this.dishId,
+    required this.id,
+    required this.customerId,
     required this.restaurantId,
-    required this.name,
-    required this.orderCount,
+    required this.tableNumber,
+    required this.active,
   });
 
   String toString() {
-    return " " + dishId.toString() + " " + restaurantId.toString() + " " + name + " " + orderCount.toString();
+    return " " + customerId.toString() + " " + restaurantId.toString() + " " + tableNumber.toString() + " " + active.toString();
   }
 }
 
 
 Order fromJson(Map<String, dynamic> json) {
   int id = json['id'];
+  int customerId = json['customerId'];
   int restaurantId = json['restaurantId'];
-  String name = "";
-  if (json['name'] is String) {
-    name = json['name'];
-  }
-  int orderCount = json['orderCount'];
-  return Order(dishId: id, restaurantId: restaurantId, name: name, orderCount: orderCount);
+  int tableNumber = json['tableNumber'];
+  bool active = json['active'];
+  return Order(id: id, customerId: customerId, restaurantId: restaurantId,
+      tableNumber: tableNumber, active: active);
 }
 
 
-Future<List<Order>> fetchAllOrders(int orderId) async {
-
-  List<Order> orders = [];
+Future<List<Order>> fetchAllOrders(int customerId, List<Order> orders) async {
 
   final response = await http.get(
-    Uri.parse(ordersUrl + "?orderId=" + orderId.toString()),
+    Uri.parse(ordersUrl + "?customerId=" + customerId.toString()),
     headers: {},
   );
 
@@ -48,10 +47,10 @@ Future<List<Order>> fetchAllOrders(int orderId) async {
 
   if (response.statusCode == 200) {
     // If the server did return a 200 OK response,
-    // then parse the orders
+    // then parse the order list.
     print("Connection established.");
-    Iterable ordersJson = json.decode(response.body);
-    ordersJson.forEach((json) {
+    Iterable orderListJson = json.decode(response.body);
+    orderListJson.forEach((json) {
       orders.add(fromJson(json));
     });
     return orders;

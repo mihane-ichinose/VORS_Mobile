@@ -1,5 +1,9 @@
+import 'dart:collection';
+
 import 'package:http/http.dart' as http;
 import 'dart:convert';
+
+import 'package:vors_project/util/order.dart';
 
 final restaurantsUrl = "http://84.238.224.41:5005/restaurants";
 
@@ -92,25 +96,18 @@ Future<void> fetchAllRestaurants(List<Restaurant> restaurants) async {
   }
 
 }
-
-// Future<Restaurant> fetchRestaurant(int restaurantId) async {
-//   final response = await http.get(
-//     Uri.parse(url + "?restaurantId=" + restaurantId.toString()),
-//     headers: {},
-//   );
 //
-//   if (response.statusCode == 200) {
-//     // If the server did return a 200 OK response,
-//     // then parse the user details
-//     return Restaurant.fromString(response.body);
-//
-//     // then parse the restaurant details
-//     print("Connection established.");
-//   } else {
-//     // If the server did not return a 200 OK response,
-//     // then throw an exception.
-//     throw Exception('Connection failed.');
+// Future<void> fetchRestaurantNamesToId(Map<int, String> names, List<Order> orders) async {
+//   Set<int> ids = new HashSet();
+//   for (Order order in orders) {
+//     ids.add(order.restaurantId);
 //   }
-//
-//
+//   for (int id in ids) {
+//     final response = await http.get(
+//         Uri.parse("http://84.238.224.41:5005/customer/restaurant_name"
+//              + "?restaurantId=" + id.toString()),
+//         headers: {}
+//     );
+//     names.putIfAbsent(id, () => response.body);
+//   }
 // }

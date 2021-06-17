@@ -3,10 +3,12 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:vors_project/order_detail_page.dart';
 import 'package:vors_project/util/home_page_items.dart';
-import 'package:vors_project/util/orderList.dart';
+import 'package:vors_project/util/order.dart';
+import 'package:vors_project/util/restaurant.dart';
 
 
 class OrderPage extends StatefulWidget {
+
 
   final int customerId;
 
@@ -18,27 +20,21 @@ class OrderPage extends StatefulWidget {
 
 class _OrderPageState extends State<OrderPage> {
 
-  late List<OrderList> orderList = [];
-  late List<OrderList> activeOrderList = [];
-  late List<OrderList> pastOrderList = [];
+  late List<Order> orderList = [];
+  late List<Order> activeOrderList = [];
+  late List<Order> pastOrderList = [];
+  bool areOrdersFetched = false;
 
-  void awaitDishes() async {
-    orderList = await fetchAllOrderLists(widget.customerId);
-    activeOrderList = orderList.where((i) => i.active).toList();
-    pastOrderList = orderList.where((i) => !i.active).toList();
-    print(activeOrderList.toString());
-    print(pastOrderList.toString());
-  }
 
   @override
   void initState(){
     super.initState();
-    awaitDishes();
   }
 
   Future<bool> _goToOrderDetails(BuildContext context, int index, String restaurantName) {
     return Navigator.of(context)
-        .push(MaterialPageRoute(builder: (context) => new OrderDetailPage(orderList[index].orderId, orderList[index].active, restaurantName)))
+        .push(MaterialPageRoute(builder: (context)
+          => new OrderDetailPage(orderList[index].id, orderList[index].active, restaurantName)))
         .then((_) => false);
   }
 
@@ -73,13 +69,16 @@ class _OrderPageState extends State<OrderPage> {
       itemCount: activeOrderList.length,
       itemBuilder: (BuildContext context, int index) {
         return GestureDetector(
-          onTap: () => _goToOrderDetails(context, index, "Pizzeria"),
+          onTap: () => _goToOrderDetails(context, index,
+              activeOrderList[index].restaurantId.toString()),
+          // onTap: () => print(activeOrderList[index].id),
           child: Container(
             height: 60,
             color: Colors.white,
             child: Container(
               child:
-              Text("at Pizzeria", // TODO: implement restaurant fetch here by restaurantId after branch merged.
+              Text(activeOrderList[index].restaurantId.toString(),
+                // TODO: implement restaurant fetch here by restaurantId after branch merged.
                 style: style.copyWith(color: Color(0xFF17B2E0)),),
             ),
           ),
@@ -95,13 +94,17 @@ class _OrderPageState extends State<OrderPage> {
       itemCount: pastOrderList.length,
       itemBuilder: (BuildContext context, int index) {
         return GestureDetector(
-          onTap: () => _goToOrderDetails(context, index, "Pizzeria"),
+          onTap: () => _goToOrderDetails(context, index,
+              pastOrderList[index].restaurantId.toString()),
+          // onTap: () => print(pastOrderList[index].id),
+
           child: Container(
             height: 60,
             color: Colors.white,
             child: Container(
               child:
-              Text("at Pizzeria", // TODO: implement restaurant fetch here by restaurantId after branch merged.
+              Text(pastOrderList[index].restaurantId.toString(),
+                // TODO: implement restaurant fetch here by restaurantId after branch merged.
                 style: style.copyWith(color: Color(0xFF17B2E0)),),
             ),
           ),
@@ -115,7 +118,18 @@ class _OrderPageState extends State<OrderPage> {
   Widget build(BuildContext context) {
 
     //final args = ModalRoute.of(context)!.settings.arguments as RestaurantPage;
-
+    if(orderList.length == 0 && !areOrdersFetched) {
+      fetchAllOrders(widget.customerId, orderList).then((value) {
+        setState(() {
+              activeOrderList = orderList.where((i) => i.active).toList();
+              pastOrderList = orderList.where((i) => !i.active).toList();
+              areOrdersFetched = true;
+              for (Order order in orderList) {
+                print(order.id);
+              }
+          });
+        });
+      }
 
     return Material(
       child: Scaffold(
