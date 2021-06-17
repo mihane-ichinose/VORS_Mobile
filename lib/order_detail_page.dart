@@ -1,14 +1,13 @@
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
-import 'package:vors_project/util/dish.dart';
 import 'package:vors_project/util/home_page_items.dart';
 import 'package:vors_project/util/order_content.dart';
 
 
 class OrderDetailPage extends StatefulWidget {
 
-  bool isCurrent = false;
+  final bool isCurrent = false;
   final int orderId;
   final bool active;
   final String restaurantName;

@@ -14,30 +14,36 @@ class DishPage extends StatefulWidget {
   final int dishId;
   final int dishIndex;
   final String dishName;
-  final double rating;
   final String ingredients;
   final String allergens;
   final String type;
   final double price;
 
 
-  DishPage(this.dishId, this.dishIndex, this.dishName, this.rating, this.ingredients, this.allergens, this.type, this.price,);
+  DishPage(this.dishId, this.dishIndex, this.dishName, this.ingredients, this.allergens, this.type, this.price,);
 
   @override
   _DishPageState createState() => _DishPageState();
 }
 
 class _DishPageState extends State<DishPage> {
-  bool dishCommentsFetched = false;
-  List<String> comments = [];
 
   final commentController = TextEditingController();
 
+  late bool dishCommentsFetched = false;
+  late bool dishRatingFetched = false;
+  late List<String> comments = [];
+  late double rating = -1;
   late double currentRating = 5.0;
+
+  void awaitDishRating() async {
+    rating = await fetchDishRating(widget.dishId);
+  }
 
   @override
   void initState(){
     super.initState();
+    awaitDishRating();
   }
 
   TextStyle style = TextStyle(
@@ -83,12 +89,12 @@ class _DishPageState extends State<DishPage> {
                width: 10,
              ),
              RichText(text: TextSpan(
-               text: (widget.rating >= 0.1) ?
-              widget.rating.toStringAsFixed(1) : "No ratings",
+               text: (rating >= 0.1) ?
+              rating.toStringAsFixed(1) : ((rating != -1) ? "No ratings" : ""),
               style: style.copyWith(color: Color(0xFF17B2E0),),
               children: <TextSpan>[
                 TextSpan(
-                  text: (widget.rating >= 0.1) ? "★" : "",
+                  text: (rating >= 0.1) ? "★" : "",
                   style: style.copyWith(color: Color(0xFF17B2E0),
                     fontFamily: "Arial",
                     fontWeight: FontWeight.bold,
@@ -202,13 +208,27 @@ class _DishPageState extends State<DishPage> {
   }
 
   Widget _buildCommentSection() {
-    return ListView.builder(
+    return ListView.separated(
       scrollDirection: Axis.vertical,
       shrinkWrap: true,
-      itemCount:comments.length,
+      itemCount: comments.length,
       itemBuilder: (BuildContext context, int index) {
-        return Text(comments[index]);
+        return Container(
+          height: 60,
+          color: Colors.white,
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: <Widget>[
+              SizedBox(
+                width: 20,
+              ),
+              Text(comments[comments.length - index - 1], // Show comments from newest to oldest.
+                style: style.copyWith(color: Color(0xFF17B2E0)),),
+            ],
+          ),
+        );
       },
+      separatorBuilder: (BuildContext context, int index) => const Divider(),
     );
   }
 
@@ -222,6 +242,15 @@ class _DishPageState extends State<DishPage> {
           comments.forEach((element) => print(element));
           build(context);
         })
+      });
+    }
+
+    if(!dishRatingFetched) {
+      awaitDishRating();
+      setState(() {
+        dishCommentsFetched = true;
+        print(rating.toStringAsFixed(1));
+        _buildHeader();
       });
     }
 
@@ -275,12 +304,14 @@ class _DishPageState extends State<DishPage> {
         minWidth: MediaQuery.of(context).size.width,
         padding: EdgeInsets.all(15.0),
         onPressed: () {
-          var newComment = commentField.controller!.text;
+          var newComment = commentController.text;
+          if (newComment == "" || newComment.isEmpty) return;
           submitComment(customerId, widget.dishId, newComment);
           comments.add(newComment);
           setState(() {
             _buildCommentSection();
           });
+          commentController.clear();
         },
         child: Text("➜",
           textAlign: TextAlign.center,
@@ -298,13 +329,14 @@ class _DishPageState extends State<DishPage> {
       child: MaterialButton(
         minWidth: MediaQuery.of(context).size.width,
         padding: EdgeInsets.all(15.0),
-        onPressed: () {
+        onPressed: ()  {
           submitRating(widget.dishId, currentRating);
+          awaitDishRating();
           setState(() {
-            build(context);
+            _buildHeader();
           });
         },
-        child: Text("➜",
+        child: Text("Rate",
           textAlign: TextAlign.center,
           style: style.copyWith(
             color: Colors.white,
@@ -344,7 +376,9 @@ class _DishPageState extends State<DishPage> {
               SizedBox(
                 height: 20,
               ),
-              Center(
+              Container(
+                width: 150,
+                height: 50,
                 child: submitRatingButton,
               ),
               SizedBox(
@@ -382,6 +416,9 @@ class _DishPageState extends State<DishPage> {
                     style: style.copyWith(color: Color(0xFF43F2EB),),
                   ),
                 ],
+              ),
+              SizedBox(
+                height: 10,
               ),
               _buildCommentSection(),
             ],

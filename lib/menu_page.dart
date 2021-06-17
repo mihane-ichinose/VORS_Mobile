@@ -41,7 +41,7 @@ class _MenuPageState extends State<MenuPage> {
   Future<bool> _goToDishDetails(BuildContext context, Dish dish, int dishIndex) {
     return Navigator.of(context)
         .push(MaterialPageRoute(builder: (context) =>
-        DishPage(dish.dishId, dishIndex, dish.name, dish.rating, dish.ingredients, dish.allergens, dish.dishType, dish.price)))
+        DishPage(dish.dishId, dishIndex, dish.name, dish.ingredients, dish.allergens, dish.dishType, dish.price)))
         .then((_) => false);
   }
 

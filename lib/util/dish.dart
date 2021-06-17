@@ -4,6 +4,7 @@ import 'package:http/http.dart' as http;
 
 const dishesUrl = 'http://84.238.224.41:5005/customer/dishes_of_restaurant';
 const commentsUrl = 'http://84.238.224.41:5005/customer/dish_comments';
+const ratingUrl = 'http://84.238.224.41:5005/customer/dish_rating';
 const submitCommentUrl = 'http://84.238.224.41:5005/dish/comment';
 const submitRatingUrl = 'http://84.238.224.41:5005/dish/rate';
 
@@ -105,6 +106,28 @@ Future<void> fetchDishComments(int dishId, List<String> comments) async {
     commentsJson.forEach((json) {
       comments.add(json['comment']);
     });
+  } else {
+    // If the server did not return a 200 OK response,
+    // then throw an exception.
+    print("Connection failed.");
+    throw Exception('Connection failed.');
+  }
+}
+
+Future<double> fetchDishRating(int dishId) async {
+
+  final response = await http.get(
+    Uri.parse(ratingUrl + "?dishId=" + dishId.toString()),
+    headers: {},
+  );
+
+  print(response.body);
+
+  if (response.statusCode == 200) {
+    // If the server did return a 200 OK response,
+    // then parse the dishes
+    print("Connection established.");
+    return double.parse(response.body);
   } else {
     // If the server did not return a 200 OK response,
     // then throw an exception.
