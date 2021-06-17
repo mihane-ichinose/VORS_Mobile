@@ -1,10 +1,12 @@
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
-import 'package:vors_project/restaurant_page.dart';
 import 'package:vors_project/util/dish.dart';
 import 'package:vors_project/util/home_page_items.dart';
 
+
+const MAX_DESCRIPTION_LENGTH = 83;
+const MAX_NAME_LENGTH = 17;
 
 class MenuPage extends StatefulWidget {
 
@@ -24,6 +26,8 @@ class MenuPage extends StatefulWidget {
 class _MenuPageState extends State<MenuPage> {
 
   late List<Dish> dishes = [];
+  var dishesFetched = false;
+
 
   void awaitDishes() async {
     dishes = await fetchAllDishes(widget.restaurantId);
@@ -69,76 +73,24 @@ class _MenuPageState extends State<MenuPage> {
           searchField,
         ],
       )
-      // actions: <Widget>[
-      //   userBtn,
-      //   SizedBox(width: 10),
-      // ],
     );
   }
 
-  final List<double> prices = <double>[5.99, 6.99, 6.49, 6.49, 6.49, 6.49, 6.49, 6.49, 6.49, 6.49];
-  // final List<Dish> dishes = <Dish>[
-  //   new Dish(dishId: 1,
-  //       name: "Margherita",
-  //       ingredients: "Pizza dough, tomato sauce, cheese, tomato",
-  //       allergens: "none",
-  //       type: "non-vegeterian",
-  //       rating: 4.8),
-  //   new Dish(dishId: 2,
-  //       name: "Pepperoni",
-  //       ingredients: "Pizza dough, tomato sauce, cheese, pepperoni",
-  //       allergens: "none",
-  //       type: "non-vegeterian",
-  //       rating: 4.9),
-  //   new Dish(dishId: 3,
-  //       name: "Quattro formaggi",
-  //       ingredients: "Pizza dough, tomato sauce, cheese, cheddar, emmental,",
-  //       allergens: "none",
-  //       type: "vegeterian",
-  //       rating: 4.7),
-  //   new Dish(dishId: 3,
-  //       name: "Quattro formaggi",
-  //       ingredients: "Pizza dough, tomato sauce, cheese, cheddar, emmental,",
-  //       allergens: "none",
-  //       type: "vegeterian",
-  //       rating: 4.7),
-  //   new Dish(dishId: 3,
-  //       name: "Quattro formaggi",
-  //       ingredients: "Pizza dough, tomato sauce, cheese, cheddar, emmental,",
-  //       allergens: "none",
-  //       type: "vegeterian",
-  //       rating: 4.7),
-  //   new Dish(dishId: 3,
-  //       name: "Quattro formaggi",
-  //       ingredients: "Pizza dough, tomato sauce, cheese, cheddar, emmental,",
-  //       allergens: "none",
-  //       type: "vegeterian",
-  //       rating: 4.7),
-  //   new Dish(dishId: 3,
-  //       name: "Quattro formaggi",
-  //       ingredients: "Pizza dough, tomato sauce, cheese, cheddar, emmental,",
-  //       allergens: "none",
-  //       type: "vegeterian",
-  //       rating: 4.7),
-  //   new Dish(dishId: 3,
-  //       name: "Quattro formaggi",
-  //       ingredients: "Pizza dough, tomato sauce, cheese, cheddar, emmental,",
-  //       allergens: "none",
-  //       type: "vegeterian",
-  //       rating: 4.7),
-  //   new Dish(dishId: 3,
-  //       name: "Quattro formaggi",
-  //       ingredients: "Pizza dough, tomato sauce, cheese, cheddar, emmental,",
-  //       allergens: "none",
-  //       type: "vegeterian",
-  //       rating: 4.7),
-  //   new Dish(dishId: 3,
-  //       name: "Quattro formaggi",
-  //       ingredients: "Pizza dough, tomato sauce, cheese, cheddar, emmental,",
-  //       allergens: "none",
-  //       type: "vegeterian",
-  //       rating: 4.7),
-  // ];
+  ImageProvider<Object> imageGenerator(String imgUrl) {
+    if (imgUrl == "") {
+      return AssetImage("assets/images/no_image.png");
+    } else {
+      return NetworkImage(imgUrl);
+    }
+  }
+
+  String formulateDishName(int index, String name) {
+    String newName = name;
+    if (name.length > MAX_NAME_LENGTH) {
+      newName = name.substring(0,MAX_NAME_LENGTH)+'...';
+    }
+    return index.toString()+'. ' + newName +'\n';
+  }
 
   Widget _buildHeader() {
     return ListView.separated(
@@ -151,7 +103,7 @@ class _MenuPageState extends State<MenuPage> {
               .showSnackBar(DefaultSnackBar().withText(
               'Clicked item number '+index.toString(), context),),
           child: Container(
-            height: 100,
+            height: 120,
             color: Colors.white,
             child: Container(
               child: Column(
@@ -160,21 +112,21 @@ class _MenuPageState extends State<MenuPage> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Text((index+1).toString()+'. ${dishes[index].name}\n',
+                      Text(formulateDishName(index+1, dishes[index].name),
                         style: style.copyWith(color: Color(0xFF17B2E0)),),
                       RichText(text: TextSpan(
-                        text: "from ",
+                        text: "",
                         style: style.copyWith(color: Color(0xFF17B2E0)),
                         children: <TextSpan>[
                           TextSpan(
                             text: "£",
                             style: style.copyWith(color: Color(0xFF17B2E0),
-                              fontFamily: "Ariel",
+                              fontFamily: "Arial",
                               fontWeight: FontWeight.bold,
                             ),
                           ),
                           TextSpan(
-                            text: "${prices[index]}",
+                            text: "${dishes[index].price}",
                             style: style.copyWith(color: Color(0xFF17B2E0),),
                           ),
                         ],
@@ -211,7 +163,15 @@ class _MenuPageState extends State<MenuPage> {
   @override
   Widget build(BuildContext context) {
 
-    //final args = ModalRoute.of(context)!.settings.arguments as RestaurantPage;
+    if (dishes.length == 0 && !dishesFetched) {
+
+      fetchAllDishes(widget.restaurantId).then((value) => {
+        setState(() {
+          dishesFetched = true;
+          build(context);
+        })
+      });
+    }
 
     return Material(
       child: Scaffold(
@@ -220,22 +180,26 @@ class _MenuPageState extends State<MenuPage> {
             Stack(
               alignment: Alignment.topCenter,
               children: [
-                Image.asset(widget.imgUrl,
-                  width: 1000,
+                Image(image: imageGenerator(widget.imgUrl),
                 ),
                 Container(
-                  width: 150,
+
                   height: 40,
                   decoration: BoxDecoration(
                       color: Colors.white.withOpacity(0.8),
                       borderRadius: BorderRadius.all(Radius.circular(10.0))
                   ),
-                  child: Center(
-                    child: Text(widget.restaurantName,
-                      style: style.copyWith(color: Color(0xFF43F2EB)),
-                      textAlign: TextAlign.center,
-                    ),
-                  )
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: <Widget>[
+                      Center(
+                        child: Text(" "+widget.restaurantName+" ",
+                          style: style.copyWith(color: Color(0xFF43F2EB)),
+                          textAlign: TextAlign.center,
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
               ],
             ),

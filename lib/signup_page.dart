@@ -63,12 +63,12 @@ class _SignupPageState extends State<SignupPage> {
     final passwordField = DefaultSignUpTextField()
         .withStyle(style)
         .withText("Password")
-        .build();
+        .buildAsPasswordField();
 
     final confirmPasswordField = DefaultSignUpTextField()
         .withStyle(style)
         .withText("Confirm password")
-        .build();
+        .buildAsPasswordField();
 
     final signupButton = Material(
       borderRadius: BorderRadius.circular(30.0),
@@ -182,7 +182,7 @@ class _SignupPageState extends State<SignupPage> {
                   SizedBox(
                     height: 40.0,
                   ),
-                  Text("Sign Up", style: TextStyle(fontFamily: "Futura", fontSize: 90, color: Colors.white)),
+                  Text("Sign Up", style: TextStyle(fontFamily: "Futura", fontSize: 75, color: Colors.white)),
                   SizedBox(
                     height: 10.0,
                   ),

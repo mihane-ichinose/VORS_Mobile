@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:vors_project/main.dart';
+import 'package:vors_project/restaurant_page.dart';
+import 'package:vors_project/user_page.dart';
 import 'package:vors_project/util/users.dart';
 import 'package:vors_project/util/home_page_items.dart';
 
 class LoginPage extends StatefulWidget {
-  final int customerId;
-  final String username;
 
-  LoginPage(this.customerId, this.username);
+  LoginPage();
 
   @override
   _LoginPageState createState() => _LoginPageState();
@@ -26,6 +27,8 @@ class _LoginPageState extends State<LoginPage> {
     try {
 
       user =  await fetchAuthentication(credential, password);
+      customerId = user.customerId;
+      username = user.name;
       connectionFailed = false;
     } catch (e) {
       print(e.toString());
@@ -41,6 +44,7 @@ class _LoginPageState extends State<LoginPage> {
     super.initState();
   }
 
+
   Future<Object?> _gotoRestaurant(BuildContext context, LoginPage loginPage) {
     return Navigator.of(context)
         .pushNamedAndRemoveUntil('/login', (Route<dynamic> route) => false,
@@ -48,6 +52,7 @@ class _LoginPageState extends State<LoginPage> {
     // We will clean all existing routes and pass in customerId when login.
 
   }
+
 
   Future<bool> _signup(BuildContext context) {
     return Navigator.of(context)
@@ -79,7 +84,7 @@ class _LoginPageState extends State<LoginPage> {
         .withStyle(style)
         .withController(passwordController)
         .withText("Password")
-        .build();
+        .buildAsPasswordField();
 
     final loginButton = Material(
       borderRadius: BorderRadius.circular(30.0),
@@ -111,7 +116,7 @@ class _LoginPageState extends State<LoginPage> {
             if (user.customerId != -1) {
               // If both forms are valid and server is authenticated,
               // go to the restaurant page.
-              LoginPage loginPage = new LoginPage(user.getCustomerId(), usernameController.text);
+              LoginPage loginPage = new LoginPage();
               _gotoRestaurant(context, loginPage);
             } else if (user.customerId == -1) {
               ScaffoldMessenger.of(context).showSnackBar(

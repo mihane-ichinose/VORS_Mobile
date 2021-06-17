@@ -1,10 +1,22 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:vors_project/main.dart';
+import 'package:vors_project/user_page.dart';
 
+import 'package:vors_project/util/restaurant_page_items.dart';
+import 'package:vors_project/util/restaurant.dart';
+
+
+import 'menu_page.dart';
+
+
+// List<Restaurant> restaurants = [];
 
 class RestaurantPage extends StatefulWidget {
   final int customerId;
   final String username;
+  final List<Restaurant> restaurants = [];
+
 
   RestaurantPage(this.customerId, this.username);
 
@@ -13,10 +25,20 @@ class RestaurantPage extends StatefulWidget {
 }
 
 class _RestaurantPageState extends State<RestaurantPage> {
-  Future<bool> _goToUser(BuildContext context, RestaurantPage restaurantPage) {
+
+  @override
+  void initState() {
+    super.initState();
+  }
+
+  Future<bool> _goToUser(BuildContext context) {
     return Navigator.of(context)
-        .pushNamed('/user', arguments: restaurantPage)
+        // .pushNamed('/user', arguments: restaurantPage)
     // We want to pop the user profile here.
+        .push(MaterialPageRoute(builder: (context) =>
+        UserPage()
+        ))
+
         .then((_) => false);
   }
 
@@ -27,13 +49,14 @@ class _RestaurantPageState extends State<RestaurantPage> {
   );
 
   AppBar _buildAppBar(args) {
-
     final userBtn = IconButton(
       icon: const Icon(FontAwesomeIcons.user),
       color: Colors.black,
       tooltip: "User Profile",
-      onPressed: () => _goToUser(context, new RestaurantPage(args.customerId, args.username)),
+      onPressed: () =>
+          _goToUser(context)
     );
+
 
     final searchField = TextField(
       obscureText: false,
@@ -64,20 +87,40 @@ class _RestaurantPageState extends State<RestaurantPage> {
     );
   }
 
-  Widget _buildHeader(args) {
-    // TODO: Need the restaurant list here.
-    return Container();
+
+  Widget _buildRestaurants(args) {
+    return restaurantsList(this.widget.restaurants, context);
   }
 
   @override
   Widget build(BuildContext context) {
 
-    final args = ModalRoute.of(context)!.settings.arguments;
+    print(customerId);
 
-    return Scaffold(
-      backgroundColor: Colors.white,
-      appBar: _buildAppBar(args),
-      body: _buildHeader(args),
+    final args = ModalRoute
+        .of(context)!
+        .settings
+        .arguments;
+
+
+    var body = _buildRestaurants(args);
+
+    var result = Scaffold(
+        backgroundColor: Colors.white,
+        appBar: _buildAppBar(args),
+        body: body
     );
+
+    if (widget.restaurants.length == 0) {
+      fetchAllRestaurants(this.widget.restaurants).then((value) =>
+      {
+        setState(() {
+          body = _buildRestaurants(args);
+        })
+      });
+    }
+
+    return result;
+
   }
 }

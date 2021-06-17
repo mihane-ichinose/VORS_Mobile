@@ -1,7 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:vors_project/restaurant_page.dart';
+import 'package:vors_project/order_page.dart';
+
+import 'main.dart';
 
 class UserPage extends StatefulWidget {
+
+  UserPage();
+
   @override
   _UserPageState createState() => _UserPageState();
 }
@@ -36,23 +41,38 @@ class _UserPageState extends State<UserPage> {
   }
 
   Widget _buildHeader(args) {
-    // TODO: Need the user profile here.
     return Container(
       child: Column(
         children: <Widget>[
-          Text("Customer id: "+args.customerId.toString(),
+          Text("Customer id: "+ customerId.toString(),
             style: style.copyWith(
               fontWeight: FontWeight.bold,
               color: Colors.black,
             ),
           ),
-          Text("Username: "+args.username,
+          Text("Username: "+ username,
             style: style.copyWith(
               fontWeight: FontWeight.bold,
               color: Colors.black,
             ),
           ),
           SizedBox(height: 10.0),
+          Material(
+            borderRadius: BorderRadius.circular(30.0),
+            color: Color(0xFF43F2EB),
+              child: MaterialButton(
+                // minWidth: MediaQuery.of(context).size.width,
+                minWidth: 140,
+                padding: EdgeInsets.all(15.0),
+                onPressed: () => _gotoOrders(context, customerId),
+                child: Text("My orders",
+                textAlign: TextAlign.center,
+                style: style.copyWith(
+                color: Colors.white,
+                fontWeight: FontWeight.bold)
+              ),
+            ),
+          )
         ],
       ),
     );
@@ -61,7 +81,7 @@ class _UserPageState extends State<UserPage> {
   @override
   Widget build(BuildContext context) {
 
-    final args = ModalRoute.of(context)!.settings.arguments as RestaurantPage;
+    final args = ModalRoute.of(context)!.settings.arguments;
 
     final logoutButton = Material(
       borderRadius: BorderRadius.circular(30.0),
@@ -93,6 +113,9 @@ class _UserPageState extends State<UserPage> {
                   height: 40.0,
                 ),
                 _buildHeader(args),
+                SizedBox(
+                  height: 10.0,
+                ),
                 Container(
                   width: 150,
                   child: logoutButton,
@@ -104,4 +127,13 @@ class _UserPageState extends State<UserPage> {
       ),
     );
   }
+
+
+  Future<bool> _gotoOrders(BuildContext context, int customerId) {
+    return Navigator.of(context)
+        .push(MaterialPageRoute(builder: (context)
+    => new OrderPage(customerId)))
+        .then((_) => false);
+  }
+
 }
