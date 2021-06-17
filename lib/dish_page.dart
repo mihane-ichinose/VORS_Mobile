@@ -36,14 +36,10 @@ class _DishPageState extends State<DishPage> {
   late double rating = -1;
   late double currentRating = 5.0;
 
-  void awaitDishRating() async {
-    rating = await fetchDishRating(widget.dishId);
-  }
 
   @override
   void initState(){
     super.initState();
-    awaitDishRating();
   }
 
   TextStyle style = TextStyle(
@@ -246,11 +242,12 @@ class _DishPageState extends State<DishPage> {
     }
 
     if(!dishRatingFetched) {
-      awaitDishRating();
-      setState(() {
-        dishCommentsFetched = true;
-        print(rating.toStringAsFixed(1));
-        _buildHeader();
+      fetchDishRating(widget.dishId).then((fetchedRating) => {
+        setState(() {
+          rating = fetchedRating;
+          dishRatingFetched = true;
+          _buildHeader();
+        })
       });
     }
 
@@ -330,10 +327,13 @@ class _DishPageState extends State<DishPage> {
         minWidth: MediaQuery.of(context).size.width,
         padding: EdgeInsets.all(15.0),
         onPressed: ()  {
-          submitRating(widget.dishId, currentRating);
-          awaitDishRating();
-          setState(() {
-            _buildHeader();
+          submitRating(widget.dishId, currentRating).then((value) => {
+            fetchDishRating(widget.dishId).then((ratingFetched) => {
+              setState(() {
+                rating = ratingFetched;
+                _buildHeader();
+              })
+            })
           });
         },
         child: Text("Rate",

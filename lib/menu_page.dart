@@ -3,6 +3,7 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:vors_project/util/dish.dart';
 import 'package:vors_project/dish_page.dart';
+import 'package:vors_project/util/general.dart';
 
 const MAX_DESCRIPTION_LENGTH = 83;
 const MAX_NAME_LENGTH = 17;
@@ -51,11 +52,11 @@ class _MenuPageState extends State<MenuPage> {
     fontSize: 26,
   );
 
-  AppBar _buildAppBar() {
+  Container _buildSearch() {
 
     final searchField = TextField(
       obscureText: false,
-      style: style,
+      style: style.copyWith(fontSize: 20),
       decoration: InputDecoration(
         filled: true,
         fillColor: Color(0xFF43F2EB),
@@ -72,9 +73,10 @@ class _MenuPageState extends State<MenuPage> {
       ),
     );
 
-    return AppBar(
-      backgroundColor: Color(0xFF17B2E0),
-      title: Column(
+    return Container(
+      color: Color(0xFF17B2E0),
+      padding: EdgeInsets.all(10),
+      child: Column(
         children: <Widget>[
           searchField,
         ],
@@ -178,6 +180,9 @@ class _MenuPageState extends State<MenuPage> {
 
     return Material(
       child: Scaffold(
+        appBar: AppBar(
+          backgroundColor: Color(0xFF17B2E0),
+        ),
         body: Column(
           children: [
             Stack(
@@ -196,7 +201,7 @@ class _MenuPageState extends State<MenuPage> {
                     mainAxisSize: MainAxisSize.min,
                     children: <Widget>[
                       Center(
-                        child: Text(" "+widget.restaurantName+" ",
+                        child: Text(" "+formulateString(widget.restaurantName, 20)+" ",
                           style: style.copyWith(color: Color(0xFF43F2EB)),
                           textAlign: TextAlign.center,
                         ),
@@ -206,7 +211,7 @@ class _MenuPageState extends State<MenuPage> {
                 ),
               ],
             ),
-            _buildAppBar(),
+            _buildSearch(),
             Expanded(
               child: _buildHeader(),
             ),

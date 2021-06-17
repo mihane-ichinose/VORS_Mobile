@@ -7,15 +7,12 @@ import 'package:vors_project/util/restaurant_page_items.dart';
 import 'package:vors_project/util/restaurant.dart';
 
 
-import 'menu_page.dart';
-
-
-// List<Restaurant> restaurants = [];
 
 class RestaurantPage extends StatefulWidget {
   final int customerId;
   final String username;
   final List<Restaurant> restaurants = [];
+  List<Restaurant> searched = [];
 
 
   RestaurantPage(this.customerId, this.username);
@@ -58,7 +55,12 @@ class _RestaurantPageState extends State<RestaurantPage> {
     );
 
 
+
     final searchField = TextField(
+      onChanged: (text) {
+        print(text);
+        updateRestaurants(args, text);
+      },
       obscureText: false,
       style: style,
       decoration: InputDecoration(
@@ -68,7 +70,7 @@ class _RestaurantPageState extends State<RestaurantPage> {
         hintText: "Search...",
         hintStyle: TextStyle(
           fontFamily: 'Futura',
-          color: Colors.white.withOpacity(0.8),
+          color: Colors.white,
         ),
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(32.0),
@@ -76,6 +78,7 @@ class _RestaurantPageState extends State<RestaurantPage> {
         ),
       ),
     );
+
 
     return AppBar(
       backgroundColor: Color(0xFF17B2E0),
@@ -88,9 +91,30 @@ class _RestaurantPageState extends State<RestaurantPage> {
   }
 
 
-  Widget _buildRestaurants(args) {
-    return restaurantsList(this.widget.restaurants, context);
+  Widget _buildRestaurants(args, restaurants) {
+    return restaurantsList(restaurants, context);
   }
+
+  updateRestaurants(args, String search) {
+    print(search);
+    if (search == "" || search == null) {
+      setState(() {
+        _buildRestaurants(args, this.widget.restaurants);
+      });
+      return;
+    }
+    this.widget.searched = [];
+    for(Restaurant restaurant in this.widget.restaurants) {
+      if (restaurant.name.toLowerCase().contains(search.toLowerCase())) {
+        this.widget.searched.add(restaurant);
+        print(restaurant.name);
+      }
+    }
+    setState(() {
+      _buildRestaurants(args, this.widget.searched);
+    });
+  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -103,22 +127,23 @@ class _RestaurantPageState extends State<RestaurantPage> {
         .arguments;
 
 
-    var body = _buildRestaurants(args);
-
-    var result = Scaffold(
-        backgroundColor: Colors.white,
-        appBar: _buildAppBar(args),
-        body: body
-    );
-
     if (widget.restaurants.length == 0) {
       fetchAllRestaurants(this.widget.restaurants).then((value) =>
       {
         setState(() {
-          body = _buildRestaurants(args);
+          for (Restaurant restaurant in this.widget.restaurants) {
+            this.widget.searched.add(restaurant);
+          }
+          _buildRestaurants(args, this.widget.searched);
         })
       });
     }
+
+    var result = Scaffold(
+        backgroundColor: Colors.white,
+        appBar: _buildAppBar(args),
+        body: _buildRestaurants(args, this.widget.searched)
+    );
 
     return result;
 

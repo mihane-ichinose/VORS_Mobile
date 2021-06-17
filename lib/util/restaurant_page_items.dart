@@ -1,13 +1,19 @@
 import 'package:flutter/material.dart';
+import 'package:vors_project/util/general.dart';
 import 'package:vors_project/util/restaurant.dart';
 
 import '../main.dart';
 import '../menu_page.dart';
 
+const MAX_NAME_LENGTH = 20;
+const MAX_DESCRIPTION_LENGTH = 93;
+
+
 TextStyle style = TextStyle(
   fontFamily: 'Futura',
   color: Colors.white,
-  fontSize: 26,
+  fontSize: 24,
+  fontWeight: FontWeight.bold
 );
 
 TextField newSearchField(TextStyle style) {
@@ -31,39 +37,6 @@ TextField newSearchField(TextStyle style) {
   );
 }
 
-Scaffold restaurantBox(Restaurant restaurant) {
-  return Scaffold(
-    backgroundColor: Color(0xFF17B2E0),
-    body: SingleChildScrollView(
-      child: Center(
-        child: Container(
-          child: Padding(
-            padding: const EdgeInsets.all(36.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: <Widget>[
-                SizedBox(
-                  height: 40.0,
-                ),
-                Text("Sign Up", style: TextStyle(
-                    fontFamily: "Futura", fontSize: 90, color: Colors.black)),
-                SizedBox(
-                  height: 10.0,
-                ),
-                Text("Virtual ordering", style: TextStyle(
-                    fontFamily: "Futura", fontSize: 25, color: Colors.black)),
-                SizedBox(
-                  height: 10.0,
-                ),
-              ],
-            ),
-          ),
-        ),
-      ),
-    ),
-  );
-}
 
 Future<bool> _goToMenu(BuildContext context, Restaurant restaurant) {
   return Navigator.of(context)
@@ -131,22 +104,23 @@ Widget restaurantsList(List<Restaurant> restaurants, BuildContext context) {
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: <Widget>[
                     SizedBox(
-                      height: 10.0,
+                      height: 5.0,
                     ),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: <Widget>[
                         Container(
-                          height: 20,
-                          child: Text(restaurants[index].name,
+                          height: 28,
+                          child: Text(
+                            formulateString(restaurants[index].name, MAX_NAME_LENGTH),
                           style: style.copyWith(color: Color(0xFF17B2E0),),),
                         ),
                         Container(
-                          height: 20,
+                          height: 28,
                           child: RichText(
                             text: TextSpan(
                               text: (restaurants[index].rating >= 0.1) ?
-                            restaurants[index].rating.toStringAsFixed(1) : "No ratings",
+                            restaurants[index].rating.toStringAsFixed(1) : "",
                             style: style.copyWith(color: Color(0xFF17B2E0),),
                               children: <TextSpan>[
                                 TextSpan(
@@ -165,40 +139,22 @@ Widget restaurantsList(List<Restaurant> restaurants, BuildContext context) {
                     SizedBox(
                       height: 10.0,
                     ),
-                    Row(
-                      children: <Widget>[
-                        Container(
-                          height: 35,
-                          child: Text((restaurants[index].description != "") ?
-                          restaurants[index].description : "No description.",
-                          style: style.copyWith(color: Colors.black,
-                          fontSize: 20,),),
-                        ),
-                      ],
+                    Container(
+                      alignment: Alignment.topLeft,
+                      height: 35,
+                      child: Text((restaurants[index].description != "") ?
+                          formulateString(restaurants[index].description,
+                              MAX_DESCRIPTION_LENGTH)
+                          : "No description.",
+                      style: style.copyWith(color: Colors.black,
+                      fontSize: 14,),),
                     ),
                   ],
                 )
               ],
             )
           ),
-          //     new AspectRatio(
-          //     aspectRatio: 9 / 18,
-          //     child: new Container(
-          //       height: 200,
-          //       decoration: new BoxDecoration(
-          //           borderRadius: BorderRadius.circular(10),
-          //           image: new DecorationImage(
-          //             fit: BoxFit.fitWidth,
-          //             alignment: FractionalOffset.topCenter,
-          //             image: new NetworkImage(restaurants[index].imageUrl),
-          //           )
-          //       ),
-          //     // ),
-          //     // child: Text(restaurants[index].name),
-          //   ),
-          // ),
         );
       }
   );
-
 }
