@@ -4,6 +4,12 @@ import 'package:vors_project/util/restaurant.dart';
 import '../main.dart';
 import '../menu_page.dart';
 
+TextStyle style = TextStyle(
+  fontFamily: 'Futura',
+  color: Colors.white,
+  fontSize: 26,
+);
+
 TextField newSearchField(TextStyle style) {
   return TextField(
     obscureText: false,
@@ -109,20 +115,56 @@ Widget restaurantsList(List<Restaurant> restaurants, BuildContext context) {
                     ),
                   ),
                 ),
-                Container(
-                  height: 20,
-                  child: Text(restaurants[index].name),
-                ),
-                Container(
-                  height: 35,
-                  child: Text(restaurants[index].description),
-                ),
-                Container(
-                  height: 20,
-                  child: Text((restaurants[index].rating >= 0.1) ?
-                  restaurants[index].rating.toString() : ""
-                  ),
-                ),
+                Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: <Widget>[
+                    SizedBox(
+                      height: 10.0,
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: <Widget>[
+                        Container(
+                          height: 20,
+                          child: Text(restaurants[index].name,
+                          style: style.copyWith(color: Color(0xFF17B2E0),),),
+                        ),
+                        Container(
+                          height: 20,
+                          child: RichText(
+                            text: TextSpan(
+                              text: (restaurants[index].rating >= 0.1) ?
+                            restaurants[index].rating.toString() : "",
+                            style: style.copyWith(color: Color(0xFF17B2E0),),
+                              children: <TextSpan>[
+                                TextSpan(
+                                  text: (restaurants[index].rating >= 0.1) ?
+                                  "★" : "",
+                                  style: style.copyWith(color: Color(0xFF17B2E0),
+                                  fontFamily: "Ariel",
+                                  ),
+                                )
+                              ],
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                    SizedBox(
+                      height: 10.0,
+                    ),
+                    Row(
+                      children: <Widget>[
+                        Container(
+                          height: 35,
+                          child: Text(restaurants[index].description,
+                          style: style.copyWith(color: Colors.black,
+                          fontSize: 20,),),
+                        ),
+                      ],
+                    ),
+                  ],
+                )
               ],
             )
           ),

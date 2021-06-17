@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
-import 'package:vors_project/util/dish.dart';
 
 const orderContentUrl = 'http://84.238.224.41:5005/customer/order_content';
 
