@@ -2,8 +2,7 @@ import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:vors_project/util/dish.dart';
-import 'package:vors_project/util/home_page_items.dart';
-
+import 'package:vors_project/dish_page.dart';
 
 const MAX_DESCRIPTION_LENGTH = 83;
 const MAX_NAME_LENGTH = 17;
@@ -37,6 +36,13 @@ class _MenuPageState extends State<MenuPage> {
   void initState(){
     super.initState();
     awaitDishes();
+  }
+
+  Future<bool> _goToDishDetails(BuildContext context, Dish dish, int dishIndex) {
+    return Navigator.of(context)
+        .push(MaterialPageRoute(builder: (context) =>
+        DishPage(dish.dishId, dishIndex, dish.name, dish.rating, dish.ingredients, dish.allergens, dish.dishType, dish.price)))
+        .then((_) => false);
   }
 
   TextStyle style = TextStyle(
@@ -98,10 +104,7 @@ class _MenuPageState extends State<MenuPage> {
       itemCount: dishes.length,
       itemBuilder: (BuildContext context, int index) {
         return GestureDetector(
-          onTap: () => ScaffoldMessenger
-              .of(context)
-              .showSnackBar(DefaultSnackBar().withText(
-              'Clicked item number '+index.toString(), context),),
+          onTap: () => _goToDishDetails(context, dishes[index], index+1),
           child: Container(
             height: 120,
             color: Colors.white,

@@ -146,14 +146,14 @@ Widget restaurantsList(List<Restaurant> restaurants, BuildContext context) {
                           child: RichText(
                             text: TextSpan(
                               text: (restaurants[index].rating >= 0.1) ?
-                            restaurants[index].rating.toStringAsFixed(1) : "",
+                            restaurants[index].rating.toStringAsFixed(1) : "No ratings",
                             style: style.copyWith(color: Color(0xFF17B2E0),),
                               children: <TextSpan>[
                                 TextSpan(
                                   text: (restaurants[index].rating >= 0.1) ?
                                   "★" : "",
                                   style: style.copyWith(color: Color(0xFF17B2E0),
-                                  fontFamily: "Ariel",
+                                  fontFamily: "Arial",
                                   ),
                                 )
                               ],
