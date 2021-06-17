@@ -268,7 +268,7 @@ class _DishPageState extends State<DishPage> {
       ),
     );
 
-    final submitButton = Material(
+    final submitCommentButton = Material(
       borderRadius: BorderRadius.circular(30.0),
       color: Color(0xFF43F2EB),
       child: MaterialButton(
@@ -280,6 +280,28 @@ class _DishPageState extends State<DishPage> {
           comments.add(newComment);
           setState(() {
             _buildCommentSection();
+          });
+        },
+        child: Text("➜",
+          textAlign: TextAlign.center,
+          style: style.copyWith(
+            color: Colors.white,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+      ),
+    );
+
+    final submitRatingButton = Material(
+      borderRadius: BorderRadius.circular(30.0),
+      color: Color(0xFF43F2EB),
+      child: MaterialButton(
+        minWidth: MediaQuery.of(context).size.width,
+        padding: EdgeInsets.all(15.0),
+        onPressed: () {
+          submitRating(widget.dishId, currentRating);
+          setState(() {
+            build(context);
           });
         },
         child: Text("➜",
@@ -322,6 +344,12 @@ class _DishPageState extends State<DishPage> {
               SizedBox(
                 height: 20,
               ),
+              Center(
+                child: submitRatingButton,
+              ),
+              SizedBox(
+                height: 20,
+              ),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: [
@@ -339,7 +367,7 @@ class _DishPageState extends State<DishPage> {
                   ),
                   Container(
                     width: 80,
-                    child: submitButton,
+                    child: submitCommentButton,
                   ),
                 ],
               ),
