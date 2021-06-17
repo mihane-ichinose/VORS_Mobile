@@ -1,6 +1,7 @@
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
+import 'package:vors_project/util/dish.dart';
 import 'package:vors_project/util/star_rating.dart';
 
 
@@ -26,6 +27,8 @@ class DishPage extends StatefulWidget {
 }
 
 class _DishPageState extends State<DishPage> {
+  bool dishCommentsFetched = false;
+  List<String> comments = [];
 
   final commentController = TextEditingController();
 
@@ -175,7 +178,7 @@ class _DishPageState extends State<DishPage> {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: <Widget>[
-              Text("Price each",
+              Text("Price",
                 style: style.copyWith(color: Color(0xFF17B2E0)),),
               RichText(text: TextSpan(
                 text: "£",
@@ -198,12 +201,28 @@ class _DishPageState extends State<DishPage> {
   }
 
   Widget _buildCommentSection() {
-    // TODO: fetch comment section.
-    return Container();
+    return ListView.builder(
+      scrollDirection: Axis.vertical,
+      shrinkWrap: true,
+      itemCount:comments.length,
+      itemBuilder: (BuildContext context, int index) {
+        return Text(comments[index]);
+      },
+    );
   }
 
   @override
   Widget build(BuildContext context) {
+
+    if(!dishCommentsFetched) {
+      fetchDishComments(widget.dishId, comments).then((value) => {
+        setState(() {
+          dishCommentsFetched = true;
+          comments.forEach((element) => print(element));
+          build(context);
+        })
+      });
+    }
 
     final commentField = TextFormField(
       controller: commentController,
@@ -268,8 +287,10 @@ class _DishPageState extends State<DishPage> {
     return Material(
       child: Scaffold(
         appBar: _buildAppBar(),
-        body: SingleChildScrollView(
-          child: Column(
+        body:
+        SingleChildScrollView(
+          child:
+          Column(
             children: [
               SizedBox(
                 height: 40,
