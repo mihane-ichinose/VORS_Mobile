@@ -95,6 +95,9 @@ class _DishPageState extends State<DishPage> {
             ),
             ],
           ),
+          SizedBox(
+            height: 20,
+          ),
           Row(
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
