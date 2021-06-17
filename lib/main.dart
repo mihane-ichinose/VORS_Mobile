@@ -22,7 +22,9 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         fontFamily: "Futura.bold",
       ),
-      home: new DishPage(1, 1, "Pizza for days", 4.556, "tomato", "flour", "VEGAN", 6.99),
+      home: new LoginPage(),
+      // new DishPage(1, 1, "Pizza for days", 4.556, "tomato", "flour", "VEGAN", 6.99),
+      // Debug only.
       routes: {
         "/logout": (context) => new LoginPage(),
         "/login": (context) => new RestaurantPage(0, ""),

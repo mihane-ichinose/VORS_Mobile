@@ -56,14 +56,6 @@ class _DishPageState extends State<DishPage> {
     );
   }
 
-  String formulateDishName(int index, String name) {
-    String newName = name;
-    if (name.length > MAX_NAME_LENGTH) {
-      newName = name.substring(0,MAX_NAME_LENGTH)+'...';
-    }
-    return index.toString()+'. ' + newName +'\n';
-  }
-
   Widget _buildHeader() {
     return Container(
       child: Column(
@@ -72,23 +64,35 @@ class _DishPageState extends State<DishPage> {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text(formulateDishName(widget.dishIndex, widget.dishName),
-                style: style.copyWith(color: Color(0xFF17B2E0),),),
-              RichText(text: TextSpan(
-                text: (widget.rating >= 0.1) ?
-                widget.rating.toStringAsFixed(1) : "No ratings",
-                style: style.copyWith(color: Color(0xFF17B2E0),),
-                children: <TextSpan>[
-                  TextSpan(
-                    text: (widget.rating >= 0.1) ? "★" : "",
+              Flexible(
+                child: RichText(
+                  maxLines: 100,
+                  overflow: TextOverflow.ellipsis,
+                  text: TextSpan(
+                    text: widget.dishIndex.toString()+". "+widget.dishName,
                     style: style.copyWith(color: Color(0xFF17B2E0),
-                      fontFamily: "Arial",
-                      fontWeight: FontWeight.bold,
                     ),
                   ),
-                ],
+                ),
               ),
-              ),
+             SizedBox(
+               width: 10,
+             ),
+             RichText(text: TextSpan(
+               text: (widget.rating >= 0.1) ?
+              widget.rating.toStringAsFixed(1) : "No ratings",
+              style: style.copyWith(color: Color(0xFF17B2E0),),
+              children: <TextSpan>[
+                TextSpan(
+                  text: (widget.rating >= 0.1) ? "★" : "",
+                  style: style.copyWith(color: Color(0xFF17B2E0),
+                    fontFamily: "Arial",
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ],
+            ),
+            ),
             ],
           ),
           Row(
@@ -188,6 +192,11 @@ class _DishPageState extends State<DishPage> {
         ],
       ),
     );
+  }
+
+  Widget _buildCommentSection() {
+    // TODO: fetch comment section.
+    return Container();
   }
 
   @override
@@ -302,6 +311,19 @@ class _DishPageState extends State<DishPage> {
                   ),
                 ],
               ),
+              SizedBox(
+                height: 10,
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  Text(
+                    "Comments:",
+                    style: style.copyWith(color: Color(0xFF43F2EB),),
+                  ),
+                ],
+              ),
+              _buildCommentSection(),
             ],
           ),
         ),
