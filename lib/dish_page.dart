@@ -68,11 +68,11 @@ class _DishPageState extends State<DishPage> {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Text(formulateDishName(widget.dishIndex, widget.dishName),
-                          style: style.copyWith(color: Color(0xFF17B2E0)),),
+                          style: style.copyWith(color: Color(0xFF17B2E0),),),
                         RichText(text: TextSpan(
                           text: (widget.rating >= 0.1) ?
                           widget.rating.toStringAsFixed(1) : "No ratings",
-                          style: style.copyWith(color: Color(0xFF17B2E0)),
+                          style: style.copyWith(color: Color(0xFF17B2E0),),
                           children: <TextSpan>[
                             TextSpan(
                               text: (widget.rating >= 0.1) ? "★" : "",
@@ -89,6 +89,15 @@ class _DishPageState extends State<DishPage> {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.start,
                       children: [
+                        Text(
+                          "Ingredients:",
+                          style: style.copyWith(color: Color(0xFF17B2E0),),
+                        )
+                      ],
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: [
                         Flexible(
                           child: RichText(
                             maxLines: 2,
@@ -100,6 +109,40 @@ class _DishPageState extends State<DishPage> {
                             ),
                           ),
                         ),
+                      ],
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: [
+                        Text(
+                          "Allergens:",
+                          style: style.copyWith(color: Color(0xFF17B2E0),),
+                        )
+                      ],
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: [
+                        Flexible(
+                          child: RichText(
+                            maxLines: 2,
+                            overflow: TextOverflow.ellipsis,
+                            text: TextSpan(
+                              text: widget.allergens,
+                              style: style.copyWith(color: Colors.black,
+                                fontSize: 18,),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text(
+                          "Dish type: "+((widget.type == "VEGAN") ? "Vegan" : ((widget.type == "VEGETARIAN") ? "Vegetarian" : "Non vegetarian")),
+                          style: style.copyWith(color: Color(0xFF17B2E0),),
+                        )
                       ],
                     ),
                     SizedBox(
