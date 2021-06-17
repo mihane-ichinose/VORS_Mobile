@@ -134,7 +134,7 @@ class DefaultLoginTextFormField {
       obscureText: true,
       enableSuggestions: false,
       autocorrect: false,
-      style: style,
+      style: style.copyWith(fontFamily: 'Ariel'),
       decoration: InputDecoration(
         errorMaxLines: 1,
         errorText: 'Null',
