@@ -31,10 +31,10 @@ class _OrderPageState extends State<OrderPage> {
     fetchAllRestaurants(restaurants);
   }
 
-  Future<bool> _goToOrderDetails(BuildContext context, int index, String restaurantName) {
+  Future<bool> _goToOrderDetails(BuildContext context, int index, String restaurantName, List<Order> orders) {
     return Navigator.of(context)
         .push(MaterialPageRoute(builder: (context)
-          => new OrderDetailPage(orderList[index].id, orderList[index].active, restaurantName)))
+          => new OrderDetailPage(orders[index].id, orders[index].active, restaurantName)))
         .then((_) => false);
   }
 
@@ -71,7 +71,8 @@ class _OrderPageState extends State<OrderPage> {
       itemBuilder: (BuildContext context, int index) {
         return GestureDetector(
           onTap: () => _goToOrderDetails(context, index,
-              restaurants.where((i) => i.id == activeOrderList[index].restaurantId).toList()[0].name.toString()),
+              restaurants.where((i) => i.id == activeOrderList[index].restaurantId).toList()[0].name.toString(),
+          activeOrderList),
           // onTap: () => print(activeOrderList[index].id),
           child: Container(
             height: 60,
@@ -102,7 +103,8 @@ class _OrderPageState extends State<OrderPage> {
       itemBuilder: (BuildContext context, int index) {
         return GestureDetector(
           onTap: () => _goToOrderDetails(context, index,
-              restaurants.where((i) => i.id == pastOrderList[index].restaurantId).toList()[0].name.toString()),
+              restaurants.where((i) => i.id == pastOrderList[index].restaurantId).toList()[0].name.toString(),
+          pastOrderList),
           // onTap: () => print(pastOrderList[index].id),
 
           child: Container(

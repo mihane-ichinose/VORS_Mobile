@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:vors_project/order_page.dart';
+import 'package:vors_project/util/dish.dart';
 
 import 'main.dart';
+
+List<Dish> currentOrder = [];
 
 class UserPage extends StatefulWidget {
 

@@ -4,6 +4,8 @@ import 'package:vors_project/restaurant_page.dart';
 import 'package:vors_project/signup_page.dart';
 import 'package:vors_project/user_page.dart';
 
+import 'dish_page.dart';
+
 const apiUrl = "http://84.238.224.41:5005/";
 int customerId = 0;
 String username = "";
@@ -21,6 +23,8 @@ class MyApp extends StatelessWidget {
         fontFamily: "Futura.bold",
       ),
       home: new LoginPage(),
+      // new DishPage(1, 1, "Pizza for days", 4.556, "tomato", "flour", "VEGAN", 6.99),
+      // Debug only.
       routes: {
         "/logout": (context) => new LoginPage(),
         "/login": (context) => new RestaurantPage(0, ""),

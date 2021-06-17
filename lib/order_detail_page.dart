@@ -7,11 +7,12 @@ import 'package:vors_project/util/order_content.dart';
 
 class OrderDetailPage extends StatefulWidget {
 
+  final bool isCurrent = false;
   final int orderId;
   final bool active;
   final String restaurantName;
 
-  const OrderDetailPage(this.orderId, this.active, this.restaurantName);
+  OrderDetailPage(this.orderId, this.active, this.restaurantName);
 
   @override
   _OrderDetailPageState createState() => _OrderDetailPageState();
@@ -22,19 +23,20 @@ class _OrderDetailPageState extends State<OrderDetailPage> {
   late List<OrderedDish> dishes = [];
   late String title = "";
   double totalPrice = 0;
+  bool dishesFetched = false;
 
 
-  void awaitDishes() async {
-    dishes = await fetchOrderContent(widget.orderId);
-    print(dishes.toString());
-  }
+  // void awaitDishes() async {
+  //   dishes = await fetchOrderContent(widget.orderId);
+  //   print(dishes.toString());
+  // }
 
   @override
   void initState(){
     super.initState();
     if (widget.active) title = "Active";
     else title = "Past";
-    awaitDishes();
+    // awaitDishes();
   }
 
   TextStyle style = TextStyle(
@@ -71,7 +73,7 @@ class _OrderDetailPageState extends State<OrderDetailPage> {
   }
 
 
-  Widget _buildOrderList() {
+  Widget _buildDishList() {
     for (OrderedDish dish in dishes) {
       totalPrice += dish.price;
     }
@@ -121,8 +123,56 @@ class _OrderDetailPageState extends State<OrderDetailPage> {
     );
   }
 
+  Widget confirmOrReorderButton() {
+    if (!widget.active) {
+      return Material(
+        borderRadius: BorderRadius.circular(30.0),
+        color: Color(0xFF17B2E0),
+        child: MaterialButton(
+          minWidth: MediaQuery
+              .of(context)
+              .size
+              .width,
+          padding: EdgeInsets.all(15.0),
+          onPressed: () => {},
+          child: Text("Reorder",
+              textAlign: TextAlign.center,
+              style: style.copyWith(
+                  color: Colors.white,
+                  fontWeight: FontWeight.bold)
+          ),
+        ),
+      );
+    } else if (widget.isCurrent) {
+      return Material(
+        borderRadius: BorderRadius.circular(30.0),
+        color: Color(0xFF17B2E0),
+        child: MaterialButton(
+          minWidth: MediaQuery.of(context).size.width,
+          padding: EdgeInsets.all(15.0),
+          onPressed: () => {},
+          child: Text("Confirm",
+              textAlign: TextAlign.center,
+              style: style.copyWith(
+                  color: Colors.white,
+                  fontWeight: FontWeight.bold)
+          ),
+        ),
+      );
+    } else return Material();
+  }
+
   @override
   Widget build(BuildContext context) {
+
+    if (!dishesFetched) {
+      fetchOrderContent(widget.orderId, dishes).then((value) => {
+        setState(() {
+          dishesFetched = true;
+          build(context);
+        })
+      });
+    }
 
     return Material(
       child: Scaffold(
@@ -131,7 +181,7 @@ class _OrderDetailPageState extends State<OrderDetailPage> {
             _buildAppBar(),
             Expanded(
               flex: 2,
-              child: _buildOrderList(),
+              child: _buildDishList(),
             ),
             Expanded(
               flex: 1,
@@ -156,6 +206,7 @@ class _OrderDetailPageState extends State<OrderDetailPage> {
                 ),
               ],),),
             ),
+            confirmOrReorderButton()
           ],
         ),
       ),
