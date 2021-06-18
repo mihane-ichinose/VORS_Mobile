@@ -3,6 +3,7 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:vors_project/main.dart';
 import 'package:vors_project/util/dish.dart';
+import 'package:vors_project/util/home_page_items.dart';
 import 'package:vors_project/util/star_rating.dart';
 
 
@@ -319,6 +320,9 @@ class _DishPageState extends State<DishPage> {
             _buildCommentSection();
           });
           commentController.clear();
+          ScaffoldMessenger.of(context).showSnackBar(
+            DefaultSnackBar().withText('Comment sent!', context),
+          );
         },
         child: Text("➜",
           textAlign: TextAlign.center,
@@ -345,6 +349,9 @@ class _DishPageState extends State<DishPage> {
               })
             })
           });
+          ScaffoldMessenger.of(context).showSnackBar(
+            DefaultSnackBar().withText('Thank you for rating!', context),
+          );
         },
         child: Text("Rate",
           textAlign: TextAlign.center,
