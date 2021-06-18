@@ -220,11 +220,12 @@ class _DishPageState extends State<DishPage> {
               ),
               Flexible(
                 child: RichText(
-                  maxLines: 1,
+                  maxLines: 2,
                   overflow: TextOverflow.ellipsis,
                   text: TextSpan(
                     text: comments[comments.length - index - 1],
                     style: style.copyWith(color: Color(0xFF17B2E0),
+                      fontSize: 18,
                     ),
                   ),
                 ),
