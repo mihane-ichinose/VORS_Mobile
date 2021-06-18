@@ -1,18 +1,18 @@
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
+import 'package:vors_project/util/dish.dart';
 import 'package:vors_project/util/home_page_items.dart';
 import 'package:vors_project/util/order_content.dart';
+import 'package:vors_project/util/globals.dart' as global;
 
 
 class CurrentOrderPage extends StatefulWidget {
 
-  final bool isCurrent = false;
-  final int orderId;
-  final bool active;
   final String restaurantName;
+  final int restaurantId;
 
-  CurrentOrderPage(this.orderId, this.active, this.restaurantName);
+  CurrentOrderPage(this.restaurantName, this.restaurantId);
 
   @override
   _CurrentOrderPageState createState() => _CurrentOrderPageState();
@@ -20,23 +20,19 @@ class CurrentOrderPage extends StatefulWidget {
 
 class _CurrentOrderPageState extends State<CurrentOrderPage> {
 
-  late List<OrderedDish> dishes = [];
-  late String title = "";
+  late List<String> dishIds = global.currentOrders[widget.restaurantId].split(",");
+  late List<Dish> dishes = [];
   double totalPrice = 0;
   bool dishesFetched = false;
 
-
-  // void awaitDishes() async {
-  //   dishes = await fetchOrderContent(widget.orderId);
-  //   print(dishes.toString());
-  // }
+  void awaitDishes() async {
+    dishes = await fetchAllDishes(widget.restaurantId);
+  }
 
   @override
   void initState(){
     super.initState();
-    if (widget.active) title = "Active";
-    else title = "Past";
-    // awaitDishes();
+    awaitDishes();
   }
 
   TextStyle style = TextStyle(
@@ -53,7 +49,7 @@ class _CurrentOrderPageState extends State<CurrentOrderPage> {
         title: Center(
           child: Column(
             children: <Widget>[
-              Text(title+" order",
+              Text("Current order",
                   style: style.copyWith(color: Colors.white,
                     fontSize: 32,
                     fontWeight: FontWeight.bold,)
@@ -74,12 +70,14 @@ class _CurrentOrderPageState extends State<CurrentOrderPage> {
 
 
   Widget _buildDishList() {
-    for (OrderedDish dish in dishes) {
-      totalPrice += dish.price;
+    for (Dish dish in dishes) {
+      if(dishIds.contains(dish.dishId)) {
+        totalPrice += dish.price;
+      }
     }
     return ListView.separated(
       padding: const EdgeInsets.all(8),
-      itemCount: dishes.length,
+      itemCount: dishIds.length,
       itemBuilder: (BuildContext context, int index) {
         return GestureDetector(
           onTap: () => ScaffoldMessenger
@@ -123,56 +121,35 @@ class _CurrentOrderPageState extends State<CurrentOrderPage> {
     );
   }
 
-  Widget confirmOrReorderButton() {
-    if (!widget.active) {
-      return Material(
-        borderRadius: BorderRadius.circular(30.0),
-        color: Color(0xFF17B2E0),
-        child: MaterialButton(
-          minWidth: MediaQuery
-              .of(context)
-              .size
-              .width,
-          padding: EdgeInsets.all(15.0),
-          onPressed: () => {},
-          child: Text("Reorder",
-              textAlign: TextAlign.center,
-              style: style.copyWith(
-                  color: Colors.white,
-                  fontWeight: FontWeight.bold)
-          ),
+  Widget confirmButton() {
+    return Material(
+      borderRadius: BorderRadius.circular(30.0),
+      color: Color(0xFF17B2E0),
+      child: MaterialButton(
+        minWidth: MediaQuery.of(context).size.width,
+        padding: EdgeInsets.all(15.0),
+        onPressed: () => {},
+        child: Text("Confirm",
+            textAlign: TextAlign.center,
+            style: style.copyWith(
+                color: Colors.white,
+                fontWeight: FontWeight.bold)
         ),
-      );
-    } else if (widget.isCurrent) {
-      return Material(
-        borderRadius: BorderRadius.circular(30.0),
-        color: Color(0xFF17B2E0),
-        child: MaterialButton(
-          minWidth: MediaQuery.of(context).size.width,
-          padding: EdgeInsets.all(15.0),
-          onPressed: () => {},
-          child: Text("Confirm",
-              textAlign: TextAlign.center,
-              style: style.copyWith(
-                  color: Colors.white,
-                  fontWeight: FontWeight.bold)
-          ),
-        ),
-      );
-    } else return Material();
+      ),
+    );
   }
 
   @override
   Widget build(BuildContext context) {
 
-    if (!dishesFetched) {
-      fetchOrderContent(widget.orderId, dishes).then((value) => {
-        setState(() {
-          dishesFetched = true;
-          build(context);
-        })
-      });
-    }
+    // if (!dishesFetched) {
+    //   fetchOrderContent(widget.orderId, dishes).then((value) => {
+    //     setState(() {
+    //       dishesFetched = true;
+    //       build(context);
+    //     })
+    //   });
+    // }
 
     return Material(
       child: Scaffold(
@@ -206,7 +183,7 @@ class _CurrentOrderPageState extends State<CurrentOrderPage> {
                   ),
                 ],),),
             ),
-            confirmOrReorderButton()
+            confirmButton(),
           ],
         ),
       ),

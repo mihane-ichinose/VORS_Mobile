@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 
 const ordersUrl = 'http://84.238.224.41:5005/customer/orders';
+const submitOrderUrl = 'http://84.238.224.41:5005/customer/new_order';
 
 class Order {
   final int id;
@@ -35,7 +36,6 @@ Order fromJson(Map<String, dynamic> json) {
       tableNumber: tableNumber, active: active);
 }
 
-
 Future<List<Order>> fetchAllOrders(int customerId, List<Order> orders) async {
 
   final response = await http.get(
@@ -54,6 +54,27 @@ Future<List<Order>> fetchAllOrders(int customerId, List<Order> orders) async {
       orders.add(fromJson(json));
     });
     return orders;
+  } else {
+    // If the server did not return a 200 OK response,
+    // then throw an exception.
+    print("Connection failed.");
+    throw Exception('Connection failed.');
+  }
+}
+
+Future<void> submitOrder(int customerId, int restaurantId, String dishIds, int tableNumber) async {
+  final response = await http.post(
+    Uri.parse(submitOrderUrl + "?customerId=" + customerId.toString()
+        + "&restaurantId=" + restaurantId.toString() + "&dishIds=" + dishIds
+        + '&tableNumber=' + tableNumber.toString()),
+    headers: {},
+  );
+
+  print(response.body);
+
+  if (response.statusCode == 200) {
+    // If the server did return a 200 OK response,
+    print("Connection established.");
   } else {
     // If the server did not return a 200 OK response,
     // then throw an exception.
