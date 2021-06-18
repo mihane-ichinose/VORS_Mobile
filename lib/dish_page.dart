@@ -218,8 +218,17 @@ class _DishPageState extends State<DishPage> {
               SizedBox(
                 width: 20,
               ),
-              Text(comments[comments.length - index - 1], // Show comments from newest to oldest.
-                style: style.copyWith(color: Color(0xFF17B2E0)),),
+              Flexible(
+                child: RichText(
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  text: TextSpan(
+                    text: comments[comments.length - index - 1],
+                    style: style.copyWith(color: Color(0xFF17B2E0),
+                    ),
+                  ),
+                ),
+              ),
             ],
           ),
         );
