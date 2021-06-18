@@ -19,9 +19,11 @@ class DishPage extends StatefulWidget {
   final String allergens;
   final String type;
   final double price;
+  final String restaurantName;
+  final int restaurantId;
 
 
-  DishPage(this.dishId, this.dishIndex, this.dishName, this.ingredients, this.allergens, this.type, this.price,);
+  DishPage(this.dishId, this.dishIndex, this.dishName, this.ingredients, this.allergens, this.type, this.price, this.restaurantName, this.restaurantId);
 
   @override
   _DishPageState createState() => _DishPageState();
