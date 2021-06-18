@@ -1,6 +1,7 @@
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
+import 'package:vors_project/comment_page.dart';
 import 'package:vors_project/main.dart';
 import 'package:vors_project/util/dish.dart';
 import 'package:vors_project/util/globals.dart';
@@ -66,6 +67,13 @@ class _DishPageState extends State<DishPage> {
       ),
       backgroundColor: Color(0xFF17B2E0),
     );
+  }
+
+  Future<bool> _goToComment(BuildContext context, String comment) {
+    return Navigator.of(context)
+        .push(MaterialPageRoute(builder: (context)
+    => new CommentPage(comment)))
+        .then((_) => false);
   }
 
   Widget _buildHeader() {
@@ -216,28 +224,31 @@ class _DishPageState extends State<DishPage> {
       shrinkWrap: true,
       itemCount: comments.length,
       itemBuilder: (BuildContext context, int index) {
-        return Container(
-          height: 60,
-          color: Colors.white,
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.start,
-            children: <Widget>[
-              SizedBox(
-                width: 20,
-              ),
-              Flexible(
-                child: RichText(
-                  maxLines: 2,
-                  overflow: TextOverflow.ellipsis,
-                  text: TextSpan(
-                    text: comments[comments.length - index - 1],
-                    style: style.copyWith(color: Color(0xFF17B2E0),
-                      fontSize: 18,
+        return GestureDetector(
+          onTap: () => _goToComment(context, comments[comments.length - index - 1]),
+          child: Container(
+            height: 60,
+            color: Colors.white,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: <Widget>[
+                SizedBox(
+                  width: 20,
+                ),
+                Flexible(
+                  child: RichText(
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
+                    text: TextSpan(
+                      text: comments[comments.length - index - 1],
+                      style: style.copyWith(color: Color(0xFF17B2E0),
+                        fontSize: 18,
+                      ),
                     ),
                   ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         );
       },
@@ -336,7 +347,14 @@ class _DishPageState extends State<DishPage> {
         onPressed: () {
           var newComment = commentController.text;
           if (newComment == "" || newComment.isEmpty) return;
-          submitComment(customerId, widget.dishId, newComment);
+          try {
+            submitComment(customerId, widget.dishId, newComment);
+          } catch(e) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              DefaultSnackBar().withText('Connection failed, please try again.', context),
+            );
+            return;
+          }
           comments.add(newComment);
           setState(() {
             _buildCommentSection();
