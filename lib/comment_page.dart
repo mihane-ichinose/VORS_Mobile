@@ -49,14 +49,11 @@ class _CommentPageState extends State<CommentPage> {
       backgroundColor: Colors.white,
       appBar: _buildAppBar(),
       body: SingleChildScrollView(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>[
-              _buildComment(),
-            ],
-          ),
+        child: Container(
+          width: double.infinity,
+          child: _buildComment(),
         ),
+      ),
     );
   }
 }
