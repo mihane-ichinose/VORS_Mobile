@@ -34,7 +34,7 @@ class _OrderPageState extends State<OrderPage> {
   Future<bool> _goToOrderDetails(BuildContext context, int index, String restaurantName, List<Order> orders) {
     return Navigator.of(context)
         .push(MaterialPageRoute(builder: (context)
-          => new OrderDetailPage(orders[index].id, orders[index].active, restaurantName)))
+          => new OrderDetailPage(false, orders[index].id, orders[index].active, restaurantName, orders[index].restaurantId)))
         .then((_) => false);
   }
 

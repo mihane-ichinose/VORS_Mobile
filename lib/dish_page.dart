@@ -2,9 +2,13 @@ import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:vors_project/main.dart';
+import 'package:vors_project/menu_page.dart';
 import 'package:vors_project/util/dish.dart';
+import 'package:vors_project/util/globals.dart';
 import 'package:vors_project/util/home_page_items.dart';
+import 'package:vors_project/util/order_content.dart';
 import 'package:vors_project/util/star_rating.dart';
+
 
 
 const MAX_DESCRIPTION_LENGTH = 83;
@@ -296,7 +300,14 @@ class _DishPageState extends State<DishPage> {
       child: MaterialButton(
         minWidth: MediaQuery.of(context).size.width,
         padding: EdgeInsets.all(15.0),
-        onPressed: () {},
+        onPressed: () {
+          var dish = OrderedDish(widget.dishId, widget.dishName, widget.price);
+          if (currentOrders.containsKey(widget.restaurantId)) {
+            currentOrders[widget.restaurantId].add(dish);
+          } else {
+            currentOrders.putIfAbsent(widget.restaurantId, () => [dish]);
+          }
+        },
         child: Text("Add to order",
           textAlign: TextAlign.center,
           style: style.copyWith(

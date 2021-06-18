@@ -1,5 +1,5 @@
-library vors_mobile.globals;
-
 import 'dart:collection';
 
-HashMap currentOrders = new HashMap<int, String>();
+import 'package:vors_project/util/order_content.dart';
+
+Map currentOrders = new HashMap<int, List<OrderedDish>>();
