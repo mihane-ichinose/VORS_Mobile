@@ -280,6 +280,7 @@ class _DishPageState extends State<DishPage> {
     }
 
     final commentField = TextFormField(
+      maxLines: null,
       controller: commentController,
       obscureText: false,
       style: style.copyWith(color: Color(0xFF43F2EB),),
