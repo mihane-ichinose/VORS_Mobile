@@ -2,7 +2,6 @@ import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:vors_project/main.dart';
-import 'package:vors_project/menu_page.dart';
 import 'package:vors_project/util/dish.dart';
 import 'package:vors_project/util/globals.dart';
 import 'package:vors_project/util/home_page_items.dart';
@@ -213,6 +212,7 @@ class _DishPageState extends State<DishPage> {
   Widget _buildCommentSection() {
     return ListView.separated(
       scrollDirection: Axis.vertical,
+      physics: const NeverScrollableScrollPhysics(),
       shrinkWrap: true,
       itemCount: comments.length,
       itemBuilder: (BuildContext context, int index) {
