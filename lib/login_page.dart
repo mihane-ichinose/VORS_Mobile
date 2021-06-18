@@ -29,6 +29,7 @@ class _LoginPageState extends State<LoginPage> {
       user =  await fetchAuthentication(credential, password);
       customerId = user.customerId;
       username = user.name;
+      email = user.email;
       connectionFailed = false;
     } catch (e) {
       print(e.toString());

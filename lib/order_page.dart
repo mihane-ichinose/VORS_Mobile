@@ -34,7 +34,7 @@ class _OrderPageState extends State<OrderPage> {
   Future<bool> _goToOrderDetails(BuildContext context, int index, String restaurantName, List<Order> orders) {
     return Navigator.of(context)
         .push(MaterialPageRoute(builder: (context)
-          => new OrderDetailPage(orders[index].id, orders[index].active, restaurantName)))
+          => new OrderDetailPage(false, orders[index].id, orders[index].active, restaurantName, orders[index].restaurantId)))
         .then((_) => false);
   }
 
@@ -83,8 +83,8 @@ class _OrderPageState extends State<OrderPage> {
                 children: <Widget>[
                   Text("at "+restaurants.where((i) => i.id == activeOrderList[index].restaurantId).toList()[0].name.toString(),
                     style: style.copyWith(color: Color(0xFF17B2E0)),),
-                  Text("order ID: "+activeOrderList[index].id.toString(),
-                    style: style.copyWith(color: Color(0xFF17B2E0)),),
+                  // Text("order ID: "+activeOrderList[index].id.toString(),
+                  //   style: style.copyWith(color: Color(0xFF17B2E0)),),
                 ],
               )
 
@@ -115,8 +115,8 @@ class _OrderPageState extends State<OrderPage> {
               children: <Widget>[
                 Text("at "+restaurants.where((i) => i.id == pastOrderList[index].restaurantId).toList()[0].name.toString(),
                   style: style.copyWith(color: Color(0xFF17B2E0)),),
-                Text("order ID: "+pastOrderList[index].id.toString(),
-                  style: style.copyWith(color: Colors.grey,),),
+                // Text("order ID: "+pastOrderList[index].id.toString(),
+                //   style: style.copyWith(color: Colors.grey,),),
               ],
             ),
           ),

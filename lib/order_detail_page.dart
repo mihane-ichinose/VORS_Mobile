@@ -1,18 +1,24 @@
+import 'dart:collection';
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
+import 'package:vors_project/util/globals.dart';
 import 'package:vors_project/util/home_page_items.dart';
+import 'package:vors_project/util/order.dart';
 import 'package:vors_project/util/order_content.dart';
+import 'package:flutter/services.dart';
+import 'package:vors_project/main.dart';
 
 
 class OrderDetailPage extends StatefulWidget {
 
-  final bool isCurrent = false;
+  final bool isCurrent;
   final int orderId;
   final bool active;
   final String restaurantName;
+  final int restaurantId;
 
-  OrderDetailPage(this.orderId, this.active, this.restaurantName);
+  OrderDetailPage(this.isCurrent, this.orderId, this.active, this.restaurantName, this.restaurantId);
 
   @override
   _OrderDetailPageState createState() => _OrderDetailPageState();
@@ -24,19 +30,19 @@ class _OrderDetailPageState extends State<OrderDetailPage> {
   late String title = "";
   double totalPrice = 0;
   bool dishesFetched = false;
-
-
-  // void awaitDishes() async {
-  //   dishes = await fetchOrderContent(widget.orderId);
-  //   print(dishes.toString());
-  // }
+  bool priceAddedUp = false;
+  final tableNumberController = TextEditingController();
 
   @override
   void initState(){
     super.initState();
-    if (widget.active) title = "Active";
-    else title = "Past";
-    // awaitDishes();
+    if (widget.isCurrent) {
+      title = "Current";
+    } else if (widget.active) {
+      title = "Active";
+    } else {
+      title = "Past";
+    }
   }
 
   TextStyle style = TextStyle(
@@ -72,20 +78,47 @@ class _OrderDetailPageState extends State<OrderDetailPage> {
     );
   }
 
-
   Widget _buildDishList() {
-    for (OrderedDish dish in dishes) {
-      totalPrice += dish.price;
+    if (!priceAddedUp) {
+      for (OrderedDish dish in dishes) {
+        totalPrice += dish.price * dish.orderCount;
+      }
+      priceAddedUp = true;
     }
+
+    var ordered = new Set<OrderedDish>();
+
+    Map<OrderedDish, int> dishesWithQuantity = new HashMap();
+    for (OrderedDish dish in dishes) {
+      dishesWithQuantity.putIfAbsent(dish, () => 0);
+      dishesWithQuantity.update(dish, (value) => value+1);
+      ordered.add(dish);
+    }
+
+    var orderedDishes = ordered.toList();
+
+    if (dishesFetched) {
+      for (OrderedDish ordered in orderedDishes) {
+        int orderCount = 0;
+        for (OrderedDish fetched in dishes) {
+          if (fetched.id == ordered.id) {
+            orderCount++;
+          }
+        }
+        ordered.orderCount = orderCount;
+      }
+    }
+
     return ListView.separated(
       padding: const EdgeInsets.all(8),
-      itemCount: dishes.length,
+      itemCount: orderedDishes.length,
       itemBuilder: (BuildContext context, int index) {
         return GestureDetector(
-          onTap: () => ScaffoldMessenger
-              .of(context)
-              .showSnackBar(DefaultSnackBar().withText(
-              'Clicked item number '+index.toString(), context),),
+          // onTap: () => ScaffoldMessenger
+          //     .of(context)
+          //     .showSnackBar(DefaultSnackBar().withText(
+
+          //     'Clicked item number '+index.toString(), context),),
           child: Container(
             height: 60,
             color: Colors.white,
@@ -93,10 +126,19 @@ class _OrderDetailPageState extends State<OrderDetailPage> {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Text((index+1).toString()+'. ${dishes[index].name}\n',
-                    style: style.copyWith(color: Color(0xFF17B2E0)),),
+                  Flexible(
+                    child: RichText(
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                      text: TextSpan(
+                        text: (index+1).toString()+'. ${orderedDishes[index].name}',
+                        style: style.copyWith(color: Color(0xFF17B2E0),
+                        ),
+                      ),
+                    ),
+                  ),
                   RichText(text: TextSpan(
-                    text: "${dishes[index].price} x ",
+                    text: "${orderedDishes[index].orderCount} x ",
                     style: style.copyWith(color: Color(0xFF17B2E0)),
                     children: <TextSpan>[
                       TextSpan(
@@ -107,7 +149,7 @@ class _OrderDetailPageState extends State<OrderDetailPage> {
                         ),
                       ),
                       TextSpan(
-                        text: "${dishes[index].price}",
+                        text: orderedDishes[index].price.toStringAsFixed(2),
                         style: style.copyWith(color: Color(0xFF17B2E0),),
                       ),
                     ],
@@ -123,8 +165,54 @@ class _OrderDetailPageState extends State<OrderDetailPage> {
     );
   }
 
+  String convertDishIds(List<OrderedDish> dishes) {
+    List<String> ids = [];
+    for (OrderedDish dish in dishes) {
+      for (int i = 0; i < dish.orderCount; i++) {
+        ids.add(dish.id.toString());
+      }
+    }
+    return ids.reduce((id1, id2) => id1+','+id2);
+  }
+
   Widget confirmOrReorderButton() {
-    if (!widget.active) {
+    if (widget.isCurrent) {
+      return Material(
+        borderRadius: BorderRadius.circular(30.0),
+        color: Color(0xFF17B2E0),
+        child: MaterialButton(
+          minWidth: MediaQuery.of(context).size.width,
+          padding: EdgeInsets.all(15.0),
+          onPressed: () => {
+            setState(() {
+              if (tableNumberController.text.isNotEmpty) {
+                submitOrder(customerId, widget.restaurantId,
+                    convertDishIds(dishes), tableNumberController.text).then((value) => {
+                      if (value) {
+                        Navigator.pop(context)
+                      } else {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          DefaultSnackBar().withText('Connection failed.', context),
+                        )
+                      }
+                });
+
+              } else {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  DefaultSnackBar().withText('Please enter your table number.', context),
+                );
+              }
+            })
+          },
+          child: Text("Confirm",
+              textAlign: TextAlign.center,
+              style: style.copyWith(
+                  color: Colors.white,
+                  fontWeight: FontWeight.bold)
+          ),
+        ),
+      );
+    } else if (!widget.active) {
       return Material(
         borderRadius: BorderRadius.circular(30.0),
         color: Color(0xFF17B2E0),
@@ -143,19 +231,34 @@ class _OrderDetailPageState extends State<OrderDetailPage> {
           ),
         ),
       );
-    } else if (widget.isCurrent) {
-      return Material(
-        borderRadius: BorderRadius.circular(30.0),
-        color: Color(0xFF17B2E0),
-        child: MaterialButton(
-          minWidth: MediaQuery.of(context).size.width,
-          padding: EdgeInsets.all(15.0),
-          onPressed: () => {},
-          child: Text("Confirm",
-              textAlign: TextAlign.center,
-              style: style.copyWith(
-                  color: Colors.white,
-                  fontWeight: FontWeight.bold)
+    }  else return Material();
+  }
+
+  Widget tableNumberField() {
+    if(widget.isCurrent) {
+      return TextFormField(
+        textAlign: TextAlign.center,
+        keyboardType: TextInputType.number,
+        inputFormatters: [
+          // ignore: deprecated_member_use
+          WhitelistingTextInputFormatter.digitsOnly,
+        ],
+        controller: tableNumberController,
+        obscureText: false,
+        style: style.copyWith(color: Colors.white.withOpacity(0.8)),
+        decoration: InputDecoration(
+          errorMaxLines: 1,
+          errorText: 'Null',
+          errorStyle: TextStyle(
+            color: Colors.transparent,
+            fontSize: 0,
+          ),
+          filled: true,
+          fillColor: Color(0xFF17B2E0),
+          hintText: "Enter table number...",
+          hintStyle: TextStyle(
+            fontFamily: 'Futura',
+            color: Colors.white.withOpacity(0.8),
           ),
         ),
       );
@@ -165,13 +268,19 @@ class _OrderDetailPageState extends State<OrderDetailPage> {
   @override
   Widget build(BuildContext context) {
 
-    if (!dishesFetched) {
-      fetchOrderContent(widget.orderId, dishes).then((value) => {
-        setState(() {
-          dishesFetched = true;
-          build(context);
-        })
-      });
+    if (widget.isCurrent) {
+      dishes = currentOrders[widget.restaurantId];
+    } else {
+      if (!dishesFetched) {
+        fetchOrderContent(widget.orderId, dishes).then((value) =>
+        {
+          setState(() {
+            dishesFetched = true;
+            dishes.forEach((element) {print(element.orderCount);});
+            build(context);
+          })
+        });
+      }
     }
 
     return Material(
@@ -185,28 +294,36 @@ class _OrderDetailPageState extends State<OrderDetailPage> {
             ),
             Expanded(
               flex: 1,
-              child: RichText(text: TextSpan(
-              text: "Total: ",
-              style: style.copyWith(color: Color(0xFF43F2EB),
-                fontSize: 30,
+              child: Column(
+                children: [
+                  RichText(text: TextSpan(
+                    text: "Total: ",
+                    style: style.copyWith(color: Color(0xFF43F2EB),
+                      fontSize: 30,
+                    ),
+                    children: <TextSpan>[
+                      TextSpan(
+                        text: "£",
+                        style: style.copyWith(color: Color(0xFF17B2E0),
+                          fontFamily: "Arial",
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      TextSpan(
+                        text: totalPrice.toStringAsFixed(2),
+                        style: style.copyWith(color: Color(0xFF17B2E0),
+                          fontSize: 30,
+                        ),
+                      ),
+                    ],),),
+                  tableNumberField(),
+                  Container(
+                    width: 140,
+                    child: confirmOrReorderButton(),
+                  ),
+                ],
               ),
-              children: <TextSpan>[
-                TextSpan(
-                  text: "£",
-                  style: style.copyWith(color: Color(0xFF17B2E0),
-                    fontFamily: "Arial",
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-                TextSpan(
-                  text: totalPrice.toString(),
-                  style: style.copyWith(color: Color(0xFF17B2E0),
-                    fontSize: 30,
-                  ),
-                ),
-              ],),),
             ),
-            confirmOrReorderButton()
           ],
         ),
       ),

@@ -1,10 +1,14 @@
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
+import 'package:vors_project/comment_page.dart';
 import 'package:vors_project/main.dart';
 import 'package:vors_project/util/dish.dart';
+import 'package:vors_project/util/globals.dart';
 import 'package:vors_project/util/home_page_items.dart';
+import 'package:vors_project/util/order_content.dart';
 import 'package:vors_project/util/star_rating.dart';
+
 
 
 const MAX_DESCRIPTION_LENGTH = 83;
@@ -19,9 +23,11 @@ class DishPage extends StatefulWidget {
   final String allergens;
   final String type;
   final double price;
+  final String restaurantName;
+  final int restaurantId;
 
 
-  DishPage(this.dishId, this.dishIndex, this.dishName, this.ingredients, this.allergens, this.type, this.price,);
+  DishPage(this.dishId, this.dishIndex, this.dishName, this.ingredients, this.allergens, this.type, this.price, this.restaurantName, this.restaurantId);
 
   @override
   _DishPageState createState() => _DishPageState();
@@ -61,6 +67,13 @@ class _DishPageState extends State<DishPage> {
       ),
       backgroundColor: Color(0xFF17B2E0),
     );
+  }
+
+  Future<bool> _goToComment(BuildContext context, String comment) {
+    return Navigator.of(context)
+        .push(MaterialPageRoute(builder: (context)
+    => new CommentPage(comment)))
+        .then((_) => false);
   }
 
   Widget _buildHeader() {
@@ -192,7 +205,7 @@ class _DishPageState extends State<DishPage> {
                 ),
                 children: <TextSpan>[
                   TextSpan(
-                    text: widget.price.toString(),
+                    text: widget.price.toStringAsFixed(2),
                     style: style.copyWith(color: Color(0xFF17B2E0),),
                   ),
                 ],
@@ -207,31 +220,35 @@ class _DishPageState extends State<DishPage> {
   Widget _buildCommentSection() {
     return ListView.separated(
       scrollDirection: Axis.vertical,
+      physics: const NeverScrollableScrollPhysics(),
       shrinkWrap: true,
       itemCount: comments.length,
       itemBuilder: (BuildContext context, int index) {
-        return Container(
-          height: 60,
-          color: Colors.white,
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.start,
-            children: <Widget>[
-              SizedBox(
-                width: 20,
-              ),
-              Flexible(
-                child: RichText(
-                  maxLines: 2,
-                  overflow: TextOverflow.ellipsis,
-                  text: TextSpan(
-                    text: comments[comments.length - index - 1],
-                    style: style.copyWith(color: Color(0xFF17B2E0),
-                      fontSize: 18,
+        return GestureDetector(
+          onTap: () => _goToComment(context, comments[comments.length - index - 1]),
+          child: Container(
+            height: 60,
+            color: Colors.white,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: <Widget>[
+                SizedBox(
+                  width: 20,
+                ),
+                Flexible(
+                  child: RichText(
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
+                    text: TextSpan(
+                      text: comments[comments.length - index - 1],
+                      style: style.copyWith(color: Color(0xFF17B2E0),
+                        fontSize: 18,
+                      ),
                     ),
                   ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         );
       },
@@ -294,7 +311,23 @@ class _DishPageState extends State<DishPage> {
       child: MaterialButton(
         minWidth: MediaQuery.of(context).size.width,
         padding: EdgeInsets.all(15.0),
-        onPressed: () {},
+        onPressed: () {
+          var dish = OrderedDish(widget.dishId, widget.dishName, widget.price, 1);
+          if (currentOrders.containsKey(widget.restaurantId)) {
+            if(!currentOrders[widget.restaurantId].where((d) => d.name == widget.dishName).toList().isEmpty){
+              var orderCountUpdate = currentOrders[widget.restaurantId].where((d) => d.name == widget.dishName).toList()[0].orderCount + 1;
+              currentOrders[widget.restaurantId].removeWhere((d) => d.name == widget.dishName);
+              dish = OrderedDish(widget.dishId, widget.dishName, widget.price, orderCountUpdate);
+            }
+            currentOrders[widget.restaurantId].add(dish);
+          } else {
+            currentOrders.putIfAbsent(widget.restaurantId, () => [dish]);
+          }
+
+          ScaffoldMessenger.of(context).showSnackBar(
+            DefaultSnackBar().withText('Added ' + dish.name + ' to order.', context),
+          );
+        },
         child: Text("Add to order",
           textAlign: TextAlign.center,
           style: style.copyWith(
@@ -314,7 +347,14 @@ class _DishPageState extends State<DishPage> {
         onPressed: () {
           var newComment = commentController.text;
           if (newComment == "" || newComment.isEmpty) return;
-          submitComment(customerId, widget.dishId, newComment);
+          try {
+            submitComment(customerId, widget.dishId, newComment);
+          } catch(e) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              DefaultSnackBar().withText('Connection failed, please try again.', context),
+            );
+            return;
+          }
           comments.add(newComment);
           setState(() {
             _buildCommentSection();

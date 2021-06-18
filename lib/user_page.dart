@@ -47,13 +47,13 @@ class _UserPageState extends State<UserPage> {
     return Container(
       child: Column(
         children: <Widget>[
-          Text("Customer id: "+ customerId.toString(),
+          Text("Username: "+ username,
             style: style.copyWith(
               fontWeight: FontWeight.bold,
               color: Colors.black,
             ),
           ),
-          Text("Username: "+ username,
+          Text("Email: "+ email,
             style: style.copyWith(
               fontWeight: FontWeight.bold,
               color: Colors.black,

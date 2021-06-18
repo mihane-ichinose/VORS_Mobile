@@ -1,9 +1,11 @@
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
+import 'package:vors_project/order_detail_page.dart';
 import 'package:vors_project/util/dish.dart';
 import 'package:vors_project/dish_page.dart';
 import 'package:vors_project/util/general.dart';
+import 'package:vors_project/util/globals.dart';
 
 const MAX_DESCRIPTION_LENGTH = 83;
 const MAX_NAME_LENGTH = 17;
@@ -45,8 +47,25 @@ class _MenuPageState extends State<MenuPage> {
   Future<bool> _goToDishDetails(BuildContext context, Dish dish, int dishIndex) {
     return Navigator.of(context)
         .push(MaterialPageRoute(builder: (context) =>
-        DishPage(dish.dishId, dishIndex, dish.name, dish.ingredients, dish.allergens, dish.dishType, dish.price)))
-        .then((_) => false);
+        DishPage(dish.dishId, dishIndex, dish.name, dish.ingredients, dish.allergens, dish.dishType, dish.price, widget.restaurantName, widget.restaurantId)))
+        .then((_) {
+          setState(() {
+            currentOrderButton();
+          });
+          return false;
+    });
+  }
+
+  Future<bool> _goToCurrentOrder(BuildContext context, int restaurantId) {
+    return Navigator.of(context)
+        .push(MaterialPageRoute(builder: (context) =>
+        OrderDetailPage(true, 0, false, widget.restaurantName, widget.restaurantId)))
+        .then((_) {
+      setState(() {
+        currentOrderButton();
+      });
+      return false;
+    });
   }
 
   TextStyle style = TextStyle(
@@ -137,7 +156,7 @@ class _MenuPageState extends State<MenuPage> {
                             ),
                           ),
                           TextSpan(
-                            text: "${searched[index].price}",
+                            text: searched[index].price.toStringAsFixed(2),
                             style: style.copyWith(color: Color(0xFF17B2E0),),
                           ),
                         ],
@@ -171,6 +190,32 @@ class _MenuPageState extends State<MenuPage> {
     );
   }
 
+  Widget currentOrderButton() {
+
+    if (!currentOrders.containsKey(widget.restaurantId)) {
+      return Material();
+    } else {
+      return Material(
+        borderRadius: BorderRadius.circular(30.0),
+        color: Color(0xFF43F2EB),
+        child: MaterialButton(
+          minWidth: 100,
+          padding: EdgeInsets.all(10.0),
+          onPressed: () => {
+            _goToCurrentOrder(context, widget.restaurantId)
+          },
+          child: Text("Current order",
+              textAlign: TextAlign.center,
+              style: style.copyWith(
+                  fontSize: 18,
+                  color: Colors.white,
+                  fontWeight: FontWeight.bold)
+          ),
+        )
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
 
@@ -197,7 +242,6 @@ class _MenuPageState extends State<MenuPage> {
                 Image(image: imageGenerator(widget.imgUrl),
                 ),
                 Container(
-
                   height: 40,
                   decoration: BoxDecoration(
                       color: Colors.white.withOpacity(0.8),
@@ -219,7 +263,14 @@ class _MenuPageState extends State<MenuPage> {
             ),
             _buildSearch(),
             Expanded(
-              child: _buildHeader(),
+              child: Stack(
+                alignment: Alignment.bottomCenter,
+                children: [
+                  _buildHeader(),
+                  currentOrderButton()
+                ],
+              )
+              // child: _buildHeader(),
             ),
           ],
         ),

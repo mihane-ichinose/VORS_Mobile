@@ -9,6 +9,7 @@ import 'dish_page.dart';
 const apiUrl = "http://84.238.224.41:5005/";
 int customerId = 0;
 String username = "";
+String email= "";
 
 void main() => runApp(MyApp());
 class MyApp extends StatelessWidget {
