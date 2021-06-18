@@ -1,10 +1,13 @@
+import 'dart:collection';
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:vors_project/util/globals.dart';
 import 'package:vors_project/util/home_page_items.dart';
+import 'package:vors_project/util/order.dart';
 import 'package:vors_project/util/order_content.dart';
 import 'package:flutter/services.dart';
+import 'package:vors_project/main.dart';
 
 
 class OrderDetailPage extends StatefulWidget {
@@ -82,15 +85,40 @@ class _OrderDetailPageState extends State<OrderDetailPage> {
       }
       priceAddedUp = true;
     }
+
+    var ordered = new Set<OrderedDish>();
+
+    Map<OrderedDish, int> dishesWithQuantity = new HashMap();
+    for (OrderedDish dish in dishes) {
+      dishesWithQuantity.putIfAbsent(dish, () => 0);
+      dishesWithQuantity.update(dish, (value) => value+1);
+      ordered.add(dish);
+    }
+
+    var orderedDishes = ordered.toList();
+
+    if (dishesFetched) {
+      for (OrderedDish ordered in orderedDishes) {
+        int orderCount = 0;
+        for (OrderedDish fetched in dishes) {
+          if (fetched.id == ordered.id) {
+            orderCount++;
+          }
+        }
+        ordered.orderCount = orderCount;
+      }
+    }
+
     return ListView.separated(
       padding: const EdgeInsets.all(8),
-      itemCount: dishes.length,
+      itemCount: orderedDishes.length,
       itemBuilder: (BuildContext context, int index) {
         return GestureDetector(
-          onTap: () => ScaffoldMessenger
-              .of(context)
-              .showSnackBar(DefaultSnackBar().withText(
-              'Clicked item number '+index.toString(), context),),
+          // onTap: () => ScaffoldMessenger
+          //     .of(context)
+          //     .showSnackBar(DefaultSnackBar().withText(
+
+          //     'Clicked item number '+index.toString(), context),),
           child: Container(
             height: 60,
             color: Colors.white,
@@ -103,14 +131,14 @@ class _OrderDetailPageState extends State<OrderDetailPage> {
                       maxLines: 2,
                       overflow: TextOverflow.ellipsis,
                       text: TextSpan(
-                        text: (index+1).toString()+'. ${dishes[index].name}',
+                        text: (index+1).toString()+'. ${orderedDishes[index].name}',
                         style: style.copyWith(color: Color(0xFF17B2E0),
                         ),
                       ),
                     ),
                   ),
                   RichText(text: TextSpan(
-                    text: "${dishes[index].orderCount} x ",
+                    text: "${orderedDishes[index].orderCount} x ",
                     style: style.copyWith(color: Color(0xFF17B2E0)),
                     children: <TextSpan>[
                       TextSpan(
@@ -121,7 +149,7 @@ class _OrderDetailPageState extends State<OrderDetailPage> {
                         ),
                       ),
                       TextSpan(
-                        text: dishes[index].price.toStringAsFixed(2),
+                        text: orderedDishes[index].price.toStringAsFixed(2),
                         style: style.copyWith(color: Color(0xFF17B2E0),),
                       ),
                     ],
@@ -138,7 +166,13 @@ class _OrderDetailPageState extends State<OrderDetailPage> {
   }
 
   String convertDishIds(List<OrderedDish> dishes) {
-    dishes.reduce((value, element) => null)
+    List<String> ids = [];
+    for (OrderedDish dish in dishes) {
+      for (int i = 0; i < dish.orderCount; i++) {
+        ids.add(dish.id.toString());
+      }
+    }
+    return ids.reduce((id1, id2) => id1+','+id2);
   }
 
   Widget confirmOrReorderButton() {
@@ -150,7 +184,25 @@ class _OrderDetailPageState extends State<OrderDetailPage> {
           minWidth: MediaQuery.of(context).size.width,
           padding: EdgeInsets.all(15.0),
           onPressed: () => {
-            convertDishIds(dishes)
+            setState(() {
+              if (tableNumberController.text.isNotEmpty) {
+                submitOrder(customerId, widget.restaurantId,
+                    convertDishIds(dishes), tableNumberController.text).then((value) => {
+                      if (value) {
+                        Navigator.pop(context)
+                      } else {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          DefaultSnackBar().withText('Connection failed.', context),
+                        )
+                      }
+                });
+
+              } else {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  DefaultSnackBar().withText('Please enter your table number.', context),
+                );
+              }
+            })
           },
           child: Text("Confirm",
               textAlign: TextAlign.center,
@@ -188,6 +240,7 @@ class _OrderDetailPageState extends State<OrderDetailPage> {
         textAlign: TextAlign.center,
         keyboardType: TextInputType.number,
         inputFormatters: [
+          // ignore: deprecated_member_use
           WhitelistingTextInputFormatter.digitsOnly,
         ],
         controller: tableNumberController,
@@ -207,10 +260,6 @@ class _OrderDetailPageState extends State<OrderDetailPage> {
             fontFamily: 'Futura',
             color: Colors.white.withOpacity(0.8),
           ),
-          // border: OutlineInputBorder(
-          //   borderRadius: BorderRadius.circular(32.0),
-          //   borderSide: BorderSide.none,
-          // ),
         ),
       );
     } else return Material();
@@ -227,6 +276,7 @@ class _OrderDetailPageState extends State<OrderDetailPage> {
         {
           setState(() {
             dishesFetched = true;
+            dishes.forEach((element) {print(element.orderCount);});
             build(context);
           })
         });

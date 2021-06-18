@@ -312,6 +312,10 @@ class _DishPageState extends State<DishPage> {
           } else {
             currentOrders.putIfAbsent(widget.restaurantId, () => [dish]);
           }
+
+          ScaffoldMessenger.of(context).showSnackBar(
+            DefaultSnackBar().withText('Added ' + dish.name + ' to order.', context),
+          );
         },
         child: Text("Add to order",
           textAlign: TextAlign.center,

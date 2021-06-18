@@ -8,7 +8,7 @@ class OrderedDish {
   final int id;
   final String name;
   final double price;
-  late final int orderCount;
+  late int orderCount;
 
   OrderedDish(this.id, this.name, this.price, this.orderCount);
 
@@ -20,6 +20,22 @@ class OrderedDish {
   void increaseOrder() {
     this.orderCount += 1;
   }
+
+
+
+  @override
+  bool operator ==(Object other) {
+    if(!(other is OrderedDish)) {
+      return false;
+    }
+    var o = other;
+    return this.id == o.id;
+  }
+
+  @override
+  int get hashCode {
+    return id;
+  }
 }
 
 
@@ -27,7 +43,7 @@ OrderedDish fromJson(Map<String, dynamic> json) {
   int id = json['id'];
   String name = json['name'];
   double price = json['price'];
-  int orderCount = json['orderCount'];
+  int orderCount = 1;
 
   return OrderedDish(id, name, price, orderCount);
 }
