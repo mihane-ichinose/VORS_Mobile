@@ -8,13 +8,17 @@ class OrderedDish {
   final int id;
   final String name;
   final double price;
+  late final int orderCount;
 
-  OrderedDish(this.id, this.name, this.price);
-
+  OrderedDish(this.id, this.name, this.price, this.orderCount);
 
   String toString() {
     return " " + id.toString() + " " + name + " "
         + price.toString();
+  }
+
+  void increaseOrder() {
+    this.orderCount += 1;
   }
 }
 
@@ -23,8 +27,9 @@ OrderedDish fromJson(Map<String, dynamic> json) {
   int id = json['id'];
   String name = json['name'];
   double price = json['price'];
+  int orderCount = json['orderCount'];
 
-  return OrderedDish(id, name, price);
+  return OrderedDish(id, name, price, orderCount);
 }
 
 

@@ -198,7 +198,7 @@ class _DishPageState extends State<DishPage> {
                 ),
                 children: <TextSpan>[
                   TextSpan(
-                    text: widget.price.toString(),
+                    text: widget.price.toStringAsFixed(2),
                     style: style.copyWith(color: Color(0xFF17B2E0),),
                   ),
                 ],
@@ -301,8 +301,13 @@ class _DishPageState extends State<DishPage> {
         minWidth: MediaQuery.of(context).size.width,
         padding: EdgeInsets.all(15.0),
         onPressed: () {
-          var dish = OrderedDish(widget.dishId, widget.dishName, widget.price);
+          var dish = OrderedDish(widget.dishId, widget.dishName, widget.price, 1);
           if (currentOrders.containsKey(widget.restaurantId)) {
+            if(!currentOrders[widget.restaurantId].where((d) => d.name == widget.dishName).toList().isEmpty){
+              var orderCountUpdate = currentOrders[widget.restaurantId].where((d) => d.name == widget.dishName).toList()[0].orderCount + 1;
+              currentOrders[widget.restaurantId].removeWhere((d) => d.name == widget.dishName);
+              dish = OrderedDish(widget.dishId, widget.dishName, widget.price, orderCountUpdate);
+            }
             currentOrders[widget.restaurantId].add(dish);
           } else {
             currentOrders.putIfAbsent(widget.restaurantId, () => [dish]);

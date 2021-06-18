@@ -156,7 +156,7 @@ class _MenuPageState extends State<MenuPage> {
                             ),
                           ),
                           TextSpan(
-                            text: "${searched[index].price}",
+                            text: searched[index].price.toStringAsFixed(2),
                             style: style.copyWith(color: Color(0xFF17B2E0),),
                           ),
                         ],
@@ -242,7 +242,6 @@ class _MenuPageState extends State<MenuPage> {
                 Image(image: imageGenerator(widget.imgUrl),
                 ),
                 Container(
-
                   height: 40,
                   decoration: BoxDecoration(
                       color: Colors.white.withOpacity(0.8),

@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:vors_project/util/globals.dart';
 import 'package:vors_project/util/home_page_items.dart';
 import 'package:vors_project/util/order_content.dart';
+import 'package:flutter/services.dart';
 
 
 class OrderDetailPage extends StatefulWidget {
@@ -26,7 +27,8 @@ class _OrderDetailPageState extends State<OrderDetailPage> {
   late String title = "";
   double totalPrice = 0;
   bool dishesFetched = false;
-
+  bool priceAddedUp = false;
+  final tableNumberController = TextEditingController();
 
   @override
   void initState(){
@@ -73,10 +75,12 @@ class _OrderDetailPageState extends State<OrderDetailPage> {
     );
   }
 
-
   Widget _buildDishList() {
-    for (OrderedDish dish in dishes) {
-      totalPrice += dish.price;
+    if (!priceAddedUp) {
+      for (OrderedDish dish in dishes) {
+        totalPrice += dish.price * dish.orderCount;
+      }
+      priceAddedUp = true;
     }
     return ListView.separated(
       padding: const EdgeInsets.all(8),
@@ -94,10 +98,19 @@ class _OrderDetailPageState extends State<OrderDetailPage> {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Text((index+1).toString()+'. ${dishes[index].name}\n',
-                    style: style.copyWith(color: Color(0xFF17B2E0)),),
+                  Flexible(
+                    child: RichText(
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                      text: TextSpan(
+                        text: (index+1).toString()+'. ${dishes[index].name}',
+                        style: style.copyWith(color: Color(0xFF17B2E0),
+                        ),
+                      ),
+                    ),
+                  ),
                   RichText(text: TextSpan(
-                    text: "${dishes[index].price} x ",
+                    text: "${dishes[index].orderCount} x ",
                     style: style.copyWith(color: Color(0xFF17B2E0)),
                     children: <TextSpan>[
                       TextSpan(
@@ -108,7 +121,7 @@ class _OrderDetailPageState extends State<OrderDetailPage> {
                         ),
                       ),
                       TextSpan(
-                        text: "${dishes[index].price}",
+                        text: dishes[index].price.toStringAsFixed(2),
                         style: style.copyWith(color: Color(0xFF17B2E0),),
                       ),
                     ],
@@ -163,6 +176,40 @@ class _OrderDetailPageState extends State<OrderDetailPage> {
     }  else return Material();
   }
 
+  Widget tableNumberField() {
+    if(widget.isCurrent) {
+      return TextFormField(
+        textAlign: TextAlign.center,
+        keyboardType: TextInputType.number,
+        inputFormatters: [
+          WhitelistingTextInputFormatter.digitsOnly,
+        ],
+        controller: tableNumberController,
+        obscureText: false,
+        style: style.copyWith(color: Colors.white.withOpacity(0.8)),
+        decoration: InputDecoration(
+          errorMaxLines: 1,
+          errorText: 'Null',
+          errorStyle: TextStyle(
+            color: Colors.transparent,
+            fontSize: 0,
+          ),
+          filled: true,
+          fillColor: Color(0xFF17B2E0),
+          hintText: "Enter table number...",
+          hintStyle: TextStyle(
+            fontFamily: 'Futura',
+            color: Colors.white.withOpacity(0.8),
+          ),
+          // border: OutlineInputBorder(
+          //   borderRadius: BorderRadius.circular(32.0),
+          //   borderSide: BorderSide.none,
+          // ),
+        ),
+      );
+    } else return Material();
+  }
+
   @override
   Widget build(BuildContext context) {
 
@@ -191,28 +238,36 @@ class _OrderDetailPageState extends State<OrderDetailPage> {
             ),
             Expanded(
               flex: 1,
-              child: RichText(text: TextSpan(
-              text: "Total: ",
-              style: style.copyWith(color: Color(0xFF43F2EB),
-                fontSize: 30,
+              child: Column(
+                children: [
+                  RichText(text: TextSpan(
+                    text: "Total: ",
+                    style: style.copyWith(color: Color(0xFF43F2EB),
+                      fontSize: 30,
+                    ),
+                    children: <TextSpan>[
+                      TextSpan(
+                        text: "£",
+                        style: style.copyWith(color: Color(0xFF17B2E0),
+                          fontFamily: "Arial",
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      TextSpan(
+                        text: totalPrice.toStringAsFixed(2),
+                        style: style.copyWith(color: Color(0xFF17B2E0),
+                          fontSize: 30,
+                        ),
+                      ),
+                    ],),),
+                  tableNumberField(),
+                  Container(
+                    width: 140,
+                    child: confirmOrReorderButton(),
+                  ),
+                ],
               ),
-              children: <TextSpan>[
-                TextSpan(
-                  text: "£",
-                  style: style.copyWith(color: Color(0xFF17B2E0),
-                    fontFamily: "Arial",
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-                TextSpan(
-                  text: totalPrice.toString(),
-                  style: style.copyWith(color: Color(0xFF17B2E0),
-                    fontSize: 30,
-                  ),
-                ),
-              ],),),
             ),
-            confirmOrReorderButton()
           ],
         ),
       ),
