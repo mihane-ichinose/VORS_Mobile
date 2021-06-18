@@ -137,6 +137,10 @@ class _OrderDetailPageState extends State<OrderDetailPage> {
     );
   }
 
+  String convertDishIds(List<OrderedDish> dishes) {
+    dishes.reduce((value, element) => null)
+  }
+
   Widget confirmOrReorderButton() {
     if (widget.isCurrent) {
       return Material(
@@ -145,7 +149,9 @@ class _OrderDetailPageState extends State<OrderDetailPage> {
         child: MaterialButton(
           minWidth: MediaQuery.of(context).size.width,
           padding: EdgeInsets.all(15.0),
-          onPressed: () => {},
+          onPressed: () => {
+            convertDishIds(dishes)
+          },
           child: Text("Confirm",
               textAlign: TextAlign.center,
               style: style.copyWith(
