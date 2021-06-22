@@ -46,7 +46,7 @@ release:
   image: inetprocess/gitlab-release
   stage: release
   only:
-    - tags && master
+    - tags
   dependencies:
     - build_android
   script:
