@@ -37,10 +37,12 @@ workflows:
     jobs:
       - test:
           filters:
-            only: /^v\d+\.\d+\.\d+$/
+            tags:
+              only: /^v\d+\.\d+\.\d+$/
       - build:
           filters:
-            only: /^v\d+\.\d+\.\d+$/
+            tags:
+              only: /^v\d+\.\d+\.\d+$/
       - release:
           requires:
             - test
