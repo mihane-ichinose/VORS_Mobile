@@ -21,14 +21,14 @@ jobs:
 
   release:
     docker:
-      - image: cibuilds/github:latest
+      - image: cibuilds/github:0.10
     steps:
       - attach_workspace:
           at: ./
       - run:
           name: "VORS Android App"
           command: |
-            ghr -t $VORS_Mirror -u $CIRCLE_PROJECT_USERNAME
+            ghr -t $GITHUB_TOKEN -u $CIRCLE_PROJECT_USERNAME
             -r $CIRCLE_PROJECT_REPONAME -c $CIRCLE_SHA1
             -delete $CIRCLE_TAG build/app/outputs/flutter-apk
 
