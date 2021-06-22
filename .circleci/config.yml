@@ -1,0 +1,49 @@
+# This CircleCI 2.1 configuration is for Github mirroring purpose only. For Gitlab see .gitlab-ci.yml.
+version: 2.1
+jobs:
+  test:
+    docker:
+      - image: cirrusci/flutter:latest
+    steps:
+      - checkout
+      - run: flutter test
+
+  build:
+    docker:
+      - image: cirrusci/flutter:latest
+    steps:
+      - checkout
+      - run: flutter build apk --release --build-number=$CI_PIPELINE_ID
+      - persist_to_workspace:
+          root: ./
+          paths:
+            - build/app/outputs/flutter-apk/app.apk
+
+  release:
+    docker:
+      - image: cibuilds/github:latest
+    steps:
+      - attach_workspace:
+          at: ./
+      - run:
+          name: "VORS Android App"
+          command: |
+            ghr -t ${GITHUB_TOKEN} -u ${CIRCLE_PROJECT_USERNAME}
+            -r ${CIRCLE_PROJECT_REPONAME} -c ${CIRCLE_SHA1}
+            -delete ${CIRCLE_TAG} build/app/outputs/flutter-apk
+
+workflows:
+  build-test-deploy:
+    jobs:
+      - test
+      - build
+      - release:
+          requires:
+            - test
+            - build
+          filters:
+            tags:
+              only: /^v\d+\.\d+\.\d+$/
+
+
+
