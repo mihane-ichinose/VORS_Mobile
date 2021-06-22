@@ -2,11 +2,11 @@ import 'dart:async';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 
-const dishesUrl = 'http://84.238.224.41:5005/customer/dishes_of_restaurant';
-const commentsUrl = 'http://84.238.224.41:5005/customer/dish_comments';
-const ratingUrl = 'http://84.238.224.41:5005/customer/dish_rating';
-const submitCommentUrl = 'http://84.238.224.41:5005/dish/comment';
-const submitRatingUrl = 'http://84.238.224.41:5005/dish/rate';
+const dishesUrl = 'http://84.238.224.41:5000/customer/dishes_of_restaurant';
+const commentsUrl = 'http://84.238.224.41:5000/customer/dish_comments';
+const ratingUrl = 'http://84.238.224.41:5000/customer/dish_rating';
+const submitCommentUrl = 'http://84.238.224.41:5000/dish/comment';
+const submitRatingUrl = 'http://84.238.224.41:5000/dish/rate';
 
 
 class Dish {

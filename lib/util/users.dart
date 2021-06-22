@@ -3,8 +3,8 @@ import 'dart:convert';
 import 'package:crypto/crypto.dart';
 import 'package:http/http.dart' as http;
 
-const verifyUrl = 'http://84.238.224.41:5005/customer/verify';
-const registerUrl = 'http://84.238.224.41:5005/customer/register';
+const verifyUrl = 'http://84.238.224.41:5000/customer/verify';
+const registerUrl = 'http://84.238.224.41:5000/customer/register';
 
 Future<User> fetchAuthentication(String credential, String password) async {
 

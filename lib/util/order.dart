@@ -1,14 +1,10 @@
 import 'dart:async';
 import 'dart:convert';
-import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:vors_project/util/globals.dart';
 
-import 'home_page_items.dart';
-
-const ordersUrl = 'http://84.238.224.41:5005/customer/orders';
-const submitOrderUrl = 'http://84.238.224.41:5005/customer/new_order';
+const ordersUrl = 'http://84.238.224.41:5000/customer/orders';
+const submitOrderUrl = 'http://84.238.224.41:5000/customer/new_order';
 
 class Order {
   final int id;

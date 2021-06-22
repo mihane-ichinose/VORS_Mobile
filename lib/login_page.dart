@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:vors_project/main.dart';
-import 'package:vors_project/restaurant_page.dart';
-import 'package:vors_project/user_page.dart';
 import 'package:vors_project/util/users.dart';
 import 'package:vors_project/util/home_page_items.dart';
 

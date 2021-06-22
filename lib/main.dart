@@ -4,9 +4,7 @@ import 'package:vors_project/restaurant_page.dart';
 import 'package:vors_project/signup_page.dart';
 import 'package:vors_project/user_page.dart';
 
-import 'dish_page.dart';
-
-const apiUrl = "http://84.238.224.41:5005/";
+const apiUrl = "http://84.238.224.41:5000/";
 int customerId = 0;
 String username = "";
 String email= "";

@@ -1,12 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:vors_project/main.dart';
 import 'package:vors_project/user_page.dart';
-
 import 'package:vors_project/util/restaurant_page_items.dart';
 import 'package:vors_project/util/restaurant.dart';
-
-
 
 class RestaurantPage extends StatefulWidget {
   final int customerId;

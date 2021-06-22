@@ -2,7 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 
-const orderContentUrl = 'http://84.238.224.41:5005/customer/order_content';
+const orderContentUrl = 'http://84.238.224.41:5000/customer/order_content';
 
 class OrderedDish {
   final int id;

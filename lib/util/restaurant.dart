@@ -1,7 +1,7 @@
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 
-final restaurantsUrl = "http://84.238.224.41:5005/restaurants";
+final restaurantsUrl = "http://84.238.224.41:5000/restaurants";
 
 
 class Restaurant {
