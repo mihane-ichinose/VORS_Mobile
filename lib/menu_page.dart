@@ -216,6 +216,20 @@ class _MenuPageState extends State<MenuPage> {
     }
   }
 
+  AppBar _buildAppBar() {
+
+    return AppBar(
+      title: Center(
+        child: Text(
+          formulateString(widget.restaurantName, 20),
+          style: style.copyWith(color: Colors.white,
+            fontWeight: FontWeight.bold,),
+        ),
+      ),
+      backgroundColor: Color(0xFF17B2E0),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
 
@@ -231,36 +245,10 @@ class _MenuPageState extends State<MenuPage> {
 
     return Material(
       child: Scaffold(
-        appBar: AppBar(
-          backgroundColor: Color(0xFF17B2E0),
-        ),
+        appBar: _buildAppBar(),
         body: Column(
           children: [
-            Stack(
-              alignment: Alignment.topCenter,
-              children: [
-                Image(image: imageGenerator(widget.imgUrl),
-                ),
-                Container(
-                  height: 40,
-                  decoration: BoxDecoration(
-                      color: Colors.white.withOpacity(0.8),
-                      borderRadius: BorderRadius.all(Radius.circular(10.0))
-                  ),
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: <Widget>[
-                      Center(
-                        child: Text(" "+formulateString(widget.restaurantName, 20)+" ",
-                          style: style.copyWith(color: Color(0xFF43F2EB)),
-                          textAlign: TextAlign.center,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ],
-            ),
+            Image(image: imageGenerator(widget.imgUrl)),
             _buildSearch(),
             Expanded(
               child: Stack(
