@@ -9,8 +9,6 @@ variables:
 
 .android_docker_image:
   image: cirrusci/flutter:2.2.1
-  tags:
-    - flutter-android
 
 .setup_fastlane_android:
   before_script:
@@ -28,8 +26,6 @@ variables:
     - bundle install --path vendor/bundle
     - bundle exec fastlane match
     - export FLUTTER_APP_VERSION=$(pubver -d ../. get)
-  tags:
-    - ios
   only:
     - master
 
@@ -60,8 +56,6 @@ build_ios:
   artifacts:
     untracked: true
     expire_in: 1 day
-  tags:
-    - ios
   only:
     - master
 
