@@ -64,11 +64,12 @@ build_android:
 #    - build_ios
 #  script: bundle exec fastlane beta
 #
-#android_play_store_internal_and_alpha_deployment:
-#  stage: test_deployment
-#  extends: .setup_fastlane_android
-#  dependencies:
-#    - build_android
-#  script:
-#    - bundle exec fastlane upload_to_play_store_internal
-#    - bundle exec fastlane promote_internal_to_alpha
+
+android_play_store_internal_and_alpha_deployment:
+  stage: test_deployment
+  extends: .setup_fastlane_android
+  dependencies:
+    - build_android
+  script:
+    - bundle exec fastlane upload_to_play_store_internal
+    - bundle exec fastlane promote_internal_to_alpha
