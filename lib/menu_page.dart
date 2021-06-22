@@ -204,14 +204,17 @@ class _MenuPageState extends State<MenuPage> {
           onPressed: () => {
             _goToCurrentOrder(context, widget.restaurantId)
           },
-          child: Text("Current order",
+          child: FittedBox(
+            fit: BoxFit.contain,
+            child: Text("Current order",
               textAlign: TextAlign.center,
               style: style.copyWith(
-                  fontSize: 18,
                   color: Colors.white,
-                  fontWeight: FontWeight.bold)
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold),
+            ),
           ),
-        )
+        ),
       );
     }
   }
@@ -255,10 +258,12 @@ class _MenuPageState extends State<MenuPage> {
                 alignment: Alignment.bottomCenter,
                 children: [
                   _buildHeader(),
-                  currentOrderButton()
+                  Positioned(
+                    bottom: 50,
+                    child: currentOrderButton(),
+                  ),
                 ],
-              )
-              // child: _buildHeader(),
+              ),
             ),
           ],
         ),

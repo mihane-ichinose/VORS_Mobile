@@ -1,5 +1,6 @@
 import 'dart:ui';
 
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:vors_project/comment_page.dart';
 import 'package:vors_project/main.dart';
@@ -329,11 +330,14 @@ class _DishPageState extends State<DishPage> {
             DefaultSnackBar().withText('Added ' + dish.name + ' to order.', context),
           );
         },
-        child: Text("Add to order",
-          textAlign: TextAlign.center,
-          style: style.copyWith(
-            color: Colors.white,
-            fontWeight: FontWeight.bold,
+        child: FittedBox(
+          fit: BoxFit.contain,
+          child: Text("Add to order",
+            textAlign: TextAlign.center,
+            style: style.copyWith(
+              color: Colors.white,
+              fontWeight: FontWeight.bold,
+            ),
           ),
         ),
       ),
@@ -365,11 +369,14 @@ class _DishPageState extends State<DishPage> {
             DefaultSnackBar().withText('Comment sent!', context),
           );
         },
-        child: Text("➜",
-          textAlign: TextAlign.center,
-          style: style.copyWith(
-            color: Colors.white,
-            fontWeight: FontWeight.bold,
+        child: FittedBox(
+          fit: BoxFit.contain,
+          child: Text("➜",
+            textAlign: TextAlign.center,
+            style: style.copyWith(
+              color: Colors.white,
+              fontWeight: FontWeight.bold,
+            ),
           ),
         ),
       ),
@@ -394,11 +401,14 @@ class _DishPageState extends State<DishPage> {
             DefaultSnackBar().withText('Thank you for rating!', context),
           );
         },
-        child: Text("Rate",
-          textAlign: TextAlign.center,
-          style: style.copyWith(
-            color: Colors.white,
-            fontWeight: FontWeight.bold,
+        child: FittedBox(
+          fit: BoxFit.contain,
+          child: Text("Rate",
+            textAlign: TextAlign.center,
+            style: style.copyWith(
+              color: Colors.white,
+              fontWeight: FontWeight.bold,
+            ),
           ),
         ),
       ),
