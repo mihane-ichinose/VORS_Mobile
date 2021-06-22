@@ -41,21 +41,19 @@ test:
     expire_in: 5 days
 
 build_android:
+  extends: .android_docker_image
   stage: package
   script: flutter build apk --release --build-number=$CI_PIPELINE_ID
   artifacts:
     paths:
       - build/app/outputs/apk/release/app-release.apk
-    expire_in: 1 day
 
 build_ios:
   stage: package
   script:
-    # although fastlane also is capable of building the ipa, we are doing it with flutter to ensure it has the same versioning like the Android app
     - flutter build ios --release --build-number=$CI_PIPELINE_ID
   artifacts:
     untracked: true
-    expire_in: 1 day
   only:
     - master
 
