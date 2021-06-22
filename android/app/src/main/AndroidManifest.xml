@@ -1,7 +1,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.drp48.vors_project">
+   <uses-permission android:name="android.permission.INTERNET"/>
    <application
-        android:label="vors_project"
+        android:label="VORS"
         android:icon="@mipmap/ic_launcher">
         <activity
             android:name=".MainActivity"
