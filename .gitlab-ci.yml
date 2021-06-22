@@ -27,6 +27,8 @@ build_android:
   artifacts:
     paths:
       - build/app/outputs/apk/release/app-release.apk
+  only:
+    - master
 
 # This build needs an iOS environment.
 #build_ios:
@@ -44,6 +46,7 @@ release:
   stage: release
   only:
     - tags
+    - master
   dependencies:
     - build_android
   script:
