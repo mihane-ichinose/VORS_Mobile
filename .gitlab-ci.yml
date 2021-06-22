@@ -19,15 +19,15 @@ variables:
     - gem install bundler
     - bundle install
 
-.setup_fastlane_ios:
-  before_script:
-    - cd ios/
-    - gem install --user-install bundler
-    - bundle install --path vendor/bundle
-    - bundle exec fastlane match
-    - export FLUTTER_APP_VERSION=$(pubver -d ../. get)
-  only:
-    - master
+#.setup_fastlane_ios:
+#  before_script:
+#    - cd ios/
+#    - gem install --user-install bundler
+#    - bundle install --path vendor/bundle
+#    - bundle exec fastlane match
+#    - export FLUTTER_APP_VERSION=$(pubver -d ../. get)
+#  only:
+#    - master
 
 test:
   extends: .android_docker_image
@@ -38,7 +38,6 @@ test:
   artifacts:
     paths:
       - coverage/
-    expire_in: 5 days
 
 build_android:
   extends: .android_docker_image
@@ -48,28 +47,28 @@ build_android:
     paths:
       - build/app/outputs/apk/release/app-release.apk
 
-build_ios:
-  extends: .android_docker_image
-  stage: package
-  script:
-    - flutter build ios --release --build-number=$CI_PIPELINE_ID
-  artifacts:
-    untracked: true
-  only:
-    - master
+#build_ios:
+#  extends: .android_docker_image
+#  stage: package
+#  script:
+#    - flutter build ios --release --build-number=$CI_PIPELINE_ID
+#  artifacts:
+#    untracked: true
+#  only:
+#    - master
 
-ios_testflight_beta_deployment:
-  stage: test_deployment
-  extends: .setup_fastlane_ios
-  dependencies:
-    - build_ios
-  script: bundle exec fastlane beta
-
-android_play_store_internal_and_alpha_deployment:
-  stage: test_deployment
-  extends: .setup_fastlane_android
-  dependencies:
-    - build_android
-  script:
-    - bundle exec fastlane upload_to_play_store_internal
-    - bundle exec fastlane promote_internal_to_alpha
+#ios_testflight_beta_deployment:
+#  stage: test_deployment
+#  extends: .setup_fastlane_ios
+#  dependencies:
+#    - build_ios
+#  script: bundle exec fastlane beta
+#
+#android_play_store_internal_and_alpha_deployment:
+#  stage: test_deployment
+#  extends: .setup_fastlane_android
+#  dependencies:
+#    - build_android
+#  script:
+#    - bundle exec fastlane upload_to_play_store_internal
+#    - bundle exec fastlane promote_internal_to_alpha
