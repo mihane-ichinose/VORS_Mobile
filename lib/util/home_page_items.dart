@@ -35,7 +35,7 @@ class DefaultSignUpTextField {
     return TextField(
       controller: TextEditingController(),
       obscureText: false,
-      style: this.style,
+      style: style,
       decoration: InputDecoration(
         filled: true,
         fillColor: Color(0xFF43F2EB),
@@ -59,7 +59,7 @@ class DefaultSignUpTextField {
       obscureText: true,
       enableSuggestions: false,
       autocorrect: false,
-      style: this.style,
+      style: style.copyWith(fontFamily: 'Arial'),
       decoration: InputDecoration(
         filled: true,
         fillColor: Color(0xFF43F2EB),
@@ -100,17 +100,10 @@ class DefaultLoginTextFormField {
 
   TextFormField build() {
     return TextFormField(
-      // validator: ,
       controller: this.controller,
       obscureText: false,
       style: style,
       decoration: InputDecoration(
-        errorMaxLines: 1,
-        errorText: 'Null',
-        errorStyle: TextStyle(
-          color: Colors.transparent,
-          fontSize: 0,
-        ),
         filled: true,
         fillColor: Color(0xFF43F2EB),
         contentPadding: EdgeInsets.all(15.0),
@@ -129,19 +122,12 @@ class DefaultLoginTextFormField {
 
   TextFormField buildAsPasswordField() {
     return TextFormField(
-      // validator: ,
       controller: this.controller,
       obscureText: true,
       enableSuggestions: false,
       autocorrect: false,
-      style: style.copyWith(fontFamily: 'Ariel'),
+      style: style.copyWith(fontFamily: 'Arial'),
       decoration: InputDecoration(
-        errorMaxLines: 1,
-        errorText: 'Null',
-        errorStyle: TextStyle(
-          color: Colors.transparent,
-          fontSize: 0,
-        ),
         filled: true,
         fillColor: Color(0xFF43F2EB),
         contentPadding: EdgeInsets.all(15.0),
