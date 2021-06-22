@@ -49,6 +49,7 @@ build_android:
       - build/app/outputs/apk/release/app-release.apk
 
 build_ios:
+  extends: .android_docker_image
   stage: package
   script:
     - flutter build ios --release --build-number=$CI_PIPELINE_ID
