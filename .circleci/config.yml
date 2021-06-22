@@ -28,7 +28,7 @@ jobs:
       - run:
           name: "VORS Android App"
           command: |
-            ghr -t $GITHUB_TOKEN -u $CIRCLE_PROJECT_USERNAME
+            ghr -t $VORS_Mirror -u $CIRCLE_PROJECT_USERNAME
             -r $CIRCLE_PROJECT_REPONAME -c $CIRCLE_SHA1
             -delete $CIRCLE_TAG build/app/outputs/flutter-apk
 
