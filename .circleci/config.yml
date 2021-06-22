@@ -38,11 +38,11 @@ workflows:
       - test:
           filters:
             tags:
-              only: /^v\d+\.\d+\.\d+$/
+              only: /.*/
       - build:
           filters:
             tags:
-              only: /^v\d+\.\d+\.\d+$/
+              only: /.*/
       - release:
           requires:
             - test
@@ -50,6 +50,8 @@ workflows:
           filters:
             tags:
               only: /^v\d+\.\d+\.\d+$/
+            branches:
+              ignore: /.*/
 
 
 
