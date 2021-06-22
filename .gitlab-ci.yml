@@ -1,7 +1,7 @@
 stages:
   - test
-  - package
-  - test_deployment
+  - build
+  - release
 
 variables:
   LC_ALL: "en_US.UTF-8"
@@ -9,25 +9,6 @@ variables:
 
 .android_docker_image:
   image: cirrusci/flutter:2.2.1
-
-.setup_fastlane_android:
-  before_script:
-    - cd android/
-    # because the Docker container runs as root currently, we won't do any user-install. Otherwise, it will fail with
-    # $ gem install --user-install bundler
-    # ERROR:  Use --install-dir or --user-install but not both
-    - gem install bundler
-    - bundle install
-
-#.setup_fastlane_ios:
-#  before_script:
-#    - cd ios/
-#    - gem install --user-install bundler
-#    - bundle install --path vendor/bundle
-#    - bundle exec fastlane match
-#    - export FLUTTER_APP_VERSION=$(pubver -d ../. get)
-#  only:
-#    - master
 
 test:
   extends: .android_docker_image
@@ -41,15 +22,16 @@ test:
 
 build_android:
   extends: .android_docker_image
-  stage: package
+  stage: build
   script: flutter build apk --release --build-number=$CI_PIPELINE_ID
   artifacts:
     paths:
       - build/app/outputs/apk/release/app-release.apk
 
+# This build needs an iOS environment.
 #build_ios:
 #  extends: .android_docker_image
-#  stage: package
+#  stage: build
 #  script:
 #    - flutter build ios --release --build-number=$CI_PIPELINE_ID
 #  artifacts:
@@ -57,19 +39,12 @@ build_android:
 #  only:
 #    - master
 
-#ios_testflight_beta_deployment:
-#  stage: test_deployment
-#  extends: .setup_fastlane_ios
-#  dependencies:
-#    - build_ios
-#  script: bundle exec fastlane beta
-#
-
-android_play_store_internal_and_alpha_deployment:
-  stage: test_deployment
-  extends: .setup_fastlane_android
+release:
+  image: inetprocess/gitlab-release
+  stage: release
+  only:
+    - tags
   dependencies:
     - build_android
   script:
-    - bundle exec fastlane upload_to_play_store_internal
-    - bundle exec fastlane promote_internal_to_alpha
+    - gitlab-release --message 'VORS Android App' build/app/outputs/apk/release/app-release.apk
