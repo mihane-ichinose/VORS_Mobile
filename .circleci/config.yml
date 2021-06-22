@@ -13,7 +13,7 @@ jobs:
       - image: cirrusci/flutter:latest
     steps:
       - checkout
-      - run: flutter build apk
+      - run: flutter build apk --release --build-number=<< pipeline.number >>
       - persist_to_workspace:
           root: ./
           paths:
