@@ -29,6 +29,7 @@ build_android:
       - build/app/outputs/apk/release/app-release.apk
   only:
     - master
+    - tags
 
 # This build needs an iOS environment.
 #build_ios:
