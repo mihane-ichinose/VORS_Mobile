@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 class DefaultSnackBar {
   SnackBar withText(String text, BuildContext context) {
     return SnackBar(
+      duration: Duration(milliseconds: 500),
       content: Text(text),
       backgroundColor: Color(0xFF43F2EB),
       action: SnackBarAction(
