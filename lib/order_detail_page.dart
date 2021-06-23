@@ -31,6 +31,7 @@ class _OrderDetailPageState extends State<OrderDetailPage> {
   double totalPrice = 0;
   bool dishesFetched = false;
   bool priceAddedUp = false;
+  bool dishesAreOrdered = false;
   final tableNumberController = TextEditingController();
 
   @override
@@ -79,46 +80,33 @@ class _OrderDetailPageState extends State<OrderDetailPage> {
   }
 
   Widget _buildDishList() {
-    if (!priceAddedUp) {
+    if (!priceAddedUp && dishesFetched) {
       for (OrderedDish dish in dishes) {
         totalPrice += dish.price * dish.orderCount;
       }
       priceAddedUp = true;
     }
 
-    var ordered = new Set<OrderedDish>();
-
-    Map<OrderedDish, int> dishesWithQuantity = new HashMap();
-    for (OrderedDish dish in dishes) {
-      dishesWithQuantity.putIfAbsent(dish, () => 0);
-      dishesWithQuantity.update(dish, (value) => value+1);
-      ordered.add(dish);
-    }
-
-    var orderedDishes = ordered.toList();
-
-    if (dishesFetched) {
-      for (OrderedDish ordered in orderedDishes) {
-        int orderCount = 0;
-        for (OrderedDish fetched in dishes) {
-          if (fetched.id == ordered.id) {
-            orderCount++;
-          }
-        }
-        ordered.orderCount = orderCount;
+    if(!widget.isCurrent && !dishesAreOrdered && dishesFetched){
+      Map<OrderedDish, int> dishesWithQuantity = new HashMap();
+      for (OrderedDish dish in dishes) {
+        dishesWithQuantity.putIfAbsent(dish, () => 0);
+        dishesWithQuantity.update(dish, (value) => value+1);
       }
+      List<OrderedDish> countedDishes = [];
+      dishesWithQuantity.forEach((key, value) {
+        OrderedDish orderedDish = new OrderedDish(key.id, key.name, key.price, value);
+        countedDishes.add(orderedDish);
+      });
+      dishes = countedDishes;
+      dishesAreOrdered = true;
     }
 
     return ListView.separated(
       padding: const EdgeInsets.all(8),
-      itemCount: orderedDishes.length,
+      itemCount: dishes.length,
       itemBuilder: (BuildContext context, int index) {
         return GestureDetector(
-          // onTap: () => ScaffoldMessenger
-          //     .of(context)
-          //     .showSnackBar(DefaultSnackBar().withText(
-
-          //     'Clicked item number '+index.toString(), context),),
           child: Container(
             height: 60,
             color: Colors.white,
@@ -131,14 +119,14 @@ class _OrderDetailPageState extends State<OrderDetailPage> {
                       maxLines: 2,
                       overflow: TextOverflow.ellipsis,
                       text: TextSpan(
-                        text: (index+1).toString()+'. ${orderedDishes[index].name}',
+                        text: (index+1).toString()+'. ${dishes[index].name}',
                         style: style.copyWith(color: Color(0xFF17B2E0),
                         ),
                       ),
                     ),
                   ),
                   RichText(text: TextSpan(
-                    text: "${orderedDishes[index].orderCount} x ",
+                    text: "${dishes[index].orderCount} x ",
                     style: style.copyWith(color: Color(0xFF17B2E0)),
                     children: <TextSpan>[
                       TextSpan(
@@ -149,7 +137,7 @@ class _OrderDetailPageState extends State<OrderDetailPage> {
                         ),
                       ),
                       TextSpan(
-                        text: orderedDishes[index].price.toStringAsFixed(2),
+                        text: dishes[index].price.toStringAsFixed(2),
                         style: style.copyWith(color: Color(0xFF17B2E0),),
                       ),
                     ],
@@ -270,6 +258,7 @@ class _OrderDetailPageState extends State<OrderDetailPage> {
 
     if (widget.isCurrent) {
       dishes = currentOrders[widget.restaurantId];
+      dishesFetched = true;
     } else {
       if (!dishesFetched) {
         fetchOrderContent(widget.orderId, dishes).then((value) =>

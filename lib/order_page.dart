@@ -70,8 +70,8 @@ class _OrderPageState extends State<OrderPage> {
       itemCount: activeOrderList.length,
       itemBuilder: (BuildContext context, int index) {
         return GestureDetector(
-          onTap: () => _goToOrderDetails(context, index,
-              restaurants.where((i) => i.id == activeOrderList[index].restaurantId).toList()[0].name.toString(),
+          onTap: () => _goToOrderDetails(context, activeOrderList.length - index - 1,
+              restaurants.where((i) => i.id == activeOrderList[activeOrderList.length - index - 1].restaurantId).toList()[0].name.toString(),
           activeOrderList),
           // onTap: () => print(activeOrderList[index].id),
           child: Container(
@@ -81,7 +81,7 @@ class _OrderPageState extends State<OrderPage> {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: <Widget>[
-                  Text("at "+restaurants.where((i) => i.id == activeOrderList[index].restaurantId).toList()[0].name.toString(),
+                  Text("at "+restaurants.where((i) => i.id == activeOrderList[activeOrderList.length - index - 1].restaurantId).toList()[0].name.toString(),
                     style: style.copyWith(color: Color(0xFF17B2E0)),),
                   // Text("order ID: "+activeOrderList[index].id.toString(),
                   //   style: style.copyWith(color: Color(0xFF17B2E0)),),
@@ -102,8 +102,8 @@ class _OrderPageState extends State<OrderPage> {
       itemCount: pastOrderList.length,
       itemBuilder: (BuildContext context, int index) {
         return GestureDetector(
-          onTap: () => _goToOrderDetails(context, index,
-              restaurants.where((i) => i.id == pastOrderList[index].restaurantId).toList()[0].name.toString(),
+          onTap: () => _goToOrderDetails(context, pastOrderList.length - index - 1,
+              restaurants.where((i) => i.id == pastOrderList[pastOrderList.length - index - 1].restaurantId).toList()[0].name.toString(),
           pastOrderList),
           // onTap: () => print(pastOrderList[index].id),
 
@@ -113,7 +113,7 @@ class _OrderPageState extends State<OrderPage> {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: <Widget>[
-                Text("at "+restaurants.where((i) => i.id == pastOrderList[index].restaurantId).toList()[0].name.toString(),
+                Text("at "+restaurants.where((i) => i.id == pastOrderList[pastOrderList.length - index - 1].restaurantId).toList()[0].name.toString(),
                   style: style.copyWith(color: Color(0xFF17B2E0)),),
                 // Text("order ID: "+pastOrderList[index].id.toString(),
                 //   style: style.copyWith(color: Colors.grey,),),
@@ -129,7 +129,7 @@ class _OrderPageState extends State<OrderPage> {
   @override
   Widget build(BuildContext context) {
 
-    if(orderList.length == 0 && !areOrdersFetched) {
+    if(!areOrdersFetched) {
       fetchAllOrders(widget.customerId, orderList).then((value) {
         setState(() {
               activeOrderList = orderList.where((i) => i.active).toList();
