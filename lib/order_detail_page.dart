@@ -189,7 +189,12 @@ class _OrderDetailPageState extends State<OrderDetailPage> {
                 submitOrder(customerId, widget.restaurantId,
                     convertDishIds(dishes), tableNumberController.text).then((value) => {
                       if (value) {
-                        Navigator.pop(context)
+                        setState(() {
+                          Navigator.pop(context);
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            DefaultSnackBar().withText('Order submitted.', context),
+                          );
+                        })
                       } else {
                         ScaffoldMessenger.of(context).showSnackBar(
                           DefaultSnackBar().withText('Connection failed.', context),
